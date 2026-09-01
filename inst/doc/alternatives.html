@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Choosing Between getaca and the Alternatives</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Choosing Between getaca and the
+Alternatives</h1>
+
+
+
+<p>Several established approaches solve neighbouring problems, and for a
+good number of packages one of them is the better fit. This article
+describes what each is built around and where the boundaries fall, so
+the choice can be made on the shape of the problem rather than on which
+package someone met first.</p>
+<p>The question <code>getaca</code> is built around: a package needs a
+file it cannot ship, and every machine running that package should get
+the same bytes.</p>
+<div id="bundling-the-data-in-the-package" class="section level2">
+<h2>Bundling the data in the package</h2>
+<p>The first thing to rule in or out. A dataset in <code>data/</code>
+needs no cache, no network, no checksum and no policy, and every one of
+those is a moving part that can fail.</p>
+<p>CRAN’s size guidance makes this a question of megabytes rather than
+gigabytes, and the release cadence question usually settles it before
+the size does: data in <code>data/</code> release when the package
+releases. For a reference table that changes yearly and a package that
+releases yearly, coupling them is a feature.</p>
+<p>Bundle when the data are small, static relative to your release
+cycle, and redistributable. Look further when any of the three
+fails.</p>
+</div>
+<div id="a-companion-data-package" class="section level2">
+<h2>A companion data package</h2>
+<p>The classic R answer to data that are too large for the main package
+but still manageable: ship them as their own package, list it in
+<code>Suggests</code>, and put it on CRAN, Bioconductor or
+r-universe.</p>
+<table>
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>companion data package</th>
+<th><code>getaca</code></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Size</td>
+<td>fits a repository</td>
+<td>too large to bundle</td>
+</tr>
+<tr class="even">
+<td>Release cadence</td>
+<td>coupled to code releases</td>
+<td>independent of them</td>
+</tr>
+<tr class="odd">
+<td>Shape</td>
+<td>naturally R objects</td>
+<td>any file, any format</td>
+</tr>
+<tr class="even">
+<td>Granularity</td>
+<td>all of it, always</td>
+<td>users take what they need</td>
+</tr>
+<tr class="odd">
+<td>License</td>
+<td>redistribution permitted</td>
+<td>download permitted, redistribution discouraged</td>
+</tr>
+<tr class="even">
+<td>Installation</td>
+<td>the usual package machinery</td>
+<td>first use, or an explicit prefetch</td>
+</tr>
+<tr class="odd">
+<td>Offline</td>
+<td>works once installed</td>
+<td>works once cached</td>
+</tr>
+</tbody>
+</table>
+<p>The licence row is the one that decides it most often. A companion
+package redistributes the data, which needs terms that permit
+redistribution. Plenty of scientific datasets permit download and
+discourage or forbid redistribution, and for those a companion package
+is not available whatever its other merits.</p>
+<p>Granularity is the second. A package needing one of fifteen reference
+files, at a gigabyte each, would install fifteen through a companion
+package. Under <code>getaca</code> a user takes what they use.</p>
+<p>A companion package can itself use <code>getaca</code>, which is
+occasionally the right structure when the companion owns expensive build
+logic. It is rarely the first recommendation, since it moves the
+complexity rather than removing it.</p>
+</div>
+<div id="pins" class="section level2">
+<h2>pins</h2>
+<p><a href="https://cran.r-project.org/package=pins">pins</a> publishes
+“data sets, models, and other R objects, making it easy to share them
+across projects and with your colleagues”, across boards including local
+folders, Posit Connect and AWS S3.</p>
+<p>The unit is a pin on a board, and the person at the centre of the
+design is the one publishing an artefact for others to read. Boards
+abstract over where that artefact lives, which is what makes the same
+code work against a network drive during development and Posit Connect
+in production.</p>
+<p>Reach for <code>pins</code> when the artefact is yours, the audience
+is a team or an organisation, the storage backend matters, and writing
+is part of the workflow. It covers a range of backends
+<code>getaca</code> has no interest in growing.</p>
+<p>Reach for <code>getaca</code> when the artefact is a third party’s,
+the audience is everyone who installs your package, and the declaration
+has to travel inside the package so that <code>R CMD check</code> and an
+offline user both behave.</p>
+<p>The two coexist. A package can declare its public reference data
+through <code>getaca</code> and its team’s internal model artefacts
+through <code>pins</code> without either knowing about the other.</p>
+</div>
+<div id="biocfilecache" class="section level2">
+<h2>BiocFileCache</h2>
+<p><a href="https://bioconductor.org/packages/BiocFileCache">BiocFileCache</a>
+“creates a persistent on-disk cache of files that the user can add,
+update, and retrieve”, for resources that are costly or difficult to
+create and for web resources used across sessions, backed by an SQLite
+metadata database.</p>
+<p>It is the established answer inside Bioconductor, and a Bioconductor
+package already carrying that dependency stack has little reason to add
+another. The model is a cache the calling package manages: your code
+decides what to add, when a cached copy needs updating, and what
+identity a resource has.</p>
+<p><code>getaca</code> makes those decisions from a declaration instead.
+Identity is <code>package / name / version</code>, resolution runs
+through a policy, and the retention sweeps are the package’s rather than
+the caller’s. That is a narrower contract, and it exists because the
+same behaviour then holds for every declaring package rather than being
+reimplemented per package.</p>
+<p>Reach for <code>BiocFileCache</code> when you are in the Bioconductor
+ecosystem, when the resources are ones your code creates rather than
+ones a publisher versions, or when you want the cache under your own
+control.</p>
+</div>
+<div id="pooch" class="section level2">
+<h2>pooch</h2>
+<p>The nearest equivalent outside R, and the one a reader arriving from
+Python will already know. <a href="https://www.fatiando.org/pooch/">pooch</a>, “a friend to fetch
+your data files”, is where a Python package puts this problem: a
+registry of file names and hashes, a cache folder under the OS
+convention, downloaders and processors around them.</p>
+<p>The overlap is the middle of the problem, fetch and hash and cache.
+The two ends differ, and both differences are about where the
+constraints come from.</p>
+<p>At the front, a pooch registry is a <code>registry.txt</code> shipped
+as package data, and <code>version</code> is documented as “the version
+string for your project”, naming the subfolder the cache uses. Data
+identity is the declaring project’s identity, so a repaired mirror or a
+fresh upstream cut reaches users when the code does. A
+<code>getaca</code> declaration versions the data separately, holds
+several versions at once, names the head, and can resolve through a
+remote registry the author keeps, which is what lets
+<code>2026-09</code> reach an installed copy between releases.
+<code>urls</code> in pooch sets one URL per file; a <code>getaca</code>
+record takes a list of mirrors and walks it until one answers. pooch
+also accepts a <code>doi:</code> URL and asks figshare, Zenodo or
+Dataverse for the download location as it fetches. <code>getaca</code>
+asks the same three archives in <code>registry_draft()</code>, when the
+registry is written, and a record then carries the DOI as what the bytes
+are cited as and the locations as themselves.</p>
+<p>At the back, the constraints are CRAN’s. <code>R CMD check</code>
+runs the tests, examples and vignettes of every package on machines with
+no network, and <code>tools::R_user_dir()</code> is permitted on
+condition its contents are actively managed. The check clamp, the three
+access helpers and the retention sweeps exist for those two
+sentences.</p>
+</div>
+<div id="a-downloader-and-a-cache-directory" class="section level2">
+<h2>A downloader and a cache directory</h2>
+<p>The common alternative in practice: <code>download.file()</code> or
+<code>curl</code>, a directory under <code>tools::R_user_dir()</code>,
+and a <code>file.exists()</code> check. It is a few dozen lines and it
+works.</p>
+<p>Two things cost more work than they look. The first is what happens
+when the bytes at the URL differ from the bytes you expected, which
+covers a truncated transfer, a proxy serving an HTML error page, and a
+publisher recutting a file. Each of those reaches your parser as a
+confusing error some distance from its cause.</p>
+<p>The second is CRAN’s requirement to fail gracefully with an
+informative message when a resource is unavailable, across tests,
+examples and vignettes, on a machine with no network. That is the part
+that turns a few dozen lines into a few hundred, and it has to be
+written again in every package that depends on external data.</p>
+<p><code>getaca</code> is that layer written once. The declaring package
+supplies a registry.</p>
+</div>
+<div id="targets-and-the-workflow-tools" class="section level2">
+<h2>Targets and the workflow tools</h2>
+<p><code>targets</code> and <code>drake</code> manage a computational
+pipeline, tracking which steps need to re-run when inputs change. That
+is a different question from where a file comes from and whether it is
+the right file.</p>
+<p>They compose. A <code>targets</code> pipeline can have a target whose
+command is <code>getaca(&quot;backbone&quot;, package = &quot;yourpkg&quot;)</code>, which
+gives the pipeline a path, and the path a provenance record:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>  <span class="fu">tar_target</span>(backbone_path, getaca<span class="sc">::</span><span class="fu">getaca</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>),</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>             <span class="at">format =</span> <span class="st">&quot;file&quot;</span>),</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>  <span class="fu">tar_target</span>(backbone, <span class="fu">read_backbone</span>(backbone_path)),</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>  <span class="fu">tar_target</span>(summary, <span class="fu">summarise_backbone</span>(backbone))</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>)</span></code></pre></div>
+<p><code>format = &quot;file&quot;</code> makes <code>targets</code> watch the
+returned path, so the pipeline invalidates downstream targets when the
+resolved version changes. That is the combination worth reaching for:
+<code>getaca</code> decides which bytes, <code>targets</code> decides
+what to recompute.</p>
+</div>
+<div id="renv" class="section level2">
+<h2>renv</h2>
+<p><code>renv</code> records which package versions an analysis used. A
+<code>getaca</code> pin records which data versions those packages
+resolved to. Neither subsumes the other: a package version does not
+determine a data version once the package is on the <code>current</code>
+policy, and a data version says nothing about the code that read it.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">snapshot</span>()</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">getaca_pin</span>(<span class="fu">c</span>(<span class="st">&quot;yourpkg&quot;</span>, <span class="st">&quot;otherpkg&quot;</span>))</span></code></pre></div>
+<p>Commit both files. Restoring is <code>renv::restore()</code> followed
+by <code>getaca_prefetch()</code> on a connected machine, after which
+the analysis runs offline. See <code>vignette(&quot;policies&quot;)</code> for
+what a pin holds.</p>
+</div>
+<div id="decision-summary" class="section level2">
+<h2>Decision summary</h2>
+<table>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>If</th>
+<th>then</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>the data are small, static and redistributable</td>
+<td>put them in <code>data/</code></td>
+</tr>
+<tr class="even">
+<td>the data are moderate, redistributable and release with your
+code</td>
+<td>a companion data package</td>
+</tr>
+<tr class="odd">
+<td>you are publishing your own artefacts to a team</td>
+<td><code>pins</code></td>
+</tr>
+<tr class="even">
+<td>you are inside Bioconductor, or caching things your code
+creates</td>
+<td><code>BiocFileCache</code></td>
+</tr>
+<tr class="odd">
+<td>you are managing which steps re-run</td>
+<td><code>targets</code>, with <code>getaca</code> supplying the
+path</td>
+</tr>
+<tr class="even">
+<td>your package declares a third party’s versioned file it cannot
+ship</td>
+<td><code>getaca</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="what-getaca-deliberately-does-not-do" class="section level2">
+<h2>What getaca deliberately does not do</h2>
+<p>Naming the boundary is part of choosing. None of these is
+planned:</p>
+<ul>
+<li><strong>Credential storage.</strong> A declaration names the
+environment variable a host requires, and getaca reads it at the moment
+of the request. It holds no credentials, reads no <code>.netrc</code>
+and talks to no keyring. See <code>vignette(&quot;declaring&quot;)</code>.</li>
+<li><strong>Cloud storage abstractions.</strong> No S3, no Azure, no
+board concept. A URL is a URL.</li>
+<li><strong>DOI resolution at fetch time.</strong> A <code>doi</code> on
+a record is what the bytes are cited as, and it routes nothing.
+Resolving one through a repository API on every fetch would put a second
+host, which is not itself mirrorable, in front of every retrieval, and
+would break the mirror loop’s assumption that the locations it walks are
+independent sources. The archives are read when the registry is written
+instead: <code>registry_draft()</code> covers Zenodo, figshare and
+Dataverse, and emits plain locations.</li>
+<li><strong>Reading data.</strong> <code>getaca</code> returns a path
+and knows nothing about file formats. A processor can unpack an archive;
+nothing reads its contents.</li>
+<li><strong>Publishing.</strong> Uploading the data, minting the
+version, computing the checksum in the first place: all outside.</li>
+<li><strong>Semantic version solving.</strong> Version strings are
+labels, and the registry names the head rather than ranking them.</li>
+<li><strong>Workflow orchestration.</strong> Composing with
+<code>targets</code> is the answer, rather than growing a dependency
+graph.</li>
+</ul>
+<p>The list is short on purpose. Each item is a place where a package
+could grow into something else, and the dependency footprint that makes
+<code>getaca</code> inexpensive to depend on is the thing that would go
+first.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">packageDescription</span>(<span class="st">&quot;getaca&quot;</span>)<span class="sc">$</span>Imports</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="co">#&gt; [1] &quot;curl (&gt;= 5.0.0), stats, tools, utils&quot;</span></span></code></pre></div>
+</div>
+<div id="where-to-go-next" class="section level2">
+<h2>Where to go next</h2>
+<ul>
+<li><p><code>vignette(&quot;quickstart&quot;)</code> for the whole cycle in one
+pass</p></li>
+<li><p><code>vignette(&quot;declaring&quot;)</code> for what a declaring package
+writes</p></li>
+<li><p><code>vignette(&quot;policies&quot;)</code> for reproducibility across
+machines and time</p></li>
+</ul>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

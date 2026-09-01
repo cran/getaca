@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Handling Failures</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Handling Failures</h1>
+
+
+
+<p>A plain downloader reports eleven different situations the same way:
+something went wrong with a URL. <code>getaca</code> separates them,
+because the eleven have three different people who can act on them and
+five different things to do.</p>
+<p>Every failure is a classed condition carrying an <code>actor</code>
+field naming who can act. Callers branch on the class rather than on
+message text.</p>
+<table>
+<colgroup>
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Condition</th>
+<th>Cause</th>
+<th>Actor</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>getaca_error_unavailable</code></td>
+<td>no mirror answered</td>
+<td>user</td>
+<td>connect, or prefetch elsewhere</td>
+</tr>
+<tr class="even">
+<td><code>getaca_error_offline</code></td>
+<td>not cached, network not permitted here</td>
+<td>user</td>
+<td>prefetch, or point <code>GETACA_CACHE</code> at a seeded cache</td>
+</tr>
+<tr class="odd">
+<td><code>getaca_error_incomplete</code></td>
+<td>every mirror ended short</td>
+<td>user</td>
+<td>retry</td>
+</tr>
+<tr class="even">
+<td><code>getaca_error_credentials</code></td>
+<td>every mirror refused to serve</td>
+<td>user, or author</td>
+<td>set the credential named; where none is declared, report it</td>
+</tr>
+<tr class="odd">
+<td><code>getaca_error_upstream_changed</code></td>
+<td>published bytes were replaced</td>
+<td>upstream</td>
+<td>the declaring package needs a new record</td>
+</tr>
+<tr class="even">
+<td><code>getaca_error_cache_corrupt</code></td>
+<td>local copy drifted from its own record</td>
+<td>user</td>
+<td>clean and refetch</td>
+</tr>
+<tr class="odd">
+<td><code>getaca_error_redeclared</code></td>
+<td>the declaration names different bytes for a version already
+held</td>
+<td>author</td>
+<td>report to the declaring package</td>
+</tr>
+<tr class="even">
+<td><code>getaca_error_invalid_registry</code></td>
+<td>the declaration is wrong</td>
+<td>author</td>
+<td>report to the declaring package</td>
+</tr>
+<tr class="odd">
+<td><code>getaca_error_declaration</code></td>
+<td>every mirror agrees, the registry disagrees</td>
+<td>author</td>
+<td>report to the declaring package</td>
+</tr>
+<tr class="even">
+<td><code>getaca_error_composition</code></td>
+<td>the parts arrived intact and compose to something else</td>
+<td>author</td>
+<td>report to the declaring package</td>
+</tr>
+<tr class="odd">
+<td><code>getaca_error_signature</code></td>
+<td>a registry that must be signed carried no usable one</td>
+<td>author</td>
+<td>report to the declaring package</td>
+</tr>
+</tbody>
+</table>
+<p>All eleven inherit from <code>getaca_error</code>, which inherits
+from <code>error</code>, so a handler for <code>getaca_error</code>
+catches everything the package raises and nothing else.</p>
+<div id="the-general-shape" class="section level2">
+<h2>The general shape</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>err <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>(<span class="fu">getaca</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">registry =</span> reg), <span class="at">getaca_error =</span> <span class="cf">function</span>(e) e)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">class</span>(err)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="co">#&gt; [1] &quot;getaca_error_offline&quot;     &quot;getaca_error_unavailable&quot;</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co">#&gt; [3] &quot;getaca_error&quot;             &quot;error&quot;                   </span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="co">#&gt; [5] &quot;condition&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>err<span class="sc">$</span>actor</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="co">#&gt; [1] &quot;user&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">conditionMessage</span>(err))</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="co">#&gt; yourpkg/backbone@2026-06 is not cached and cannot be downloaded (offline mode is in effect).</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&gt; Action: on a connected machine run getaca_prefetch(&quot;backbone&quot;, package = &quot;yourpkg&quot;),</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co">#&gt; or point GETACA_CACHE at a cache that already holds it.</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co">#&gt; Fix: this is expected during checks. Use getaca_skip_if_unavailable()</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co">#&gt; in tests and getaca_optional() in examples.</span></span></code></pre></div>
+<p>Three parts to every message: what happened, what to do about it, and
+a closing line derived from the actor. The <code>Fix:</code> line is
+what tells a user whether the next step is theirs, and the
+<code>Action:</code> lines above it are what they type.</p>
+<p>Beyond <code>actor</code>, each condition carries the data that
+produced it, so a handler can reason about the situation rather than
+parse the message:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">names</span>(err)</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="co">#&gt; [1] &quot;message&quot; &quot;call&quot;    &quot;actor&quot;   &quot;id&quot;</span></span></code></pre></div>
+<p><code>err$id</code> is the <code>getaca_id</code>, so
+<code>format(err$id)</code> gives <code>package/name@version</code> for
+a log line.</p>
+</div>
+<div id="getaca_error_unavailable" class="section level2">
+<h2><code>getaca_error_unavailable</code></h2>
+<p>No mirror could be reached. Every URL is listed with the reason it
+failed, so a user can tell a proxy problem from a host that is down from
+a path that 404s.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">getaca</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="co">#&gt; Error: Cannot reach any source for yourpkg/backbone@2026-06.</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co">#&gt;   https://primary.invalid/backbone-2026-06.zip: HTTP 503</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co">#&gt;   https://mirror.invalid/backbone-2026-06.zip: Could not resolve host</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co">#&gt;</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co">#&gt; Actions: connect to a network; or run getaca_prefetch() on a connected</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co">#&gt; machine and copy the cache directory; or set the resource optional here</span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="co">#&gt; with getaca_available() before calling.</span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="co">#&gt;</span></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="co">#&gt; Fix: see the actions listed above.</span></span></code></pre></div>
+<p>The condition carries <code>urls</code> and <code>reasons</code> as
+parallel vectors, which is enough to build a domain-specific
+message:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">tryCatch</span>(</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  <span class="fu">getaca</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>),</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="at">getaca_error_unavailable =</span> <span class="cf">function</span>(e) {</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="fu">sprintf</span>(</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>      <span class="st">&quot;Could not download the backbone from %d source(s).</span><span class="sc">\n</span><span class="st">Tried:</span><span class="sc">\n</span><span class="st">%s&quot;</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>      <span class="fu">length</span>(e<span class="sc">$</span>urls), <span class="fu">paste0</span>(<span class="st">&quot;  &quot;</span>, e<span class="sc">$</span>urls, <span class="st">&quot; (&quot;</span>, e<span class="sc">$</span>reasons, <span class="st">&quot;)&quot;</span>, <span class="at">collapse =</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>    ), <span class="at">call. =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>  }</span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="getaca_error_offline" class="section level2">
+<h2><code>getaca_error_offline</code></h2>
+<p>A subclass of <code>getaca_error_unavailable</code>, raised when the
+resource is not cached and the policy in force forbids reaching for it.
+Under <code>R CMD check</code> this is the only failure a
+resource-dependent code path can produce, because the clamp forces
+<code>offline</code> before any transport is attempted.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">conditionMessage</span>(err))</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="co">#&gt; yourpkg/backbone@2026-06 is not cached and cannot be downloaded (offline mode is in effect).</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co">#&gt; Action: on a connected machine run getaca_prefetch(&quot;backbone&quot;, package = &quot;yourpkg&quot;),</span></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="co">#&gt; or point GETACA_CACHE at a cache that already holds it.</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="co">#&gt; Fix: this is expected during checks. Use getaca_skip_if_unavailable()</span></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="co">#&gt; in tests and getaca_optional() in examples.</span></span></code></pre></div>
+<p>The subclass relationship is what lets a package write one handler
+and get both:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">inherits</span>(err, <span class="st">&quot;getaca_error_unavailable&quot;</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
+<p>Separating them is worth doing when the two need different words.
+“You are offline” is wrong advice for a machine that is online but
+running a check, and “the server is down” is wrong advice for a machine
+with no network at all.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">tryCatch</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>  <span class="fu">getaca</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>),</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>  <span class="at">getaca_error_offline =</span> <span class="cf">function</span>(e) {</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>    <span class="fu">message</span>(<span class="st">&quot;Running without network access. Prefetch first:</span><span class="sc">\n</span><span class="st">&quot;</span>,</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>            <span class="st">&quot;  getaca_prefetch(</span><span class="sc">\&quot;</span><span class="st">backbone</span><span class="sc">\&quot;</span><span class="st">, package = </span><span class="sc">\&quot;</span><span class="st">yourpkg</span><span class="sc">\&quot;</span><span class="st">)&quot;</span>)</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>    <span class="cn">NULL</span></span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>  },</span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a>  <span class="at">getaca_error_unavailable =</span> <span class="cf">function</span>(e) {</span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a>    <span class="fu">message</span>(<span class="st">&quot;The download sources are not responding. Try again later.&quot;</span>)</span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a>    <span class="cn">NULL</span></span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a>  }</span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a>)</span></code></pre></div>
+<p>Handlers are matched in order, so the narrower one has to come
+first.</p>
+</div>
+<div id="getaca_error_incomplete" class="section level2">
+<h2><code>getaca_error_incomplete</code></h2>
+<p>Every mirror that failed did so by ending short of the declared size.
+That is a different situation from a host being down, and the action is
+different: retry, because a partial transfer resumes rather than
+restarting.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">getaca</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="co">#&gt; Error: Transfer of yourpkg/backbone@2026-06 ended early.</span></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a><span class="co">#&gt;   expected 797000000 bytes, received 412300000 bytes</span></span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="co">#&gt;</span></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a><span class="co">#&gt; Action: retry. Any previously cached copy was left untouched.</span></span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="co">#&gt;</span></span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a><span class="co">#&gt; Fix: see the actions listed above.</span></span></code></pre></div>
+<p>The size check runs before hashing, so a truncated four-gigabyte
+transfer fails in milliseconds rather than after a full digest. It only
+runs when the record declares a <code>size</code>, which is one reason
+to declare one.</p>
+<p>Where some mirrors ended short and others could not be reached at
+all, the broader <code>getaca_error_unavailable</code> is raised
+instead, with each mirror’s reason listed. Retrying helps one kind of
+failure and not the other, so claiming the whole thing was a truncation
+would be wrong.</p>
+</div>
+<div id="getaca_error_credentials" class="section level2">
+<h2><code>getaca_error_credentials</code></h2>
+<p>Every mirror that failed answered 401 or 403. The resource is
+reachable and the machine has a network; what is missing is permission.
+Telling that user to connect to a network would send them looking in the
+wrong place, which is the same reasoning that separates a truncation
+from an outage.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">getaca</span>(<span class="st">&quot;gedi-l4a&quot;</span>, <span class="at">package =</span> <span class="st">&quot;canopy&quot;</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="co">#&gt; Error: Access to canopy/gedi-l4a@2026-06 was refused.</span></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="co">#&gt;   data.ornldaac.earthdata.nasa.gov: bearer credential from EARTHDATA_TOKEN (not set: EARTHDATA_TOKEN)</span></span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a><span class="co">#&gt;     obtain one at https://urs.earthdata.nasa.gov/users/new</span></span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a><span class="co">#&gt;</span></span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a><span class="co">#&gt; Actions: set the variables named above and retry; or, if a credential is</span></span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a><span class="co">#&gt; already set, check that it is current and carries access to this resource.</span></span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a><span class="co">#&gt;</span></span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a><span class="co">#&gt; Fix: see the actions listed above.</span></span></code></pre></div>
+<p>Which variable is wanted comes from the declaration rather than from
+the response, because a server that never saw a credential and one that
+rejected the credential it saw answer alike. The message says which of
+the two happened, since “not set” and “set, and refused” call for
+different next steps.</p>
+<p><code>err$demands</code> carries one entry per host, each with
+<code>host</code>, <code>scheme</code>, <code>variables</code>,
+<code>missing</code> and <code>register</code>. Nothing in the condition
+holds a credential; the value is read at the moment of the request and
+never stored.</p>
+<p>This is the one condition whose <code>actor</code> depends on the
+situation. Where the declaration names a credential, the person who can
+act is the user holding it. Where a host refuses and the declaration
+names none, there is no variable to set: either the resource became
+restricted after it was declared or the location is wrong, and both are
+the declaring package’s to fix, so <code>actor</code> is
+<code>&quot;author&quot;</code> and the message says so instead of asking for a
+variable that does not exist.</p>
+<p>To ask before fetching rather than after failing,
+<code>getaca_credentials()</code> reports every variable a package’s
+declaration reads and whether it is set:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">getaca_credentials</span>(<span class="at">package =</span> <span class="st">&quot;canopy&quot;</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a><span class="co">#&gt;   package                             host scheme        variable   set</span></span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a><span class="co">#&gt; 1  canopy data.ornldaac.earthdata.nasa.gov bearer EARTHDATA_TOKEN FALSE</span></span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a><span class="co">#&gt;                                   register</span></span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a><span class="co">#&gt; 1 https://urs.earthdata.nasa.gov/users/new</span></span></code></pre></div>
+<p>See <code>vignette(&quot;declaring&quot;)</code> for how a package declares
+one.</p>
+</div>
+<div id="getaca_error_upstream_changed" class="section level2">
+<h2><code>getaca_error_upstream_changed</code></h2>
+<p>A complete transfer whose digest does not match the declaration. The
+publisher appears to have replaced the file without issuing a new
+version.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">getaca</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="co">#&gt; Error: The remote file no longer matches yourpkg/backbone@2026-06.</span></span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="co">#&gt;   declared SHA-256: 9f9f9f...</span></span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="co">#&gt;   observed SHA-256: 3c1a77...</span></span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a><span class="co">#&gt;   source: https://primary.invalid/backbone-2026-06.zip</span></span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a><span class="co">#&gt;</span></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a><span class="co">#&gt; The publisher appears to have replaced the contents without issuing a</span></span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a><span class="co">#&gt; new version. getaca will not accept the substitution, and any copy</span></span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a><span class="co">#&gt; already verified in the cache has been left untouched.</span></span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a><span class="co">#&gt;</span></span>
+<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a><span class="co">#&gt; Fix: the publisher changed the file. The declaring package needs a new</span></span>
+<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a><span class="co">#&gt; registry entry.</span></span></code></pre></div>
+<p>Two properties of this failure are the point of the package. The new
+bytes are not accepted, so nothing downstream silently starts computing
+on a different dataset. And a copy already in the cache is untouched, so
+a machine that has the correct file keeps working while the situation is
+sorted out.</p>
+<p>As a user, there is nothing to do here except report it. As the
+declaring author, the response is to work out which of four things
+happened: a corrupted transfer that will not reproduce, a genuine
+upstream recut that deserves a new version record, an upstream mistake
+worth reporting to the publisher, or a wrong checksum in your own
+registry.</p>
+</div>
+<div id="getaca_error_declaration" class="section level2">
+<h2><code>getaca_error_declaration</code></h2>
+<p>Several independent mirrors returned identical bytes, and none
+matched the declared checksum. When every mirror agrees with the others
+and disagrees with the registry, the registry is the likely error.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="fu">getaca</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a><span class="co">#&gt; Error: The declared checksum for yourpkg/backbone@2026-06 looks wrong.</span></span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a><span class="co">#&gt;   2 independent sources agreed on SHA-256 3c1a77...</span></span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a><span class="co">#&gt;   the registry declares 9f9f9f...</span></span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a><span class="co">#&gt;</span></span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a><span class="co">#&gt; When every mirror agrees with the others and disagrees with the</span></span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a><span class="co">#&gt; registry, the registry is the likely error.</span></span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a><span class="co">#&gt;</span></span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a><span class="co">#&gt; Fix: the declaring package needs a correction. Report it to its maintainer.</span></span></code></pre></div>
+<p>This is the condition that distinguishes an author’s mistake from a
+publisher’s. One mirror disagreeing is an upstream mutation; two mirrors
+agreeing with each other and not with you is a typo, a checksum computed
+before an upload recompressed the file, or a record copied from the
+wrong row.</p>
+<p>It requires more than one mirror to be diagnosable at all, which is a
+practical argument for declaring two.</p>
+</div>
+<div id="getaca_error_composition" class="section level2">
+<h2><code>getaca_error_composition</code></h2>
+<p>Every declared <code>part()</code> arrived and matched its own
+checksum, and combining them produced something other than the artefact
+the record names.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="fu">getaca</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="co">#&gt; Error: The parts declared for yourpkg/backbone@2026-09 do not produce the declared bytes.</span></span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a><span class="co">#&gt;   3 parts, each matching its own checksum, combined by &#39;concat&#39;</span></span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a><span class="co">#&gt;   declared SHA-256: b1b1b1...</span></span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a><span class="co">#&gt;   composed SHA-256: 2c40f9...</span></span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a><span class="co">#&gt;</span></span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a><span class="co">#&gt; Every part arrived intact, so this is not a transfer problem. Either the</span></span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a><span class="co">#&gt; series is not the one this version is made of, or it is put together by</span></span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a><span class="co">#&gt; something other than what the registry names.</span></span>
+<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a><span class="co">#&gt;</span></span>
+<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a><span class="co">#&gt; Fix: the declaring package needs a correction. Report it to its maintainer.</span></span></code></pre></div>
+<p>This is <code>getaca_error_declaration</code> one level up. There,
+the transport was sound and the checksum was wrong; here every checksum
+in the series was right and what they add up to was wrong. A part that
+goes missing or arrives changed raises the ordinary transfer conditions
+instead, naming which part of the series it was:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="co">#&gt; Error: Cannot reach any source for yourpkg/backbone@2026-09 (part 2 of 3).</span></span></code></pre></div>
+<p>As an author, reach for this after re-splitting a file, reordering a
+series, or changing what a <code>combiner()</code> does without changing
+its id. Nothing reaches the cache, so a user hitting it is not left with
+a half-composed artefact.</p>
+</div>
+<div id="getaca_error_cache_corrupt" class="section level2">
+<h2><code>getaca_error_cache_corrupt</code></h2>
+<p>The cached copy no longer matches its own entry record. Raised by the
+cheap size check on ordinary access, and by the scheduled or forced
+re-hash.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="fu">getaca</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a><span class="co">#&gt; Error: The cached copy of yourpkg/backbone@2026-06 is damaged.</span></span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a><span class="co">#&gt;   path: ~/.cache/R/getaca/yourpkg/backbone/2026-06/raw/backbone-2026-06.zip</span></span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a><span class="co">#&gt;   declared SHA-256: 9f9f9f...</span></span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a><span class="co">#&gt;   observed SHA-256: 71b0c2...</span></span>
+<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a><span class="co">#&gt;</span></span>
+<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a><span class="co">#&gt; Action: getaca_clean(&quot;backbone&quot;, package = &quot;yourpkg&quot;), then retry.</span></span>
+<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a><span class="co">#&gt;</span></span>
+<span id="cb17-9"><a href="#cb17-9" tabindex="-1"></a><span class="co">#&gt; Fix: see the actions listed above.</span></span></code></pre></div>
+<p>Silent repair was considered and rejected. Refetching without saying
+anything would hide a disk developing bad sectors, a sync client
+rewriting files, and a colleague who opened something in the cache
+directory and saved it. The message names the clean-up call, so the
+repair is one line and the user knows it happened.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="fu">tryCatch</span>(</span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a>  <span class="fu">getaca</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>),</span>
+<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a>  <span class="at">getaca_error_cache_corrupt =</span> <span class="cf">function</span>(e) {</span>
+<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a>    <span class="fu">warning</span>(<span class="st">&quot;The cached backbone was damaged; refetching.&quot;</span>, <span class="at">call. =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a>    <span class="fu">getaca_clean</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)</span>
+<span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a>    <span class="fu">getaca</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)</span>
+<span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a>  }</span>
+<span id="cb18-8"><a href="#cb18-8" tabindex="-1"></a>)</span></code></pre></div>
+<p>That handler is reasonable in a package that knows its users would
+want the repair. Doing it inside <code>getaca</code> for everyone would
+make the failure invisible.</p>
+</div>
+<div id="getaca_error_redeclared" class="section level2">
+<h2><code>getaca_error_redeclared</code></h2>
+<p>The cached copy still matches its own record, and the declaration in
+force has moved to different bytes for that version. Both are intact,
+which is what separates this from a corrupt cache:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="fu">getaca</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)</span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a><span class="co">#&gt; Error: The declaration for yourpkg/backbone@2026-06 no longer names the bytes already held.</span></span>
+<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a><span class="co">#&gt;   cached SHA-256:   9f9f9f...</span></span>
+<span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a><span class="co">#&gt;   declared SHA-256: 71b0c2...</span></span>
+<span id="cb19-5"><a href="#cb19-5" tabindex="-1"></a><span class="co">#&gt;</span></span>
+<span id="cb19-6"><a href="#cb19-6" tabindex="-1"></a><span class="co">#&gt; A version identifies exact bytes, so these cannot both be that version.</span></span>
+<span id="cb19-7"><a href="#cb19-7" tabindex="-1"></a><span class="co">#&gt; The cached copy was verified against the earlier declaration and has</span></span>
+<span id="cb19-8"><a href="#cb19-8" tabindex="-1"></a><span class="co">#&gt; been left untouched. Publish a new version instead of redefining this</span></span>
+<span id="cb19-9"><a href="#cb19-9" tabindex="-1"></a><span class="co">#&gt; one.</span></span>
+<span id="cb19-10"><a href="#cb19-10" tabindex="-1"></a><span class="co">#&gt;</span></span>
+<span id="cb19-11"><a href="#cb19-11" tabindex="-1"></a><span class="co">#&gt; Action: if the new declaration is the correct one, drop the old copy</span></span>
+<span id="cb19-12"><a href="#cb19-12" tabindex="-1"></a><span class="co">#&gt; with getaca_clean(&quot;backbone&quot;, package = &quot;yourpkg&quot;) and retry.</span></span>
+<span id="cb19-13"><a href="#cb19-13" tabindex="-1"></a><span class="co">#&gt;</span></span>
+<span id="cb19-14"><a href="#cb19-14" tabindex="-1"></a><span class="co">#&gt; Fix: the declaring package needs a correction. Report it to its maintainer.</span></span></code></pre></div>
+<p>Resolving quietly to the copy already held would be the wrong answer:
+it makes one machine keep bytes every other machine has stopped using,
+and the disagreement stays invisible for as long as that cache survives.
+<code>verify = TRUE</code> asks the same question, so a forced re-hash
+cannot confirm bytes against a declaration they no longer match
+either.</p>
+<p>A version reaches this state when a package upgrade brings an edited
+record for a version this machine has already fetched. A remote registry
+or a pin file trying the same thing is stopped earlier, at
+<code>getaca_error_invalid_registry</code>, since neither is allowed to
+redefine a published version at all.</p>
+</div>
+<div id="getaca_error_invalid_registry" class="section level2">
+<h2><code>getaca_error_invalid_registry</code></h2>
+<p>The declaration is malformed or internally inconsistent. Raised at
+<code>registry()</code> and <code>resource()</code> where possible,
+which puts it on the author’s machine rather than a user’s:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="fu">registry</span>(<span class="st">&quot;yourpkg&quot;</span>, <span class="fu">list</span>(</span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a>  <span class="fu">resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="st">&quot;2026-09&quot;</span>,</span>
+<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a>           <span class="at">urls =</span> <span class="st">&quot;https://host.invalid/a&quot;</span>,</span>
+<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a>           <span class="at">sha256 =</span> <span class="fu">strrep</span>(<span class="st">&quot;ab&quot;</span>, <span class="dv">32</span>)),</span>
+<span id="cb20-5"><a href="#cb20-5" tabindex="-1"></a>  <span class="fu">resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="st">&quot;2026-03&quot;</span>,</span>
+<span id="cb20-6"><a href="#cb20-6" tabindex="-1"></a>           <span class="at">urls =</span> <span class="st">&quot;https://host.invalid/b&quot;</span>,</span>
+<span id="cb20-7"><a href="#cb20-7" tabindex="-1"></a>           <span class="at">sha256 =</span> <span class="fu">strrep</span>(<span class="st">&quot;cd&quot;</span>, <span class="dv">32</span>))</span>
+<span id="cb20-8"><a href="#cb20-8" tabindex="-1"></a>))</span>
+<span id="cb20-9"><a href="#cb20-9" tabindex="-1"></a><span class="co">#&gt; Error:</span></span>
+<span id="cb20-10"><a href="#cb20-10" tabindex="-1"></a><span class="co">#&gt; ! Invalid getaca registry for package &#39;yourpkg&#39;.</span></span>
+<span id="cb20-11"><a href="#cb20-11" tabindex="-1"></a><span class="co">#&gt;   - resource &#39;backbone&#39; declares 2 versions (2026-09, 2026-03) but the registry names no current one; add current = c(&quot;backbone&quot; = &quot;2026-03&quot;)</span></span>
+<span id="cb20-12"><a href="#cb20-12" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb20-13"><a href="#cb20-13" tabindex="-1"></a><span class="co">#&gt; Fix: the declaring package needs a correction. Report it to its maintainer.</span></span></code></pre></div>
+<p>Every problem found is listed, rather than the first one:</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="fu">resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="st">&quot;2026-06&quot;</span>,</span>
+<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a>         <span class="at">urls =</span> <span class="st">&quot;ftp://host.invalid/a&quot;</span>, <span class="at">sha256 =</span> <span class="st">&quot;abc&quot;</span>)</span>
+<span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a><span class="co">#&gt; Error:</span></span>
+<span id="cb21-4"><a href="#cb21-4" tabindex="-1"></a><span class="co">#&gt; ! Invalid getaca registry.</span></span>
+<span id="cb21-5"><a href="#cb21-5" tabindex="-1"></a><span class="co">#&gt;   - resource &#39;backbone&#39;: all URLs must use https</span></span>
+<span id="cb21-6"><a href="#cb21-6" tabindex="-1"></a><span class="co">#&gt;   - resource &#39;backbone&#39;: `sha256` must be 64 lowercase hex characters</span></span>
+<span id="cb21-7"><a href="#cb21-7" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb21-8"><a href="#cb21-8" tabindex="-1"></a><span class="co">#&gt; Fix: the declaring package needs a correction. Report it to its maintainer.</span></span></code></pre></div>
+<p>The same condition covers the runtime cases: a package that ships no
+registry, a name the registry does not declare, a remote registry
+declaring a different package, and a pin file that redefines a published
+version.</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="fu">resolve_resource</span>(<span class="st">&quot;no-such-resource&quot;</span>, <span class="at">registry =</span> reg)</span>
+<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a><span class="co">#&gt; Error:</span></span>
+<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a><span class="co">#&gt; ! Invalid getaca registry for package &#39;yourpkg&#39;.</span></span>
+<span id="cb22-4"><a href="#cb22-4" tabindex="-1"></a><span class="co">#&gt;   - package &#39;yourpkg&#39; declares no resource named &#39;no-such-resource&#39; (has: backbone)</span></span>
+<span id="cb22-5"><a href="#cb22-5" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb22-6"><a href="#cb22-6" tabindex="-1"></a><span class="co">#&gt; Fix: the declaring package needs a correction. Report it to its maintainer.</span></span></code></pre></div>
+<p>The message names what is on offer, which is usually enough to spot a
+typo without opening the registry.</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="fu">resolve_resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">package =</span> <span class="st">&quot;stats&quot;</span>)</span>
+<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a><span class="co">#&gt; Error:</span></span>
+<span id="cb23-3"><a href="#cb23-3" tabindex="-1"></a><span class="co">#&gt; ! Invalid getaca registry for package &#39;stats&#39;.</span></span>
+<span id="cb23-4"><a href="#cb23-4" tabindex="-1"></a><span class="co">#&gt;   - package &#39;stats&#39; ships no getaca registry at inst/getaca/registry.rds</span></span>
+<span id="cb23-5"><a href="#cb23-5" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb23-6"><a href="#cb23-6" tabindex="-1"></a><span class="co">#&gt; Fix: the declaring package needs a correction. Report it to its maintainer.</span></span></code></pre></div>
+<p>That one names the conventional path, so a user who expected a
+package to declare resources can see immediately that it does not.</p>
+</div>
+<div id="getaca_error_signature" class="section level2">
+<h2><code>getaca_error_signature</code></h2>
+<p>A remote registry arriving without a signature this package’s own
+keys accept. Raised only where the bundled registry declares
+<code>keys</code>; a package declaring none never fetches a signature
+and never meets this:</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="fu">getaca</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a><span class="co">#&gt; Error: The registry for &#39;yourpkg&#39; could not be established as authentic.</span></span>
+<span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a><span class="co">#&gt;   no signature could be fetched and read</span></span>
+<span id="cb24-4"><a href="#cb24-4" tabindex="-1"></a><span class="co">#&gt;   source: https://yourpkg.invalid/getaca-registry.rds.sig</span></span>
+<span id="cb24-5"><a href="#cb24-5" tabindex="-1"></a><span class="co">#&gt;</span></span>
+<span id="cb24-6"><a href="#cb24-6" tabindex="-1"></a><span class="co">#&gt; This package declares signing keys, so a remote registry that cannot be</span></span>
+<span id="cb24-7"><a href="#cb24-7" tabindex="-1"></a><span class="co">#&gt; checked against one is refused rather than used. The bundled declaration</span></span>
+<span id="cb24-8"><a href="#cb24-8" tabindex="-1"></a><span class="co">#&gt; the package ships is unaffected and still resolves.</span></span>
+<span id="cb24-9"><a href="#cb24-9" tabindex="-1"></a><span class="co">#&gt;</span></span>
+<span id="cb24-10"><a href="#cb24-10" tabindex="-1"></a><span class="co">#&gt; Action: getaca_policy(&quot;bundled&quot;) resolves through it for this session.</span></span>
+<span id="cb24-11"><a href="#cb24-11" tabindex="-1"></a><span class="co">#&gt;</span></span>
+<span id="cb24-12"><a href="#cb24-12" tabindex="-1"></a><span class="co">#&gt; Fix: the declaring package needs a correction. Report it to its maintainer.</span></span></code></pre></div>
+<p>The same condition covers a signature from a key the package does not
+declare, one whose expiry has passed, and one covering a declaration
+state older than the installed registry, which is what stops an old
+genuine registry being replayed in place of the current one.</p>
+<p>A host that cannot be reached is a different situation and gets the
+other answer: resolution falls back to the bundled declaration with a
+message. A registry that arrives and fails verification stops instead. A
+registry arriving without its signature is the second, since one host
+serves both, and treating a missing signature as an outage would let
+whoever serves the file decide whether the check runs at all.</p>
+<p>See <code>vignette(&quot;policies&quot;)</code> for how a package declares keys
+and signs what it publishes.</p>
+</div>
+<div id="writing-a-handler-in-a-declaring-package" class="section level2">
+<h2>Writing a handler in a declaring package</h2>
+<p>The pattern that works is to catch the user-actionable conditions and
+speak your own domain, and to let the author-actionable and
+upstream-actionable ones through unchanged. A user cannot act on either,
+and the default messages already say who can.</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a>install_backbone <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">name =</span> <span class="st">&quot;backbone&quot;</span>) {</span>
+<span id="cb25-2"><a href="#cb25-2" tabindex="-1"></a>  <span class="fu">tryCatch</span>(</span>
+<span id="cb25-3"><a href="#cb25-3" tabindex="-1"></a>    <span class="fu">open_backbone</span>(<span class="fu">getaca</span>(name, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)),</span>
+<span id="cb25-4"><a href="#cb25-4" tabindex="-1"></a></span>
+<span id="cb25-5"><a href="#cb25-5" tabindex="-1"></a>    <span class="at">getaca_error_offline =</span> <span class="cf">function</span>(e) {</span>
+<span id="cb25-6"><a href="#cb25-6" tabindex="-1"></a>      <span class="fu">stop</span>(<span class="st">&quot;The &quot;</span>, name, <span class="st">&quot; backbone is not installed and this session cannot &quot;</span>,</span>
+<span id="cb25-7"><a href="#cb25-7" tabindex="-1"></a>           <span class="st">&quot;download it.</span><span class="sc">\n</span><span class="st">&quot;</span>,</span>
+<span id="cb25-8"><a href="#cb25-8" tabindex="-1"></a>           <span class="st">&quot;On a connected machine run:</span><span class="sc">\n</span><span class="st">&quot;</span>,</span>
+<span id="cb25-9"><a href="#cb25-9" tabindex="-1"></a>           <span class="st">&quot;  yourpkg::install_backbone(</span><span class="sc">\&quot;</span><span class="st">&quot;</span>, name, <span class="st">&quot;</span><span class="sc">\&quot;</span><span class="st">)</span><span class="sc">\n</span><span class="st">&quot;</span>,</span>
+<span id="cb25-10"><a href="#cb25-10" tabindex="-1"></a>           <span class="st">&quot;or point GETACA_CACHE at a directory that already holds it.&quot;</span>,</span>
+<span id="cb25-11"><a href="#cb25-11" tabindex="-1"></a>           <span class="at">call. =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb25-12"><a href="#cb25-12" tabindex="-1"></a>    },</span>
+<span id="cb25-13"><a href="#cb25-13" tabindex="-1"></a></span>
+<span id="cb25-14"><a href="#cb25-14" tabindex="-1"></a>    <span class="at">getaca_error_unavailable =</span> <span class="cf">function</span>(e) {</span>
+<span id="cb25-15"><a href="#cb25-15" tabindex="-1"></a>      <span class="fu">stop</span>(<span class="st">&quot;The &quot;</span>, name, <span class="st">&quot; backbone could not be downloaded from any of its &quot;</span>,</span>
+<span id="cb25-16"><a href="#cb25-16" tabindex="-1"></a>           <span class="fu">length</span>(e<span class="sc">$</span>urls), <span class="st">&quot; sources.</span><span class="sc">\n</span><span class="st">&quot;</span>,</span>
+<span id="cb25-17"><a href="#cb25-17" tabindex="-1"></a>           <span class="st">&quot;This is usually temporary. Try again, or use a smaller reference:</span><span class="sc">\n</span><span class="st">&quot;</span>,</span>
+<span id="cb25-18"><a href="#cb25-18" tabindex="-1"></a>           <span class="st">&quot;  yourpkg::analyse(x, backbone = </span><span class="sc">\&quot;</span><span class="st">grid</span><span class="sc">\&quot;</span><span class="st">)&quot;</span>, <span class="at">call. =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb25-19"><a href="#cb25-19" tabindex="-1"></a>    },</span>
+<span id="cb25-20"><a href="#cb25-20" tabindex="-1"></a></span>
+<span id="cb25-21"><a href="#cb25-21" tabindex="-1"></a>    <span class="at">getaca_error_cache_corrupt =</span> <span class="cf">function</span>(e) {</span>
+<span id="cb25-22"><a href="#cb25-22" tabindex="-1"></a>      <span class="fu">stop</span>(<span class="st">&quot;The cached &quot;</span>, name, <span class="st">&quot; backbone is damaged.</span><span class="sc">\n</span><span class="st">&quot;</span>,</span>
+<span id="cb25-23"><a href="#cb25-23" tabindex="-1"></a>           <span class="st">&quot;Repair it with:</span><span class="sc">\n</span><span class="st">&quot;</span>,</span>
+<span id="cb25-24"><a href="#cb25-24" tabindex="-1"></a>           <span class="st">&quot;  getaca::getaca_clean(</span><span class="sc">\&quot;</span><span class="st">&quot;</span>, name, <span class="st">&quot;</span><span class="sc">\&quot;</span><span class="st">, package = </span><span class="sc">\&quot;</span><span class="st">yourpkg</span><span class="sc">\&quot;</span><span class="st">)&quot;</span>,</span>
+<span id="cb25-25"><a href="#cb25-25" tabindex="-1"></a>           <span class="at">call. =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb25-26"><a href="#cb25-26" tabindex="-1"></a>    }</span>
+<span id="cb25-27"><a href="#cb25-27" tabindex="-1"></a>  )</span>
+<span id="cb25-28"><a href="#cb25-28" tabindex="-1"></a>}</span></code></pre></div>
+<p>Three things this gets right. It names your function rather than
+<code>getaca()</code>, so the user’s next step is in your vocabulary. It
+suggests a domain-level alternative for the transient case. And it
+leaves <code>getaca_error_upstream_changed</code> and
+<code>getaca_error_declaration</code> alone, which means a user who hits
+one gets a message that tells them to report it, and a report that
+contains the checksums you need.</p>
+</div>
+<div id="testing-your-handlers" class="section level2">
+<h2>Testing your handlers</h2>
+<p>Conditions can be constructed by making a resolution fail, which
+needs no network:</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a>offline_error <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>(</span>
+<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a>  <span class="fu">getaca</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">registry =</span> reg, <span class="at">policy =</span> <span class="st">&quot;offline&quot;</span>),</span>
+<span id="cb26-3"><a href="#cb26-3" tabindex="-1"></a>  <span class="at">getaca_error =</span> <span class="cf">function</span>(e) e</span>
+<span id="cb26-4"><a href="#cb26-4" tabindex="-1"></a>)</span>
+<span id="cb26-5"><a href="#cb26-5" tabindex="-1"></a><span class="fu">class</span>(offline_error)[<span class="dv">1</span>]</span>
+<span id="cb26-6"><a href="#cb26-6" tabindex="-1"></a><span class="co">#&gt; [1] &quot;getaca_error_offline&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;a missing backbone gets a yourpkg-flavoured message&quot;</span>, {</span>
+<span id="cb27-2"><a href="#cb27-2" tabindex="-1"></a>  withr<span class="sc">::</span><span class="fu">local_envvar</span>(<span class="fu">c</span>(<span class="at">GETACA_OFFLINE =</span> <span class="st">&quot;true&quot;</span>))</span>
+<span id="cb27-3"><a href="#cb27-3" tabindex="-1"></a>  withr<span class="sc">::</span><span class="fu">local_options</span>(<span class="fu">list</span>(<span class="at">getaca.cache =</span> withr<span class="sc">::</span><span class="fu">local_tempdir</span>()))</span>
+<span id="cb27-4"><a href="#cb27-4" tabindex="-1"></a></span>
+<span id="cb27-5"><a href="#cb27-5" tabindex="-1"></a>  <span class="fu">expect_error</span>(<span class="fu">install_backbone</span>(<span class="st">&quot;backbone&quot;</span>), <span class="st">&quot;On a connected machine run&quot;</span>)</span>
+<span id="cb27-6"><a href="#cb27-6" tabindex="-1"></a>})</span></code></pre></div>
+<p>Forcing <code>GETACA_OFFLINE</code> with an empty cache is the
+cheapest way to exercise the path a user without the resource takes, and
+it is deterministic on every machine.</p>
+<p>For the conditions that need a transfer, the honest test is against a
+real resource on CI with <code>NOT_CRAN=true</code>, guarded by
+<code>getaca_skip_if_unavailable()</code>. See
+<code>vignette(&quot;checks&quot;)</code>.</p>
+</div>
+<div id="where-to-go-next" class="section level2">
+<h2>Where to go next</h2>
+<ul>
+<li><p><code>vignette(&quot;checks&quot;)</code> for behaving during checks and in
+CI</p></li>
+<li><p><code>vignette(&quot;cache&quot;)</code> for what
+<code>getaca_error_cache_corrupt</code> is protecting</p></li>
+<li><p><code>vignette(&quot;declaring&quot;)</code> for the two conditions that
+name you</p></li>
+</ul>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

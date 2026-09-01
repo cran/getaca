@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Policies and Channels</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Policies and Channels</h1>
+
+
+
+<p>A resolution policy answers one question: which registry state does a
+name resolve through? Everything downstream of that answer deals in
+immutable records, so the policy is the only place where “the same call
+on two days” can legitimately produce different bytes.</p>
+<p>This article covers the four policies, what a remote channel is
+allowed to change, how pinning freezes an analysis, and how the three
+settings layers combine.</p>
+<div id="the-two-halves-the-design-keeps-apart" class="section level2">
+<h2>The two halves the design keeps apart</h2>
+<p>A <strong>resource record</strong> names exact bytes and never
+changes:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>rec <span class="ot">&lt;-</span> <span class="fu">resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="st">&quot;2026-06&quot;</span>,</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>                <span class="at">urls =</span> <span class="st">&quot;https://host.invalid/backbone-2026-06.zip&quot;</span>,</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>                <span class="at">sha256 =</span> <span class="fu">strrep</span>(<span class="st">&quot;9f&quot;</span>, <span class="dv">32</span>), <span class="at">license =</span> <span class="st">&quot;CC-BY-4.0&quot;</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="fu">format</span>(rec)</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="co">#&gt; [1] &quot;backbone@2026-06  9f9f9f9f9f9f  [CC-BY-4.0]&quot;</span></span></code></pre></div>
+<p>A <strong>channel</strong> maps the logical name
+<code>&quot;backbone&quot;</code> onto one record, and channels move. Three places
+a channel can be read from, so three ways the same name can resolve:</p>
+<table>
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Policy</th>
+<th>Channel comes from</th>
+<th>Same bytes forever?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>bundled</code></td>
+<td>the registry inside the installed package</td>
+<td>yes, for that install</td>
+</tr>
+<tr class="even">
+<td><code>current</code></td>
+<td>the author’s remote registry, bundled as fallback</td>
+<td>no, by design</td>
+</tr>
+<tr class="odd">
+<td><code>pinned</code></td>
+<td>a frozen local snapshot</td>
+<td>yes, until you re-pin</td>
+</tr>
+<tr class="even">
+<td><code>offline</code></td>
+<td>the bundled registry, network never touched</td>
+<td>yes, for that install</td>
+</tr>
+</tbody>
+</table>
+<p><code>bundled</code> and <code>offline</code> read the same channel.
+They differ in what happens when the resource is absent from the cache:
+<code>bundled</code> downloads it, <code>offline</code> raises
+<code>getaca_error_offline</code> and says how to prefetch.</p>
+</div>
+<div id="bundled" class="section level2">
+<h2><code>bundled</code></h2>
+<p>The default, and the one that makes a data dependency behave like a
+code dependency. The registry that shipped inside the installed package
+is the whole answer; nothing is fetched to decide what a name means.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>reg <span class="ot">&lt;-</span> <span class="fu">registry</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>  <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  <span class="at">resources =</span> <span class="fu">list</span>(rec)</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>)</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">resolve_resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">registry =</span> reg, <span class="at">policy =</span> <span class="st">&quot;bundled&quot;</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>res<span class="sc">$</span>id</span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="co">#&gt; &lt;getaca resource&gt; yourpkg/backbone@2026-06</span></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>res<span class="sc">$</span>source</span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a><span class="co">#&gt; [1] &quot;bundled&quot;</span></span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>res<span class="sc">$</span>digest</span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a><span class="co">#&gt; [1] &quot;sha256:86b53103a628e4cd6a76c7ee0ab8a4b7826afebe368b68cb5303e46d02c66dd9&quot;</span></span></code></pre></div>
+<p><code>source</code> and <code>digest</code> are recorded in the cache
+entry, so a provenance report can state which declaration chose the
+bytes and which policy read it. The digest comes from the channel that
+answered, so under <code>current</code> it names the remote state rather
+than the registry the call was handed.</p>
+<p>Reinstalling the package is what moves this channel. That is the
+property worth having: two machines running the same installed version
+resolve the same record, and an analysis is reproducible from the
+package version alone.</p>
+</div>
+<div id="current" class="section level2">
+<h2><code>current</code></h2>
+<p>For data that release on their own schedule. The author publishes a
+static registry file somewhere they control, and <code>getaca</code>
+consults it before resolving:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>remote_reg <span class="ot">&lt;-</span> <span class="fu">registry</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="at">policy  =</span> <span class="st">&quot;current&quot;</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="at">remote  =</span> <span class="st">&quot;https://yourpkg.invalid/getaca-registry.rds&quot;</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  <span class="at">resources =</span> <span class="fu">list</span>(rec)</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>)</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>remote_reg</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co">#&gt; &lt;getaca registry&gt; yourpkg  (policy &quot;current&quot;)</span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="co">#&gt;   digest: sha256:f63eb3f4be9c</span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co">#&gt;   remote: https://yourpkg.invalid/getaca-registry.rds</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="co">#&gt;   - backbone@2026-06  9f9f9f9f9f9f  [CC-BY-4.0]</span></span></code></pre></div>
+<p>The remote is a file, not a service. Publishing it is a
+<code>registry_write()</code> into a directory that GitHub Pages,
+r-universe or an institutional web server already serves.</p>
+<p>An unreachable remote produces a message and the bundled registry,
+which is what CRAN policy requires of a package that uses Internet
+resources:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">resolve_resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">registry =</span> remote_reg, <span class="at">policy =</span> <span class="st">&quot;current&quot;</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="co">#&gt; getaca: could not reach the remote registry for &#39;yourpkg&#39;; using the bundled</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co">#&gt; registry.</span></span></code></pre></div>
+<p>An unreadable remote behaves the same way. A file that arrives but
+does not parse as a registry, or parses but fails validation, produces a
+message and the bundled fallback rather than a hard failure. A remote
+that declares a different package is refused outright, since that is a
+misconfiguration rather than an outage.</p>
+<p>The remote registry is fetched once per session and cached, so a
+script making a hundred calls performs one fetch.
+<code>getaca_refresh()</code> forgets it, which is how you pick up a
+registry you published five minutes ago without restarting.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">getaca_refresh</span>()</span></code></pre></div>
+<p>That also forgets registries discovered from installed packages, so
+it is what you call after installing a new version of a declaring
+package mid-session. Cached <em>resources</em> are untouched; this
+forgets declarations, not data.</p>
+<div id="what-a-remote-channel-may-change" class="section level3">
+<h3>What a remote channel may change</h3>
+<p>Two things:</p>
+<ul>
+<li><strong>mirrors</strong>, for records that already exist. A dead
+host is repaired by publishing a registry whose record for
+<code>2026-06</code> lists a new URL.</li>
+<li><strong>records</strong>, by adding new ones and moving the head
+onto them.</li>
+</ul>
+<p>One thing it may not change: the checksum attached to a version that
+already exists. That is refused, and the error names the declaring
+package as the party at fault rather than the publisher. The same rule
+holds for a pin file, which is the branch that can be shown here without
+a network:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>rewritten <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">tempdir</span>(), <span class="st">&quot;rewritten.rds&quot;</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="fu">saveRDS</span>(</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">yourpkg =</span> <span class="fu">registry</span>(<span class="st">&quot;yourpkg&quot;</span>, <span class="fu">list</span>(</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>    <span class="fu">resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="st">&quot;2026-06&quot;</span>,</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>             <span class="at">urls =</span> <span class="st">&quot;https://host.invalid/backbone-2026-06.zip&quot;</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>             <span class="at">sha256 =</span> <span class="fu">strrep</span>(<span class="st">&quot;ab&quot;</span>, <span class="dv">32</span>), <span class="at">license =</span> <span class="st">&quot;CC-BY-4.0&quot;</span>)</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>  ))),</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>  rewritten</span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>)</span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="fu">options</span>(<span class="at">getaca.pin_file =</span> rewritten)</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">resolve_resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">registry =</span> reg, <span class="at">policy =</span> <span class="st">&quot;pinned&quot;</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="co">#&gt; Error:</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="co">#&gt; ! Invalid getaca registry for package &#39;yourpkg&#39;.</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co">#&gt;   - the pin file redefines published version backbone@2026-06</span></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="co">#&gt;   - A version identifies exact bytes. Publish a new version instead.</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="co">#&gt; Fix: the declaring package needs a correction. Report it to its maintainer.</span></span></code></pre></div>
+<p>Without that rule, one edited file would be enough to change what a
+published version means, and the guarantee the design exists to provide
+would go with it. A publisher who genuinely recut a file gets a new
+version label, which is a record users can see and choose.</p>
+</div>
+<div id="moving-the-head" class="section level3">
+<h3>Moving the head</h3>
+<p>Publishing <code>2026-09</code> and moving the channel head onto it
+is one registry:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>ahead <span class="ot">&lt;-</span> <span class="fu">registry</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>,</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="at">current =</span> <span class="fu">c</span>(<span class="at">backbone =</span> <span class="st">&quot;2026-09&quot;</span>),</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="at">resources =</span> <span class="fu">list</span>(</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>    <span class="fu">resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="st">&quot;2026-06&quot;</span>,</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>             <span class="at">urls =</span> <span class="st">&quot;https://host.invalid/backbone-2026-06.zip&quot;</span>,</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>             <span class="at">sha256 =</span> <span class="fu">strrep</span>(<span class="st">&quot;9f&quot;</span>, <span class="dv">32</span>), <span class="at">license =</span> <span class="st">&quot;CC-BY-4.0&quot;</span>),</span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>    <span class="fu">resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="st">&quot;2026-09&quot;</span>,</span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>             <span class="at">urls =</span> <span class="st">&quot;https://host.invalid/backbone-2026-09.zip&quot;</span>,</span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a>             <span class="at">sha256 =</span> <span class="fu">strrep</span>(<span class="st">&quot;ab&quot;</span>, <span class="dv">32</span>), <span class="at">license =</span> <span class="st">&quot;CC-BY-4.0&quot;</span>)</span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a>  )</span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a>)</span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a></span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a><span class="fu">resolve_resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">registry =</span> ahead)<span class="sc">$</span>id</span>
+<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a><span class="co">#&gt; &lt;getaca resource&gt; yourpkg/backbone@2026-09</span></span>
+<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a><span class="fu">resolve_resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">registry =</span> ahead, <span class="at">version =</span> <span class="st">&quot;2026-06&quot;</span>)<span class="sc">$</span>id</span>
+<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a><span class="co">#&gt; &lt;getaca resource&gt; yourpkg/backbone@2026-06</span></span></code></pre></div>
+<p>Users on <code>current</code> follow the head on their next session.
+Users on <code>bundled</code> stay where their installed package put
+them. Users who named a version keep that version under every policy,
+which is the escape hatch an analysis needs.</p>
+</div>
+<div id="signing-a-remote-channel" class="section level3">
+<h3>Signing a remote channel</h3>
+<p>The rules above bound what a remote registry can do. They say nothing
+about who wrote it, and a registry sits on a host that can change hands.
+Signing answers that, and it works because of where the key lives: the
+public key travels inside the registry your package <em>ships</em>,
+which a user installs from CRAN, while the remote registry comes from
+your own host. Someone who takes the host does not thereby have the
+key.</p>
+<p>Make a key once, and keep the secret half outside the package source
+tree:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>secret <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">tempdir</span>(), <span class="st">&quot;yourpkg-signing.key&quot;</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>public <span class="ot">&lt;-</span> <span class="fu">registry_keygen</span>(secret)</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="fu">substr</span>(public, <span class="dv">1</span>, <span class="dv">24</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a><span class="co">#&gt; [1] &quot;ed25519:c3b0d120efc30be5&quot;</span></span></code></pre></div>
+<p>Declare the public half in the registry the package ships:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>signed <span class="ot">&lt;-</span> <span class="fu">registry</span>(</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>  <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>,</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>  <span class="at">remote =</span> <span class="st">&quot;https://host.invalid/yourpkg.rds&quot;</span>,</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>  <span class="at">keys =</span> public,</span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>  <span class="at">resources =</span> <span class="fu">list</span>(</span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>    <span class="fu">resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="st">&quot;2026-06&quot;</span>,</span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a>             <span class="at">urls =</span> <span class="st">&quot;https://host.invalid/backbone-2026-06.zip&quot;</span>,</span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a>             <span class="at">sha256 =</span> <span class="fu">strrep</span>(<span class="st">&quot;9f&quot;</span>, <span class="dv">32</span>), <span class="at">license =</span> <span class="st">&quot;CC-BY-4.0&quot;</span>)</span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a>  )</span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a>)</span></code></pre></div>
+<p>Then write and sign whatever you publish. Sign after writing: writing
+is what stamps the publication time, and the signature binds it.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>path <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">tempdir</span>(), <span class="st">&quot;yourpkg.rds&quot;</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="fu">registry_write</span>(signed, path)</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="fu">registry_sign</span>(path, <span class="at">key =</span> secret)</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">readLines</span>(<span class="fu">paste0</span>(path, <span class="st">&quot;.sig&quot;</span>))[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>], <span class="at">sep =</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a><span class="co">#&gt; getaca-signature 1</span></span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a><span class="co">#&gt; digest sha256:99c143af4706a0766930c20c4bbf1f5eb094bd76f01ef2754c556262620d0105</span></span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a><span class="co">#&gt; created 2026-08-22T00:53:34Z</span></span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a><span class="co">#&gt; expires 2026-11-20T00:53:34Z</span></span></code></pre></div>
+<p>Upload the <code>.sig</code> beside the registry; getaca fetches it
+from the registry’s own URL with <code>.sig</code> appended.
+<code>registry_verify()</code> runs the same check a user’s session
+will, which is worth doing before publishing:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">registry_verify</span>(path)</span></code></pre></div>
+<p>Editing the registry after signing breaks the link, which is the
+whole point:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>moved <span class="ot">&lt;-</span> signed</span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>moved<span class="sc">$</span>resources[[<span class="dv">1</span>]]<span class="sc">$</span>urls <span class="ot">&lt;-</span> <span class="st">&quot;https://elsewhere.invalid/backbone-2026-06.zip&quot;</span></span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="fu">saveRDS</span>(moved, path, <span class="at">version =</span> <span class="dv">3</span>)</span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="fu">registry_verify</span>(path)</span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a><span class="co">#&gt; Error:</span></span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a><span class="co">#&gt; ! The registry for &#39;yourpkg&#39; could not be established as authentic.</span></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a><span class="co">#&gt;   the signature covers sha256:99c143af4706 but this registry is sha256:595d1c481557</span></span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a><span class="co">#&gt; This package declares signing keys, so a remote registry that cannot be</span></span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a><span class="co">#&gt; checked against one is refused rather than used. The bundled declaration</span></span>
+<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a><span class="co">#&gt; the package ships is unaffected and still resolves.</span></span>
+<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a><span class="co">#&gt; Action: getaca_policy(&quot;bundled&quot;) resolves through it for this session.</span></span>
+<span id="cb13-14"><a href="#cb13-14" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb13-15"><a href="#cb13-15" tabindex="-1"></a><span class="co">#&gt; Fix: the declaring package needs a correction. Report it to its maintainer.</span></span></code></pre></div>
+<p>Three consequences worth knowing before you declare a key:</p>
+<ul>
+<li><strong>It is a commitment.</strong> Once your shipped registry
+names a key, an unsigned or unverifiable remote is refused rather than
+used. Users are not stranded, since the bundled declaration still
+resolves, but the remote channel stops working until the signature
+does.</li>
+<li><strong>A signature expires.</strong> <code>registry_sign()</code>
+dates it 90 days out by default. Re-signing an unchanged registry
+extends it, and is the routine maintenance this feature asks of you.
+<code>expires = NA</code> opts out and leaves nothing bounding how long
+a stale declaration can be served in your name.</li>
+<li><strong>Rotating a key needs a release.</strong> The keys getaca
+trusts are the ones in the installed package, so publish the new key
+beside the old one, keep signing with the old, release, and retire the
+old key once that release is out.</li>
+</ul>
+<p>A package that declares no keys behaves exactly as it always did, and
+never fetches a signature at all.</p>
+</div>
+</div>
+<div id="pinned" class="section level2">
+<h2><code>pinned</code></h2>
+<p>A pin file records, for each named package, the registry state in
+force at the moment you pinned. Under the <code>pinned</code> policy
+that snapshot is what resolution reads, so an analysis keeps resolving
+what it was written against even after the package is reinstalled and
+the remote registry has moved on.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>pins <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">tempdir</span>(), <span class="st">&quot;getaca.pins.rds&quot;</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a><span class="fu">saveRDS</span>(<span class="fu">list</span>(<span class="at">yourpkg =</span> <span class="fu">registry</span>(<span class="st">&quot;yourpkg&quot;</span>, <span class="fu">list</span>(rec))), pins)</span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a><span class="fu">options</span>(<span class="at">getaca.pin_file =</span> pins)</span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>moved_on <span class="ot">&lt;-</span> <span class="fu">registry</span>(</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>  <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>,</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>  <span class="at">current =</span> <span class="fu">c</span>(<span class="at">backbone =</span> <span class="st">&quot;2026-09&quot;</span>),</span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>  <span class="at">resources =</span> <span class="fu">list</span>(</span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a>    rec,</span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a>    <span class="fu">resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="st">&quot;2026-09&quot;</span>,</span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a>             <span class="at">urls =</span> <span class="st">&quot;https://host.invalid/backbone-2026-09.zip&quot;</span>,</span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a>             <span class="at">sha256 =</span> <span class="fu">strrep</span>(<span class="st">&quot;ab&quot;</span>, <span class="dv">32</span>), <span class="at">license =</span> <span class="st">&quot;CC-BY-4.0&quot;</span>)</span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a>  )</span>
+<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a>)</span>
+<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a></span>
+<span id="cb15-12"><a href="#cb15-12" tabindex="-1"></a><span class="fu">resolve_resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">registry =</span> moved_on)<span class="sc">$</span>id</span>
+<span id="cb15-13"><a href="#cb15-13" tabindex="-1"></a><span class="co">#&gt; &lt;getaca resource&gt; yourpkg/backbone@2026-09</span></span>
+<span id="cb15-14"><a href="#cb15-14" tabindex="-1"></a><span class="fu">resolve_resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">registry =</span> moved_on, <span class="at">policy =</span> <span class="st">&quot;pinned&quot;</span>)<span class="sc">$</span>id</span>
+<span id="cb15-15"><a href="#cb15-15" tabindex="-1"></a><span class="co">#&gt; &lt;getaca resource&gt; yourpkg/backbone@2026-06</span></span></code></pre></div>
+<p>The installed registry has moved to <code>2026-09</code>; the pin
+holds the analysis at <code>2026-06</code>.</p>
+<p>In practice the pin file is written rather than hand-built:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="fu">getaca_pin</span>(<span class="fu">c</span>(<span class="st">&quot;yourpkg&quot;</span>, <span class="st">&quot;otherpkg&quot;</span>))</span></code></pre></div>
+<p>That writes <code>getaca.pins.rds</code> in the working directory by
+default, which puts it beside <code>renv.lock</code> in a project. Under
+<code>current</code>, <code>getaca_pin()</code> records the remote state
+rather than the bundled one, so pinning captures what you are actually
+resolving through at that moment. Point it somewhere else with the
+<code>path</code> argument, and tell a session where to look with the
+<code>getaca.pin_file</code> option.</p>
+<p>A pin file is subject to the same immutability rule as a remote
+registry. A snapshot that disagrees with the installed registry about
+what <code>2026-06</code> means is refused rather than trusted, so a
+stale or edited pin cannot quietly serve different bytes.</p>
+<p>Pinning a package that ships no registry warns and skips it, so
+pinning a project’s whole dependency list does not fail on the ones that
+need nothing:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="fu">getaca_pin</span>(<span class="st">&quot;stats&quot;</span>, <span class="at">path =</span> <span class="fu">file.path</span>(<span class="fu">tempdir</span>(), <span class="st">&quot;pins.rds&quot;</span>))</span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a><span class="co">#&gt; Warning: package &#39;stats&#39; ships no getaca registry; skipped</span></span></code></pre></div>
+<div id="pins-and-renv" class="section level3">
+<h3>Pins and <code>renv</code></h3>
+<p>They answer adjacent questions. <code>renv</code> records which
+package versions an analysis used; a <code>getaca</code> pin records
+which data versions those packages resolved to. Together they pin both
+halves. Neither subsumes the other, because a package version does not
+determine a data version once the package is on <code>current</code>,
+and a data version says nothing about the code that read it.</p>
+<p>Commit both files. Restoring is <code>renv::restore()</code> followed
+by <code>getaca_prefetch()</code> on a connected machine, after which
+the analysis runs offline.</p>
+</div>
+</div>
+<div id="offline" class="section level2">
+<h2><code>offline</code></h2>
+<p>Never reaches for the network. Cached copies and bundled declarations
+only.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a>err <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>(<span class="fu">getaca</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">registry =</span> reg, <span class="at">policy =</span> <span class="st">&quot;offline&quot;</span>),</span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a>                <span class="at">getaca_error =</span> <span class="cf">function</span>(e) e)</span>
+<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a><span class="fu">class</span>(err)[<span class="dv">1</span>]</span>
+<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a><span class="co">#&gt; [1] &quot;getaca_error_offline&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">conditionMessage</span>(err))</span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a><span class="co">#&gt; yourpkg/backbone@2026-06 is not cached and cannot be downloaded (offline mode is in effect).</span></span>
+<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a><span class="co">#&gt; Action: on a connected machine run getaca_prefetch(&quot;backbone&quot;, package = &quot;yourpkg&quot;),</span></span>
+<span id="cb19-5"><a href="#cb19-5" tabindex="-1"></a><span class="co">#&gt; or point GETACA_CACHE at a cache that already holds it.</span></span>
+<span id="cb19-6"><a href="#cb19-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb19-7"><a href="#cb19-7" tabindex="-1"></a><span class="co">#&gt; Fix: this is expected during checks. Use getaca_skip_if_unavailable()</span></span>
+<span id="cb19-8"><a href="#cb19-8" tabindex="-1"></a><span class="co">#&gt; in tests and getaca_optional() in examples.</span></span></code></pre></div>
+<p>This is the policy a check run gets, whatever is set elsewhere, and
+it is worth setting deliberately in two other situations: an air-gapped
+machine, where the message is more useful than a transfer timeout, and a
+shared analysis where you want a missing input to fail loudly rather
+than pull four gigabytes onto someone’s laptop.</p>
+</div>
+<div id="how-the-policy-in-force-is-decided" class="section level2">
+<h2>How the policy in force is decided</h2>
+<p>Four layers, most specific first:</p>
+<ol style="list-style-type: decimal">
+<li><p>the <code>policy</code> argument to <code>getaca()</code> or
+<code>resolve_resource()</code></p></li>
+<li><p>the <code>getaca.policy</code> option, set by
+<code>getaca_policy()</code></p></li>
+<li><p>the <code>GETACA_POLICY</code> environment variable</p></li>
+<li><p>the declaring registry’s own <code>policy</code> field,
+defaulting to <code>bundled</code></p></li>
+</ol>
+<p>Two overrides sit above all of them and force
+<code>offline</code>:</p>
+<ul>
+<li><p><code>R CMD check</code>, detected from the check environment
+variables</p></li>
+<li><p><code>GETACA_OFFLINE</code> set to <code>1</code>,
+<code>true</code> or <code>yes</code></p></li>
+</ul>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="fu">getaca_policy</span>()</span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a><span class="co">#&gt; [1] &quot;offline&quot;</span></span></code></pre></div>
+<p>The check clamp is released by <code>NOT_CRAN=true</code>, which is
+how a package’s own CI runs tests against real resources while a CRAN
+machine never does.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="fu">getaca_policy</span>(<span class="st">&quot;current&quot;</span>)                                     <span class="co"># this session</span></span>
+<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a><span class="fu">getaca</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>, <span class="at">policy =</span> <span class="st">&quot;bundled&quot;</span>)  <span class="co"># this call</span></span>
+<span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a><span class="fu">Sys.setenv</span>(<span class="at">GETACA_POLICY =</span> <span class="st">&quot;pinned&quot;</span>)                         <span class="co"># this process</span></span></code></pre></div>
+<p>Setting the policy per call is the form worth reaching for in package
+code. A function that must not vary its answer can pass
+<code>policy = &quot;bundled&quot;</code> explicitly and stop caring what the
+user’s session is set to.</p>
+</div>
+<div id="choosing-a-default-as-an-author" class="section level2">
+<h2>Choosing a default as an author</h2>
+<p>The registry’s <code>policy</code> field is your recommendation, and
+users can override it. Three questions decide it.</p>
+<p><strong>Do the data release independently of your package?</strong>
+If a new release appears twice a year and your CRAN releases are annual,
+<code>current</code> is what keeps users on data you consider correct
+without a release cycle in between. If the data are static,
+<code>bundled</code> costs nothing and removes a moving part.</p>
+<p><strong>Can you host a registry file reliably enough?</strong>
+Reliably here is a low bar, since an outage falls back to bundled with a
+message. GitHub Pages is sufficient. If you have nowhere to put a file
+you control, <code>bundled</code> is the honest choice.</p>
+<p><strong>Would a user be surprised?</strong> A package whose results
+shift because the data moved needs that to be visible.
+<code>current</code> is right when the declaring package surfaces the
+resolved version in its own output, and questionable when it does
+not.</p>
+<p><code>bundled</code> is the default for a reason. Under it a data
+dependency behaves the way a package dependency behaves: the installed
+version determines the answer. Each of the others relaxes that in one
+direction, and the direction is the reason to pick it.</p>
+</div>
+<div id="what-is-recorded" class="section level2">
+<h2>What is recorded</h2>
+<p>Whichever policy resolved a resource is kept in its cache entry,
+alongside the digest of the registry state that supplied the record:</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="fu">getaca_info</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)</span>
+<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a><span class="co">#&gt; &lt;getaca cache entry&gt; yourpkg/backbone@2026-06</span></span>
+<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a><span class="co">#&gt;   ...</span></span>
+<span id="cb22-4"><a href="#cb22-4" tabindex="-1"></a><span class="co">#&gt;   resolved by current registry sha256:8b31e0da54cf (published 2026-07-22)</span></span>
+<span id="cb22-5"><a href="#cb22-5" tabindex="-1"></a><span class="co">#&gt;   source url  https://host.invalid/backbone-2026-06.zip</span></span></code></pre></div>
+<p><code>getaca_catalogue()</code> reports the same two fields as
+<code>source</code> and <code>registry_digest</code> columns across
+every cached resource, so “which of these came from a remote channel” is
+one filter rather than an audit.</p>
+</div>
+<div id="where-to-go-next" class="section level2">
+<h2>Where to go next</h2>
+<ul>
+<li><p><code>vignette(&quot;declaring&quot;)</code> for publishing a remote
+registry and moving a head</p></li>
+<li><p><code>vignette(&quot;checks&quot;)</code> for the check clamp,
+<code>NOT_CRAN</code> and CI</p></li>
+<li><p><code>vignette(&quot;failures&quot;)</code> for the conditions each policy
+can raise</p></li>
+</ul>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

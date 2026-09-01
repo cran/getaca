@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>The Cache</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">The Cache</h1>
+
+
+
+<p>The cache is where a declared resource becomes a local path. This
+article covers the layout, what makes a cached copy trustworthy, how two
+sessions avoid downloading the same file twice, and the retention policy
+CRAN requires of a package that writes to a user directory.</p>
+<p>None of it is private. The cache is an ordinary directory tree, and
+that is a deliberate property: copying it to an offline machine,
+restoring it from a CI cache action, or looking at it with a file
+browser all work.</p>
+<div id="where-it-lives" class="section level2">
+<h2>Where it lives</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">getaca_cache_dir</span>()</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="co">#&gt; [1] &quot;&lt;tempdir&gt;/getaca-cache-vignette&quot;</span></span></code></pre></div>
+<p>That is the sandbox this vignette runs in. The default is
+<code>tools::R_user_dir(&quot;getaca&quot;, &quot;cache&quot;)</code>, the location CRAN
+permits for cached downloads. Two overrides take precedence, in this
+order:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">options</span>(<span class="at">getaca.cache =</span> <span class="st">&quot;/mnt/fast/getaca&quot;</span>)   <span class="co"># this session</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">Sys.setenv</span>(<span class="at">GETACA_CACHE =</span> <span class="st">&quot;/mnt/fast/getaca&quot;</span>) <span class="co"># this process and its children</span></span></code></pre></div>
+<p>The environment variable is the one to reach for in CI and in job
+scripts, because it survives into the R processes a build step spawns.
+Asking for the directory does not create it; the first successful
+retrieval does.</p>
+</div>
+<div id="layout" class="section level2">
+<h2>Layout</h2>
+<pre><code>&lt;cache&gt;/
+  blobs/sha256/&lt;aa&gt;/&lt;sha256&gt;     verified bytes, named by their own checksum
+  .locks/                        one per checksum, held during a transfer
+  .tmp/                          in-flight downloads, never visible as cache
+  &lt;package&gt;/
+    index.rds                    provenance for this package only
+    &lt;name&gt;/&lt;version&gt;/
+      raw/&lt;file&gt;                 this slot&#39;s name for a blob
+      proc-&lt;processor-id&gt;/       processed result, own provenance</code></pre>
+<p>Everything a package declares is scoped by declaring package, then
+resource name, then version. That falls out of identity being the triple
+<code>package / name / version</code>, and it buys two things. Two
+packages declaring a resource called <code>&quot;backbone&quot;</code> never share
+a slot, so one package’s registry update cannot affect another’s cached
+data. And a version can never be overwritten by another version, so
+holding two releases side by side is the normal state rather than a
+special case.</p>
+<p>The bytes underneath are shared. A file lives once, at
+<code>blobs/sha256/</code>, under its own checksum, and the version slot
+holds a name for it: a hardlink where the filesystem allows one, a
+symlink or a copy where it does not. Two packages declaring the same 4
+GB file therefore keep one copy and two independent dependency records.
+They also transfer it once, because the lock is keyed on the checksum,
+so the second session waits for the first and then finds the bytes
+already there.</p>
+<p>A resource composed from <code>part()</code> records stores its
+pieces in the same place. Each part is admitted under its own digest, so
+a base every version of a series declares is one blob however many
+versions declare it, and publishing a version costs a consumer the delta
+rather than the whole artefact. No version slot names a part. What
+reaches it is the entry composed from it, which records the part digests
+beside its provenance, and that is what keeps a base alive for exactly
+as long as the last cached version still holding it.</p>
+<p>Everything the cache owns is read-only. A caller writing to a
+returned path would otherwise damage every package that shares those
+bytes, so the write fails at the point of the mistake instead. A caller
+that needs a writable layout declares a <code>processor()</code>, which
+gets its own slot.</p>
+<p>The store keeps no metadata of its own. Whether a blob is still
+needed is answered by reading the package indexes, so there is no
+reference count that a crash, a restored backup or a hand-deleted
+directory could leave disagreeing with them.</p>
+<p>The processed result of a processor sits beside the raw artefact
+rather than replacing it, under a directory named for the processor id.
+Changing the transformation means changing the id, which invalidates the
+derived tree without touching the download it came from.</p>
+<p><code>index.rds</code> is one small file per package holding the
+provenance records. It is written to a sibling temporary file and
+renamed, so a reader never observes a half-written index. A metadata
+database was considered and left out: the volume is tiny, and an atomic
+per-package file removes a dependency and a class of locking
+problems.</p>
+</div>
+<div id="what-a-cached-copy-has-to-prove" class="section level2">
+<h2>What a cached copy has to prove</h2>
+<p>Three different questions, three answers, and the entry record keeps
+them apart so that “verified” never quietly means “we looked at this
+sometime”.</p>
+<table>
+<colgroup>
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>what it does</th>
+<th>when it runs</th>
+<th>recorded as</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>full verification</td>
+<td>re-hashes the bytes</td>
+<td>on download, on <code>verify = TRUE</code>, and once the last one is
+older than <code>getaca.verify_days</code></td>
+<td><code>verified_at</code></td>
+</tr>
+<tr class="even">
+<td>cheap check</td>
+<td>compares size against the entry</td>
+<td>on every ordinary access</td>
+<td><code>checked_at</code></td>
+</tr>
+<tr class="odd">
+<td>access</td>
+<td>none</td>
+<td>on every ordinary access</td>
+<td><code>accessed_at</code></td>
+</tr>
+</tbody>
+</table>
+<p>The cheap check catches truncation, replacement by a different-sized
+file, and most accidental edits, for the cost of a
+<code>file.info()</code> call on a four-gigabyte file. A same-size
+substitution passes it, which is the case the scheduled re-hash exists
+to catch.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">getaca</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)                 <span class="co"># cheap check</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="fu">getaca</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>, <span class="at">verify =</span> <span class="cn">TRUE</span>)  <span class="co"># full re-hash first</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="fu">options</span>(<span class="at">getaca.verify_days =</span> <span class="dv">30</span>)                  <span class="co"># re-hash more often</span></span></code></pre></div>
+<p>A cached copy that fails either check raises
+<code>getaca_error_cache_corrupt</code> rather than being silently
+refetched, and the message names the clean-up call. Silent repair would
+hide a disk going bad, and hide a colleague who edited a file in the
+cache directory.</p>
+<p>The failure is a verdict on bytes rather than on the slot that found
+it. Bytes live once and every package declaring them holds its own
+record, so a mismatch in the shared copy withdraws
+<code>verified_at</code> from every other slot naming it and each
+re-hashes on next access. A slot holding its own copy, which is what a
+filesystem refusing links leaves, and a processed tree derived from the
+bytes are answerable only for themselves.</p>
+<p>A part is re-hashed every time a composition reuses it, since nothing
+else ever looks at it. Scheduled re-verification is driven from the
+entries, and a part blob is named by an entry’s part list rather than
+being an entry of its own, so a base that rotted on disk would otherwise
+surface as the declaration failing to produce its own artefact. A part
+failing its own checksum is dropped and fetched again the way a stale
+partial transfer is: the declaration lists mirrors for those bytes, and
+nothing else names them.</p>
+<p>The fourth timestamp is <code>fetched_at</code>, which never moves.
+Together the four answer questions that collapsing them would destroy: a
+resource fetched in January, re-hashed in April and read this morning
+reports exactly that.</p>
+</div>
+<div id="provenance" class="section level2">
+<h2>Provenance</h2>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">getaca_info</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="co">#&gt; &lt;getaca cache entry&gt; yourpkg/backbone@2026-06</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co">#&gt;   path        ~/.cache/R/getaca/yourpkg/backbone/2026-06/raw/backbone-2026-06.zip</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co">#&gt;   sha256      9f9f9f...</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co">#&gt;   size        797,000,000 bytes</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co">#&gt;   license     CC-BY-4.0</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co">#&gt;   built from  source_release: 2026-06</span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="co">#&gt;   resolved by current registry sha256:8b31e0da54cf (published 2026-07-22)</span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="co">#&gt;   source url  https://host.invalid/backbone-2026-06.zip</span></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="co">#&gt;   getaca      0.0.0.9000</span></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a><span class="co">#&gt;   fetched     2026-07-26 11:02:13</span></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a><span class="co">#&gt;   verified    2026-07-26 11:09:44 (full re-hash)</span></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a><span class="co">#&gt;   checked     2026-07-26 15:31:02 (size and mtime)</span></span></code></pre></div>
+<p>A composed resource reports what produced it, under the source url
+its series leaves empty:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co">#&gt;   source url  NA</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="co">#&gt;   composed    3 parts via &#39;concat&#39;</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="co">#&gt;     part      919191919191</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co">#&gt;     part      4e4e4e4e4e4e</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="co">#&gt;     part      777777777777</span></span></code></pre></div>
+<p>An uncached resource gives <code>NULL</code>, which is what makes the
+call safe in a report covering a machine that holds some of the set:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">is.null</span>(<span class="fu">getaca_info</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">registry =</span> reg))</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
+<p><code>getaca_catalogue()</code> is the same information across
+everything, plus the declarations that have never been downloaded:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">getaca_catalogue</span>(<span class="at">registry =</span> reg)[, <span class="fu">c</span>(<span class="st">&quot;package&quot;</span>, <span class="st">&quot;name&quot;</span>, <span class="st">&quot;version&quot;</span>,</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>                                     <span class="st">&quot;current&quot;</span>, <span class="st">&quot;declared&quot;</span>, <span class="st">&quot;cached&quot;</span>)]</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="co">#&gt;   package     name version current declared cached</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="co">#&gt; 1 yourpkg backbone 2026-06    TRUE     TRUE  FALSE</span></span></code></pre></div>
+<p>With no arguments it covers every installed package that ships a
+registry together with every package holding cached resources, which is
+the report worth pasting into an issue:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">str</span>(<span class="fu">getaca_catalogue</span>(), <span class="at">max.level =</span> <span class="dv">1</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="co">#&gt; &#39;data.frame&#39;:    0 obs. of  18 variables:</span></span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="co">#&gt;  $ package        : chr </span></span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a><span class="co">#&gt;  $ name           : chr </span></span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a><span class="co">#&gt;  $ version        : chr </span></span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a><span class="co">#&gt;  $ current        : logi </span></span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a><span class="co">#&gt;  $ processor      : chr </span></span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a><span class="co">#&gt;  $ parts          : int </span></span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a><span class="co">#&gt;  $ link           : chr </span></span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a><span class="co">#&gt;  $ declared       : logi </span></span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a><span class="co">#&gt;  $ cached         : logi </span></span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a><span class="co">#&gt;  $ size           : num </span></span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a><span class="co">#&gt;  $ license        : chr </span></span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a><span class="co">#&gt;  $ doi            : chr </span></span>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a><span class="co">#&gt;  $ source         : chr </span></span>
+<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a><span class="co">#&gt;  $ registry_digest: chr </span></span>
+<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a><span class="co">#&gt;  $ verified_at    : &#39;POSIXct&#39; num </span></span>
+<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a><span class="co">#&gt;  $ accessed_at    : &#39;POSIXct&#39; num </span></span>
+<span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a><span class="co">#&gt;  $ pinned         : logi </span></span>
+<span id="cb9-20"><a href="#cb9-20" tabindex="-1"></a><span class="co">#&gt;  $ path           : chr</span></span></code></pre></div>
+<p>The columns worth knowing: <code>size</code> in bytes,
+<code>license</code>, <code>source</code> and
+<code>registry_digest</code> naming the policy and the registry state
+that resolved it, <code>parts</code> for how many pieces the artefact
+was composed from and <code>0</code> where it was served whole, the
+three timestamps, <code>pinned</code>, and <code>path</code>.</p>
+</div>
+<div id="two-sessions-one-download" class="section level2">
+<h2>Two sessions, one download</h2>
+<p>Two R sessions asking for the same four-gigabyte file must not both
+fetch it, and must never mistake each other’s in-flight temporary file
+for a finished resource.</p>
+<p>The lock is a directory under <code>.locks/</code>, named for the
+declared checksum. <code>dir.create()</code> is atomic on both POSIX and
+Windows, which makes a directory a portable mutex with no compiled
+dependency and no lockfile library.</p>
+<p>Keying it on the checksum rather than on the resource triple means
+the two sessions need not be asking on behalf of the same package. Two
+packages declaring the same file are waiting for the same transfer, and
+the one that waits finds the bytes in the store when it wakes.</p>
+<p>What a second session does:</p>
+<ol style="list-style-type: decimal">
+<li><p>tries to create the lock directory, and fails</p></li>
+<li><p>checks whether the lock is stale, by the age of the holder file
+inside it</p></li>
+<li><p>waits, polling, until the holder releases</p></li>
+<li><p>re-reads the cache index, finds the first session’s entry, and
+returns that path</p></li>
+</ol>
+<p>Step 4 is the point. The waiter reads the entry the first session
+wrote and returns that path, so the second transfer never starts. The
+cache check is repeated after the lock is acquired precisely because the
+situation may have changed while waiting.</p>
+<p>Composing from parts takes one lock per distinct part digest, held
+for the whole composition rather than for each transfer. Two sessions
+must not both fetch one part, which is what the acquisition lock already
+does for a whole file. And a part blob is named by no index until the
+entry composed from it is written, so the lock is also what tells
+another session that bytes nothing references yet are wanted: the
+<code>unreferenced</code> sweep treats a blob under an active lock as
+live.</p>
+<p>A lock whose holder died leaves a directory behind. It goes stale
+after <code>getaca.lock_stale_seconds</code>, defaulting to 1800, after
+which the next session removes it and takes over. A session that waits
+longer than its timeout gets an error naming the lock path and the
+<code>unlink()</code> call that clears it, so a genuinely wedged lock is
+a one-line fix rather than a support thread.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">options</span>(<span class="at">getaca.lock_stale_seconds =</span> <span class="dv">600</span>)</span></code></pre></div>
+<p>Set it lower for short downloads on a shared machine, higher when a
+single transfer legitimately runs for an hour.</p>
+</div>
+<div id="how-bytes-get-in" class="section level2">
+<h2>How bytes get in</h2>
+<p>Transfers land in <code>.tmp/</code>, are sized, hashed, and only
+then moved into place. An interrupted transfer can never appear as a
+valid cached resource, and a failed transfer never touches a copy that
+was already good.</p>
+<p>The temporary file is named after the declared checksum and the
+mirror that produced it. Naming it after the checksum makes an
+interrupted download resumable on the next attempt, which matters when
+the resource is measured in gigabytes. Giving each mirror its own file
+matters for a subtler reason: a partial transfer is resumable only
+against the host that produced it, so sharing one file across mirrors
+would let a failed attempt at the first be resumed onto by the second,
+and the resulting corruption is indistinguishable from the publisher
+having changed the bytes.</p>
+<p>A resumed transfer that completes but does not verify indicts the
+partial file rather than the publisher, so the same mirror is asked once
+more from empty before any conclusion is drawn about upstream. Without
+that, one stale temporary file makes a resource permanently unfetchable
+and blames the wrong party for it.</p>
+<p>Verified bytes are then admitted to the store under their own
+checksum, and the version slot is given a name for them. Admission is a
+rename, since <code>.tmp/</code> and <code>blobs/</code> share the cache
+root and therefore share a filesystem. Bytes already in the store are
+already named by their checksum, so admitting the same file a second
+time is a no-op and the temporary copy is dropped.</p>
+<p>A composed resource joins at that same point. Each part lands in
+<code>.tmp/</code> and is admitted under its own digest, the series is
+combined into a second temporary file named after the artefact’s
+checksum, and that file is hashed against the record before anything
+else sees it. Only a result matching the declaration is admitted and
+given its view, so a <code>combiner()</code> needs no more trust than a
+mirror does: it cannot produce bytes the declaration did not already
+name. A part already in the store is used where it lies, which is the
+whole point of declaring one, and an interrupted composition is
+overwritten by the retry rather than accumulating.</p>
+</div>
+<div id="watching-a-transfer" class="section level2">
+<h2>Watching a transfer</h2>
+<p>getaca drives its own transfer loop, so what a download looks like is
+a setting rather than whatever the transfer library prints.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">getaca_progress</span>(<span class="st">&quot;bar&quot;</span>)    <span class="co"># redraws one line, the default when interactive</span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="fu">getaca_progress</span>(<span class="st">&quot;line&quot;</span>)   <span class="co"># one line to start and one to finish, for a log</span></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="fu">getaca_progress</span>(<span class="st">&quot;none&quot;</span>)   <span class="co"># nothing</span></span></code></pre></div>
+<pre><code>yourpkg/backbone@2026-09  [============&gt;      ]  63%  512 MB / 812 MB  41 MB/s  ETA 00:07</code></pre>
+<p>The share is measured against the size the registry declares, which
+is known before the first byte arrives and stays right when a mirror
+sends no content length. A resource composed from parts reports each
+piece under its own label, so a series reads as one download in
+stages:</p>
+<pre><code>yourpkg/backbone@2026-09 (part 1 of 3)  [===================] 100%  797 MB in 00:19
+yourpkg/backbone@2026-09 (part 2 of 3)  [========&gt;          ]  44%  4.0 MB / 9.1 MB  ...</code></pre>
+<p><code>quiet = TRUE</code> on a single call reports nothing whatever
+the session is set to, so one silent retrieval never needs the setting
+changed and put back:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="fu">getaca</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>, <span class="at">quiet =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p>A package that wants a download to look like its own writes a
+<code>reporter()</code>, which is a function of one argument:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>counter <span class="ot">&lt;-</span> <span class="fu">reporter</span>(<span class="st">&quot;counter&quot;</span>, <span class="cf">function</span>(event) {</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">identical</span>(event<span class="sc">$</span>type, <span class="st">&quot;end&quot;</span>) <span class="sc">&amp;&amp;</span> <span class="fu">identical</span>(event<span class="sc">$</span>status, <span class="st">&quot;ok&quot;</span>)) {</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>    <span class="fu">message</span>(<span class="fu">format</span>(event<span class="sc">$</span>id), <span class="st">&quot;: &quot;</span>, event<span class="sc">$</span>bytes, <span class="st">&quot; bytes&quot;</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>  }</span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a>})</span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a>counter</span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a><span class="co">#&gt; &lt;getaca reporter&gt; counter</span></span></code></pre></div>
+<p>The events are <code>begin</code>, <code>bytes</code> and
+<code>end</code>, and a handler switches on <code>event$type</code> and
+ignores what it does not use. <code>begin</code> carries the resource,
+the mirror, the declared <code>total</code> and the <code>offset</code>
+an interrupted transfer resumed from; <code>bytes</code> carries the
+cumulative count; <code>end</code> carries the outcome. See
+<code>?&quot;getaca-progress&quot;</code> for the fields.</p>
+<p>A reporter never decides whether a retrieval succeeds. One that
+raises is caught, reported once as a warning, and switched off for the
+rest of the call.</p>
+</div>
+<div id="retention" class="section level2">
+<h2>Retention</h2>
+<p>CRAN permits <code>tools::R_user_dir()</code> on condition that
+contents are “actively managed (including removing outdated material)”.
+<code>getaca</code> reads that as a retention policy rather than a
+function users might discover, so collection runs automatically after
+every successful retrieval.</p>
+<p>Five sweeps, cheapest and safest first:</p>
+<table>
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Sweep</th>
+<th>Removes</th>
+<th>Clock</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>broken</code></td>
+<td>entries whose path is missing or fails the cheap check</td>
+<td>none</td>
+</tr>
+<tr class="even">
+<td><code>temp</code></td>
+<td>abandoned transfers in <code>.tmp/</code></td>
+<td>7 days by mtime</td>
+</tr>
+<tr class="odd">
+<td><code>superseded</code></td>
+<td>unpinned versions the registry no longer names</td>
+<td><code>getaca.supersede_days</code>, default 30</td>
+</tr>
+<tr class="even">
+<td><code>lru</code></td>
+<td>least recently used unpinned entries</td>
+<td>only above <code>getaca.max_bytes</code>, default 20 GB</td>
+</tr>
+<tr class="odd">
+<td><code>unreferenced</code></td>
+<td>bytes in the store that no entry names any more</td>
+<td>none</td>
+</tr>
+</tbody>
+</table>
+<p>The first four sweeps remove names. <code>unreferenced</code> runs
+last and removes the bytes those names were for, once the last one is
+gone. A blob under an active lock is left alone: it belongs to a session
+that has admitted it and has not yet written its entry.</p>
+<p>What an entry names, for this purpose, is the blob it holds together
+with the parts that blob was composed from. Reachability runs over both,
+so a base stays for as long as some cached version is still composed
+from it and goes with the last one.</p>
+<p>The size ceiling measures what the cache occupies, so shared bytes
+count once. Two packages declaring the same 4 GB file count 4 GB against
+<code>getaca.max_bytes</code>, and evicting one of them frees nothing
+until the other goes too. Part blobs are occupancy on the same terms:
+evicting one version of a series reclaims the pieces no surviving
+version holds, and leaves a base that another version still
+declares.</p>
+<p>Superseded and not-recently-used age on separate clocks on purpose.
+An expensive resource that is still the current version is never dropped
+merely for being old; it is dropped only when the cache is over its
+ceiling, and then only after everything already useless has gone.</p>
+<p>Three things are never removed: pinned entries, the version the
+registry currently names, and anything under an active lock.</p>
+<p>The automatic pass after a retrieval runs only <code>broken</code>
+and <code>temp</code>, the two sweeps that can only ever remove material
+which is already useless. Reclaiming a superseded four-gigabyte version
+is a decision, so it happens on a schedule rather than as a side effect
+of a download.</p>
+</div>
+<div id="cleaning-by-hand" class="section level2">
+<h2>Cleaning by hand</h2>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="fu">getaca_clean</span>(<span class="at">dry_run =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="co">#&gt; [1] package  resource reason   bytes    path    </span></span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a><span class="co">#&gt; &lt;0 rows&gt; (or 0-length row.names)</span></span></code></pre></div>
+<p>An empty result on a fresh cache. On a working one, each row names
+the package, the resource, the reason and the bytes it would reclaim,
+which is the report to read before running it for real.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="fu">getaca_clean</span>(<span class="at">dry_run =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a><span class="co">#&gt;   package                 resource                     reason    bytes</span></span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a><span class="co">#&gt; 1 yourpkg yourpkg/backbone@2026-03 superseded version past... 7.97e+08</span></span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a><span class="co">#&gt; 2    &lt;NA&gt;                     &lt;NA&gt;         abandoned transfer 1.20e+07</span></span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a><span class="fu">getaca_clean</span>()                                 <span class="co"># run every sweep</span></span>
+<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a><span class="fu">getaca_clean</span>(<span class="at">what =</span> <span class="st">&quot;temp&quot;</span>)                    <span class="co"># just the abandoned transfers</span></span>
+<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a><span class="fu">getaca_clean</span>(<span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)              <span class="co"># one package</span></span>
+<span id="cb17-9"><a href="#cb17-9" tabindex="-1"></a><span class="fu">getaca_clean</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)  <span class="co"># one resource name</span></span></code></pre></div>
+<p>Keeping something the sweeps would otherwise take:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="fu">getaca_keep</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)                  <span class="co"># pin it</span></span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a><span class="fu">getaca_keep</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>, <span class="at">pinned =</span> <span class="cn">FALSE</span>)  <span class="co"># release the pin</span></span></code></pre></div>
+<p>A pinned entry is exempt from the superseded and LRU sweeps
+permanently. It is still subject to the <code>broken</code> sweep,
+because an entry whose bytes are gone is not worth protecting.</p>
+</div>
+<div id="settings" class="section level2">
+<h2>Settings</h2>
+<p>Every setting is readable from an option or an environment variable,
+with the option taking precedence.</p>
+<table>
+<colgroup>
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Option</th>
+<th>Environment variable</th>
+<th>Default</th>
+<th>Controls</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>getaca.cache</code></td>
+<td><code>GETACA_CACHE</code></td>
+<td><code>R_user_dir()</code></td>
+<td>where everything lives</td>
+</tr>
+<tr class="even">
+<td><code>getaca.policy</code></td>
+<td><code>GETACA_POLICY</code></td>
+<td>registry default</td>
+<td>which channel resolves</td>
+</tr>
+<tr class="odd">
+<td><code>getaca.progress</code></td>
+<td><code>GETACA_PROGRESS</code></td>
+<td><code>auto</code></td>
+<td>what a transfer looks like</td>
+</tr>
+<tr class="even">
+<td><code>getaca.verify_days</code></td>
+<td><code>GETACA_VERIFY_DAYS</code></td>
+<td>90</td>
+<td>scheduled re-hash interval</td>
+</tr>
+<tr class="odd">
+<td><code>getaca.supersede_days</code></td>
+<td><code>GETACA_SUPERSEDE_DAYS</code></td>
+<td>30</td>
+<td>retention for undeclared versions</td>
+</tr>
+<tr class="even">
+<td><code>getaca.max_bytes</code></td>
+<td><code>GETACA_MAX_BYTES</code></td>
+<td>20 GB</td>
+<td>ceiling above which LRU runs</td>
+</tr>
+<tr class="odd">
+<td><code>getaca.timeout</code></td>
+<td><code>GETACA_TIMEOUT</code></td>
+<td>3600</td>
+<td>transfer timeout in seconds</td>
+</tr>
+<tr class="even">
+<td><code>getaca.lock_stale_seconds</code></td>
+<td><code>GETACA_LOCK_STALE_SECONDS</code></td>
+<td>1800</td>
+<td>when a lock is abandoned</td>
+</tr>
+<tr class="odd">
+<td><code>getaca.pin_file</code></td>
+<td></td>
+<td><code>getaca.pins.rds</code> in the working directory</td>
+<td>where pins are read from</td>
+</tr>
+</tbody>
+</table>
+<p>The defaults suit a laptop holding a couple of large reference
+datasets. Two are worth revisiting on a shared machine: raise
+<code>getaca.max_bytes</code> when the cache lives on a volume sized for
+it, and lower <code>getaca.lock_stale_seconds</code> when transfers are
+short and a wedged lock costs more than a rare duplicate download.</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="fu">options</span>(</span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a>  <span class="at">getaca.cache        =</span> <span class="st">&quot;/mnt/data/getaca&quot;</span>,</span>
+<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a>  <span class="at">getaca.max_bytes    =</span> <span class="dv">200</span> <span class="sc">*</span> <span class="dv">1024</span><span class="sc">^</span><span class="dv">3</span>,</span>
+<span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a>  <span class="at">getaca.verify_days  =</span> <span class="dv">30</span></span>
+<span id="cb19-5"><a href="#cb19-5" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="moving-a-cache" class="section level2">
+<h2>Moving a cache</h2>
+<p>Copy the directory. There are no absolute paths recorded inside it,
+so a cache built on one machine works on another:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="co"># on a connected machine</span></span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a><span class="fu">Sys.setenv</span>(<span class="at">GETACA_CACHE =</span> <span class="st">&quot;/tmp/seed&quot;</span>)</span>
+<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a><span class="fu">getaca_prefetch</span>(<span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)</span>
+<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a></span>
+<span id="cb20-5"><a href="#cb20-5" tabindex="-1"></a><span class="co"># then, on the machine that has no network</span></span>
+<span id="cb20-6"><a href="#cb20-6" tabindex="-1"></a><span class="fu">Sys.setenv</span>(<span class="at">GETACA_CACHE =</span> <span class="st">&quot;/opt/getaca&quot;</span>)</span>
+<span id="cb20-7"><a href="#cb20-7" tabindex="-1"></a><span class="fu">getaca_catalogue</span>()   <span class="co"># everything already there</span></span></code></pre></div>
+<p>The same property is what makes CI caching work: the archive an
+actions cache restores is the cache, with nothing to rebuild.</p>
+</div>
+<div id="where-to-go-next" class="section level2">
+<h2>Where to go next</h2>
+<ul>
+<li><p><code>vignette(&quot;checks&quot;)</code> for seeding a cache in
+CI</p></li>
+<li><p><code>vignette(&quot;failures&quot;)</code> for
+<code>getaca_error_cache_corrupt</code> and its neighbours</p></li>
+<li><p><code>vignette(&quot;policies&quot;)</code> for what decides which version
+lands in the cache</p></li>
+<li><p><code>vignette(&quot;declaring&quot;)</code> for declaring a resource that
+arrives as a series</p></li>
+</ul>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
