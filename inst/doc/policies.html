@@ -348,15 +348,20 @@ on two days” can legitimately produce different bytes.</p>
 <p>This article covers the four policies, what a remote channel is
 allowed to change, how pinning freezes an analysis, and how the three
 settings layers combine.</p>
+<div id="installation" class="section level2">
+<h2>Installation</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;pak&quot;</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>pak<span class="sc">::</span><span class="fu">pak</span>(<span class="st">&quot;gcol33/getaca&quot;</span>)</span></code></pre></div>
+</div>
 <div id="the-two-halves-the-design-keeps-apart" class="section level2">
 <h2>The two halves the design keeps apart</h2>
 <p>A <strong>resource record</strong> names exact bytes and never
 changes:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>rec <span class="ot">&lt;-</span> <span class="fu">resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="st">&quot;2026-06&quot;</span>,</span>
-<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>                <span class="at">urls =</span> <span class="st">&quot;https://host.invalid/backbone-2026-06.zip&quot;</span>,</span>
-<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>                <span class="at">sha256 =</span> <span class="fu">strrep</span>(<span class="st">&quot;9f&quot;</span>, <span class="dv">32</span>), <span class="at">license =</span> <span class="st">&quot;CC-BY-4.0&quot;</span>)</span>
-<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="fu">format</span>(rec)</span>
-<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="co">#&gt; [1] &quot;backbone@2026-06  9f9f9f9f9f9f  [CC-BY-4.0]&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>rec <span class="ot">&lt;-</span> <span class="fu">resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="st">&quot;2026-06&quot;</span>,</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>                <span class="at">urls =</span> <span class="st">&quot;https://host.invalid/backbone-2026-06.zip&quot;</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>                <span class="at">sha256 =</span> <span class="fu">strrep</span>(<span class="st">&quot;9f&quot;</span>, <span class="dv">32</span>), <span class="at">license =</span> <span class="st">&quot;CC-BY-4.0&quot;</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="fu">format</span>(rec)</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="co">#&gt; [1] &quot;backbone@2026-06  9f9f9f9f9f9f  [CC-BY-4.0]&quot;</span></span></code></pre></div>
 <p>A <strong>channel</strong> maps the logical name
 <code>&quot;backbone&quot;</code> onto one record, and channels move. Three places
 a channel can be read from, so three ways the same name can resolve:</p>
@@ -406,18 +411,17 @@ They differ in what happens when the resource is absent from the cache:
 <p>The default, and the one that makes a data dependency behave like a
 code dependency. The registry that shipped inside the installed package
 is the whole answer; nothing is fetched to decide what a name means.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>reg <span class="ot">&lt;-</span> <span class="fu">registry</span>(</span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>  <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>,</span>
-<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  <span class="at">resources =</span> <span class="fu">list</span>(rec)</span>
-<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>)</span>
-<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a></span>
-<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">resolve_resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">registry =</span> reg, <span class="at">policy =</span> <span class="st">&quot;bundled&quot;</span>)</span>
-<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>res<span class="sc">$</span>id</span>
-<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="co">#&gt; &lt;getaca resource&gt; yourpkg/backbone@2026-06</span></span>
-<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>res<span class="sc">$</span>source</span>
-<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a><span class="co">#&gt; [1] &quot;bundled&quot;</span></span>
-<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>res<span class="sc">$</span>digest</span>
-<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a><span class="co">#&gt; [1] &quot;sha256:86b53103a628e4cd6a76c7ee0ab8a4b7826afebe368b68cb5303e46d02c66dd9&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>reg <span class="ot">&lt;-</span> <span class="fu">registry</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="at">resources =</span> <span class="fu">list</span>(rec)</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>)</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="fu">resolve_resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">registry =</span> reg, <span class="at">policy =</span> <span class="st">&quot;bundled&quot;</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co">#&gt; &lt;getaca resolution&gt; yourpkg/backbone@2026-06</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co">#&gt;   policy    bundled</span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="co">#&gt;   source    bundled registry</span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co">#&gt;   registry  sha256:86b53103a628e4cd6a76c7ee0ab8a4b7826afebe368b68cb5303e46d02c66dd9</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="co">#&gt;   sha256    9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f</span></span></code></pre></div>
 <p><code>source</code> and <code>digest</code> are recorded in the cache
 entry, so a provenance report can state which declaration chose the
 bytes and which policy read it. The digest comes from the channel that
@@ -433,26 +437,26 @@ package version alone.</p>
 <p>For data that release on their own schedule. The author publishes a
 static registry file somewhere they control, and <code>getaca</code>
 consults it before resolving:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>remote_reg <span class="ot">&lt;-</span> <span class="fu">registry</span>(</span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>,</span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="at">policy  =</span> <span class="st">&quot;current&quot;</span>,</span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="at">remote  =</span> <span class="st">&quot;https://yourpkg.invalid/getaca-registry.rds&quot;</span>,</span>
-<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  <span class="at">resources =</span> <span class="fu">list</span>(rec)</span>
-<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>)</span>
-<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>remote_reg</span>
-<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co">#&gt; &lt;getaca registry&gt; yourpkg  (policy &quot;current&quot;)</span></span>
-<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="co">#&gt;   digest: sha256:f63eb3f4be9c</span></span>
-<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co">#&gt;   remote: https://yourpkg.invalid/getaca-registry.rds</span></span>
-<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="co">#&gt;   - backbone@2026-06  9f9f9f9f9f9f  [CC-BY-4.0]</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>remote_reg <span class="ot">&lt;-</span> <span class="fu">registry</span>(</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>,</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  <span class="at">policy  =</span> <span class="st">&quot;current&quot;</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>  <span class="at">remote  =</span> <span class="st">&quot;https://yourpkg.invalid/getaca-registry.rds&quot;</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>  <span class="at">resources =</span> <span class="fu">list</span>(rec)</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>)</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>remote_reg</span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="co">#&gt; &lt;getaca registry&gt; yourpkg  (policy &quot;current&quot;)</span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="co">#&gt;   digest: sha256:f63eb3f4be9c</span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="co">#&gt;   remote: https://yourpkg.invalid/getaca-registry.rds</span></span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="co">#&gt;   - backbone@2026-06  9f9f9f9f9f9f  [CC-BY-4.0]</span></span></code></pre></div>
 <p>The remote is a file, not a service. Publishing it is a
 <code>registry_write()</code> into a directory that GitHub Pages,
 r-universe or an institutional web server already serves.</p>
 <p>An unreachable remote produces a message and the bundled registry,
 which is what CRAN policy requires of a package that uses Internet
 resources:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">resolve_resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">registry =</span> remote_reg, <span class="at">policy =</span> <span class="st">&quot;current&quot;</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="co">#&gt; getaca: could not reach the remote registry for &#39;yourpkg&#39;; using the bundled</span></span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co">#&gt; registry.</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">resolve_resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">registry =</span> remote_reg, <span class="at">policy =</span> <span class="st">&quot;current&quot;</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="co">#&gt; getaca: could not reach the remote registry for &#39;yourpkg&#39;; using the bundled</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co">#&gt; registry.</span></span></code></pre></div>
 <p>An unreadable remote behaves the same way. A file that arrives but
 does not parse as a registry, or parses but fails validation, produces a
 message and the bundled fallback rather than a hard failure. A remote
@@ -462,7 +466,7 @@ misconfiguration rather than an outage.</p>
 script making a hundred calls performs one fetch.
 <code>getaca_refresh()</code> forgets it, which is how you pick up a
 registry you published five minutes ago without restarting.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">getaca_refresh</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">getaca_refresh</span>()</span></code></pre></div>
 <p>That also forgets registries discovered from installed packages, so
 it is what you call after installing a new version of a declaring
 package mid-session. Cached <em>resources</em> are untouched; this
@@ -482,23 +486,23 @@ already exists. That is refused, and the error names the declaring
 package as the party at fault rather than the publisher. The same rule
 holds for a pin file, which is the branch that can be shown here without
 a network:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>rewritten <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">tempdir</span>(), <span class="st">&quot;rewritten.rds&quot;</span>)</span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="fu">saveRDS</span>(</span>
-<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">yourpkg =</span> <span class="fu">registry</span>(<span class="st">&quot;yourpkg&quot;</span>, <span class="fu">list</span>(</span>
-<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>    <span class="fu">resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="st">&quot;2026-06&quot;</span>,</span>
-<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>             <span class="at">urls =</span> <span class="st">&quot;https://host.invalid/backbone-2026-06.zip&quot;</span>,</span>
-<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>             <span class="at">sha256 =</span> <span class="fu">strrep</span>(<span class="st">&quot;ab&quot;</span>, <span class="dv">32</span>), <span class="at">license =</span> <span class="st">&quot;CC-BY-4.0&quot;</span>)</span>
-<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>  ))),</span>
-<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>  rewritten</span>
-<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>)</span>
-<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="fu">options</span>(<span class="at">getaca.pin_file =</span> rewritten)</span></code></pre></div>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">resolve_resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">registry =</span> reg, <span class="at">policy =</span> <span class="st">&quot;pinned&quot;</span>)</span>
-<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="co">#&gt; Error:</span></span>
-<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="co">#&gt; ! Invalid getaca registry for package &#39;yourpkg&#39;.</span></span>
-<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co">#&gt;   - the pin file redefines published version backbone@2026-06</span></span>
-<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="co">#&gt;   - A version identifies exact bytes. Publish a new version instead.</span></span>
-<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="co">#&gt; Fix: the declaring package needs a correction. Report it to its maintainer.</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>rewritten <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">tempdir</span>(), <span class="st">&quot;rewritten.rds&quot;</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="fu">saveRDS</span>(</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">yourpkg =</span> <span class="fu">registry</span>(<span class="st">&quot;yourpkg&quot;</span>, <span class="fu">list</span>(</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>    <span class="fu">resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="st">&quot;2026-06&quot;</span>,</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>             <span class="at">urls =</span> <span class="st">&quot;https://host.invalid/backbone-2026-06.zip&quot;</span>,</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>             <span class="at">sha256 =</span> <span class="fu">strrep</span>(<span class="st">&quot;ab&quot;</span>, <span class="dv">32</span>), <span class="at">license =</span> <span class="st">&quot;CC-BY-4.0&quot;</span>)</span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>  ))),</span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>  rewritten</span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>)</span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="fu">options</span>(<span class="at">getaca.pin_file =</span> rewritten)</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">resolve_resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">registry =</span> reg, <span class="at">policy =</span> <span class="st">&quot;pinned&quot;</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="co">#&gt; Error:</span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="co">#&gt; ! Invalid getaca registry for package &#39;yourpkg&#39;.</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="co">#&gt;   - the pin file redefines published version backbone@2026-06</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="co">#&gt;   - A version identifies exact bytes. Publish a new version instead.</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="co">#&gt; Fix: the declaring package needs a correction. Report it to its maintainer.</span></span></code></pre></div>
 <p>Without that rule, one edited file would be enough to change what a
 published version means, and the guarantee the design exists to provide
 would go with it. A publisher who genuinely recut a file gets a new
@@ -508,23 +512,23 @@ version label, which is a record users can see and choose.</p>
 <h3>Moving the head</h3>
 <p>Publishing <code>2026-09</code> and moving the channel head onto it
 is one registry:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>ahead <span class="ot">&lt;-</span> <span class="fu">registry</span>(</span>
-<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>,</span>
-<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="at">current =</span> <span class="fu">c</span>(<span class="at">backbone =</span> <span class="st">&quot;2026-09&quot;</span>),</span>
-<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="at">resources =</span> <span class="fu">list</span>(</span>
-<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>    <span class="fu">resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="st">&quot;2026-06&quot;</span>,</span>
-<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>             <span class="at">urls =</span> <span class="st">&quot;https://host.invalid/backbone-2026-06.zip&quot;</span>,</span>
-<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>             <span class="at">sha256 =</span> <span class="fu">strrep</span>(<span class="st">&quot;9f&quot;</span>, <span class="dv">32</span>), <span class="at">license =</span> <span class="st">&quot;CC-BY-4.0&quot;</span>),</span>
-<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>    <span class="fu">resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="st">&quot;2026-09&quot;</span>,</span>
-<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>             <span class="at">urls =</span> <span class="st">&quot;https://host.invalid/backbone-2026-09.zip&quot;</span>,</span>
-<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a>             <span class="at">sha256 =</span> <span class="fu">strrep</span>(<span class="st">&quot;ab&quot;</span>, <span class="dv">32</span>), <span class="at">license =</span> <span class="st">&quot;CC-BY-4.0&quot;</span>)</span>
-<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a>  )</span>
-<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a>)</span>
-<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a></span>
-<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a><span class="fu">resolve_resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">registry =</span> ahead)<span class="sc">$</span>id</span>
-<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a><span class="co">#&gt; &lt;getaca resource&gt; yourpkg/backbone@2026-09</span></span>
-<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a><span class="fu">resolve_resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">registry =</span> ahead, <span class="at">version =</span> <span class="st">&quot;2026-06&quot;</span>)<span class="sc">$</span>id</span>
-<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a><span class="co">#&gt; &lt;getaca resource&gt; yourpkg/backbone@2026-06</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>ahead <span class="ot">&lt;-</span> <span class="fu">registry</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>  <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>,</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>  <span class="at">current =</span> <span class="fu">c</span>(<span class="at">backbone =</span> <span class="st">&quot;2026-09&quot;</span>),</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>  <span class="at">resources =</span> <span class="fu">list</span>(</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>    <span class="fu">resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="st">&quot;2026-06&quot;</span>,</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>             <span class="at">urls =</span> <span class="st">&quot;https://host.invalid/backbone-2026-06.zip&quot;</span>,</span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>             <span class="at">sha256 =</span> <span class="fu">strrep</span>(<span class="st">&quot;9f&quot;</span>, <span class="dv">32</span>), <span class="at">license =</span> <span class="st">&quot;CC-BY-4.0&quot;</span>),</span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a>    <span class="fu">resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="st">&quot;2026-09&quot;</span>,</span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a>             <span class="at">urls =</span> <span class="st">&quot;https://host.invalid/backbone-2026-09.zip&quot;</span>,</span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a>             <span class="at">sha256 =</span> <span class="fu">strrep</span>(<span class="st">&quot;ab&quot;</span>, <span class="dv">32</span>), <span class="at">license =</span> <span class="st">&quot;CC-BY-4.0&quot;</span>)</span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a>  )</span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a>)</span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a></span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a><span class="fu">format</span>(<span class="fu">resolve_resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">registry =</span> ahead))</span>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a><span class="co">#&gt; [1] &quot;yourpkg/backbone@2026-09&quot;</span></span>
+<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a><span class="fu">format</span>(<span class="fu">resolve_resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">registry =</span> ahead, <span class="at">version =</span> <span class="st">&quot;2026-06&quot;</span>))</span>
+<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a><span class="co">#&gt; [1] &quot;yourpkg/backbone@2026-06&quot;</span></span></code></pre></div>
 <p>Users on <code>current</code> follow the head on their next session.
 Users on <code>bundled</code> stay where their installed package put
 them. Users who named a version keep that version under every policy,
@@ -541,54 +545,62 @@ your own host. Someone who takes the host does not thereby have the
 key.</p>
 <p>Make a key once, and keep the secret half outside the package source
 tree:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>secret <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">tempdir</span>(), <span class="st">&quot;yourpkg-signing.key&quot;</span>)</span>
-<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>public <span class="ot">&lt;-</span> <span class="fu">registry_keygen</span>(secret)</span>
-<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="fu">substr</span>(public, <span class="dv">1</span>, <span class="dv">24</span>)</span>
-<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a><span class="co">#&gt; [1] &quot;ed25519:c3b0d120efc30be5&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>secret <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">tempdir</span>(), <span class="st">&quot;yourpkg-signing.key&quot;</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>public <span class="ot">&lt;-</span> <span class="fu">registry_keygen</span>(secret)</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a><span class="fu">substr</span>(public, <span class="dv">1</span>, <span class="dv">24</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="co">#&gt; [1] &quot;ed25519:cfccda665bd3cfb1&quot;</span></span></code></pre></div>
 <p>Declare the public half in the registry the package ships:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>signed <span class="ot">&lt;-</span> <span class="fu">registry</span>(</span>
-<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>  <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>,</span>
-<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>  <span class="at">remote =</span> <span class="st">&quot;https://host.invalid/yourpkg.rds&quot;</span>,</span>
-<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>  <span class="at">keys =</span> public,</span>
-<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>  <span class="at">resources =</span> <span class="fu">list</span>(</span>
-<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>    <span class="fu">resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="st">&quot;2026-06&quot;</span>,</span>
-<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a>             <span class="at">urls =</span> <span class="st">&quot;https://host.invalid/backbone-2026-06.zip&quot;</span>,</span>
-<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a>             <span class="at">sha256 =</span> <span class="fu">strrep</span>(<span class="st">&quot;9f&quot;</span>, <span class="dv">32</span>), <span class="at">license =</span> <span class="st">&quot;CC-BY-4.0&quot;</span>)</span>
-<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a>  )</span>
-<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>signed <span class="ot">&lt;-</span> <span class="fu">registry</span>(</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>  <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>,</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>  <span class="at">remote =</span> <span class="st">&quot;https://host.invalid/yourpkg.rds&quot;</span>,</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>  <span class="at">keys =</span> public,</span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>  <span class="at">resources =</span> <span class="fu">list</span>(</span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>    <span class="fu">resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="st">&quot;2026-06&quot;</span>,</span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>             <span class="at">urls =</span> <span class="st">&quot;https://host.invalid/backbone-2026-06.zip&quot;</span>,</span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>             <span class="at">sha256 =</span> <span class="fu">strrep</span>(<span class="st">&quot;9f&quot;</span>, <span class="dv">32</span>), <span class="at">license =</span> <span class="st">&quot;CC-BY-4.0&quot;</span>)</span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a>  )</span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a>)</span></code></pre></div>
 <p>Then write and sign whatever you publish. Sign after writing: writing
 is what stamps the publication time, and the signature binds it.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>path <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">tempdir</span>(), <span class="st">&quot;yourpkg.rds&quot;</span>)</span>
-<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="fu">registry_write</span>(signed, path)</span>
-<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="fu">registry_sign</span>(path, <span class="at">key =</span> secret)</span>
-<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a></span>
-<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">readLines</span>(<span class="fu">paste0</span>(path, <span class="st">&quot;.sig&quot;</span>))[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>], <span class="at">sep =</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
-<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a><span class="co">#&gt; getaca-signature 1</span></span>
-<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a><span class="co">#&gt; digest sha256:99c143af4706a0766930c20c4bbf1f5eb094bd76f01ef2754c556262620d0105</span></span>
-<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a><span class="co">#&gt; created 2026-08-22T00:53:34Z</span></span>
-<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a><span class="co">#&gt; expires 2026-11-20T00:53:34Z</span></span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>path <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">tempdir</span>(), <span class="st">&quot;yourpkg.rds&quot;</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a><span class="fu">registry_write</span>(signed, path)</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a><span class="fu">registry_sign</span>(path, <span class="at">key =</span> secret)</span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">readLines</span>(<span class="fu">paste0</span>(path, <span class="st">&quot;.sig&quot;</span>))[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>], <span class="at">sep =</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a><span class="co">#&gt; getaca-signature 1</span></span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a><span class="co">#&gt; digest sha256:4dd915a599ade802ea1e06fe3766bd9fab7c69b6f7d28864f531ce940f282bfd</span></span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a><span class="co">#&gt; created 2026-11-23T17:39:02Z</span></span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a><span class="co">#&gt; expires 2027-02-21T17:39:02Z</span></span></code></pre></div>
 <p>Upload the <code>.sig</code> beside the registry; getaca fetches it
 from the registry’s own URL with <code>.sig</code> appended.
 <code>registry_verify()</code> runs the same check a user’s session
 will, which is worth doing before publishing:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">registry_verify</span>(path)</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">registry_verify</span>(path)</span></code></pre></div>
 <p>Editing the registry after signing breaks the link, which is the
 whole point:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>moved <span class="ot">&lt;-</span> signed</span>
-<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>moved<span class="sc">$</span>resources[[<span class="dv">1</span>]]<span class="sc">$</span>urls <span class="ot">&lt;-</span> <span class="st">&quot;https://elsewhere.invalid/backbone-2026-06.zip&quot;</span></span>
-<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="fu">saveRDS</span>(moved, path, <span class="at">version =</span> <span class="dv">3</span>)</span>
-<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="fu">registry_verify</span>(path)</span>
-<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a><span class="co">#&gt; Error:</span></span>
-<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a><span class="co">#&gt; ! The registry for &#39;yourpkg&#39; could not be established as authentic.</span></span>
-<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a><span class="co">#&gt;   the signature covers sha256:99c143af4706 but this registry is sha256:595d1c481557</span></span>
-<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a><span class="co">#&gt; This package declares signing keys, so a remote registry that cannot be</span></span>
-<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a><span class="co">#&gt; checked against one is refused rather than used. The bundled declaration</span></span>
-<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a><span class="co">#&gt; the package ships is unaffected and still resolves.</span></span>
-<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a><span class="co">#&gt; Action: getaca_policy(&quot;bundled&quot;) resolves through it for this session.</span></span>
-<span id="cb13-14"><a href="#cb13-14" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb13-15"><a href="#cb13-15" tabindex="-1"></a><span class="co">#&gt; Fix: the declaring package needs a correction. Report it to its maintainer.</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>moved <span class="ot">&lt;-</span> <span class="fu">registry</span>(</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>  <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>,</span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>  <span class="at">remote =</span> <span class="st">&quot;https://host.invalid/yourpkg.rds&quot;</span>,</span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>  <span class="at">keys =</span> public,</span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>  <span class="at">resources =</span> <span class="fu">list</span>(</span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>    <span class="fu">resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="st">&quot;2026-06&quot;</span>,</span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a>             <span class="at">urls =</span> <span class="st">&quot;https://elsewhere.invalid/backbone-2026-06.zip&quot;</span>,</span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a>             <span class="at">sha256 =</span> <span class="fu">strrep</span>(<span class="st">&quot;9f&quot;</span>, <span class="dv">32</span>), <span class="at">license =</span> <span class="st">&quot;CC-BY-4.0&quot;</span>)</span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a>  )</span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a>)</span>
+<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a><span class="fu">registry_write</span>(moved, path)</span>
+<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a><span class="fu">registry_verify</span>(path)</span>
+<span id="cb14-13"><a href="#cb14-13" tabindex="-1"></a><span class="co">#&gt; Error:</span></span>
+<span id="cb14-14"><a href="#cb14-14" tabindex="-1"></a><span class="co">#&gt; ! The registry for &#39;yourpkg&#39; could not be established as authentic.</span></span>
+<span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a><span class="co">#&gt;   the signature covers sha256:4dd915a599ad but this registry is sha256:13507d5d446b</span></span>
+<span id="cb14-16"><a href="#cb14-16" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb14-17"><a href="#cb14-17" tabindex="-1"></a><span class="co">#&gt; This package declares signing keys, so a remote registry that cannot be</span></span>
+<span id="cb14-18"><a href="#cb14-18" tabindex="-1"></a><span class="co">#&gt; checked against one is refused rather than used. The bundled declaration</span></span>
+<span id="cb14-19"><a href="#cb14-19" tabindex="-1"></a><span class="co">#&gt; the package ships is unaffected and still resolves.</span></span>
+<span id="cb14-20"><a href="#cb14-20" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb14-21"><a href="#cb14-21" tabindex="-1"></a><span class="co">#&gt; Action: getaca_policy(&quot;bundled&quot;) resolves through it for this session.</span></span>
+<span id="cb14-22"><a href="#cb14-22" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb14-23"><a href="#cb14-23" tabindex="-1"></a><span class="co">#&gt; Fix: the declaring package needs a correction. Report it to its maintainer.</span></span></code></pre></div>
 <p>Three consequences worth knowing before you declare a key:</p>
 <ul>
 <li><strong>It is a commitment.</strong> Once your shipped registry
@@ -617,28 +629,28 @@ force at the moment you pinned. Under the <code>pinned</code> policy
 that snapshot is what resolution reads, so an analysis keeps resolving
 what it was written against even after the package is reinstalled and
 the remote registry has moved on.</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>pins <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">tempdir</span>(), <span class="st">&quot;getaca.pins.rds&quot;</span>)</span>
-<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a><span class="fu">saveRDS</span>(<span class="fu">list</span>(<span class="at">yourpkg =</span> <span class="fu">registry</span>(<span class="st">&quot;yourpkg&quot;</span>, <span class="fu">list</span>(rec))), pins)</span>
-<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a><span class="fu">options</span>(<span class="at">getaca.pin_file =</span> pins)</span></code></pre></div>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>moved_on <span class="ot">&lt;-</span> <span class="fu">registry</span>(</span>
-<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>  <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>,</span>
-<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>  <span class="at">current =</span> <span class="fu">c</span>(<span class="at">backbone =</span> <span class="st">&quot;2026-09&quot;</span>),</span>
-<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>  <span class="at">resources =</span> <span class="fu">list</span>(</span>
-<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a>    rec,</span>
-<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a>    <span class="fu">resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="st">&quot;2026-09&quot;</span>,</span>
-<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a>             <span class="at">urls =</span> <span class="st">&quot;https://host.invalid/backbone-2026-09.zip&quot;</span>,</span>
-<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a>             <span class="at">sha256 =</span> <span class="fu">strrep</span>(<span class="st">&quot;ab&quot;</span>, <span class="dv">32</span>), <span class="at">license =</span> <span class="st">&quot;CC-BY-4.0&quot;</span>)</span>
-<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a>  )</span>
-<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a>)</span>
-<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a></span>
-<span id="cb15-12"><a href="#cb15-12" tabindex="-1"></a><span class="fu">resolve_resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">registry =</span> moved_on)<span class="sc">$</span>id</span>
-<span id="cb15-13"><a href="#cb15-13" tabindex="-1"></a><span class="co">#&gt; &lt;getaca resource&gt; yourpkg/backbone@2026-09</span></span>
-<span id="cb15-14"><a href="#cb15-14" tabindex="-1"></a><span class="fu">resolve_resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">registry =</span> moved_on, <span class="at">policy =</span> <span class="st">&quot;pinned&quot;</span>)<span class="sc">$</span>id</span>
-<span id="cb15-15"><a href="#cb15-15" tabindex="-1"></a><span class="co">#&gt; &lt;getaca resource&gt; yourpkg/backbone@2026-06</span></span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>pins <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">tempdir</span>(), <span class="st">&quot;getaca.pins.rds&quot;</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="fu">saveRDS</span>(<span class="fu">list</span>(<span class="at">yourpkg =</span> <span class="fu">registry</span>(<span class="st">&quot;yourpkg&quot;</span>, <span class="fu">list</span>(rec))), pins)</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a><span class="fu">options</span>(<span class="at">getaca.pin_file =</span> pins)</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>moved_on <span class="ot">&lt;-</span> <span class="fu">registry</span>(</span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>  <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>,</span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a>  <span class="at">current =</span> <span class="fu">c</span>(<span class="at">backbone =</span> <span class="st">&quot;2026-09&quot;</span>),</span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a>  <span class="at">resources =</span> <span class="fu">list</span>(</span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>    rec,</span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a>    <span class="fu">resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="st">&quot;2026-09&quot;</span>,</span>
+<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a>             <span class="at">urls =</span> <span class="st">&quot;https://host.invalid/backbone-2026-09.zip&quot;</span>,</span>
+<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a>             <span class="at">sha256 =</span> <span class="fu">strrep</span>(<span class="st">&quot;ab&quot;</span>, <span class="dv">32</span>), <span class="at">license =</span> <span class="st">&quot;CC-BY-4.0&quot;</span>)</span>
+<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a>  )</span>
+<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a>)</span>
+<span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a></span>
+<span id="cb16-12"><a href="#cb16-12" tabindex="-1"></a><span class="fu">format</span>(<span class="fu">resolve_resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">registry =</span> moved_on))</span>
+<span id="cb16-13"><a href="#cb16-13" tabindex="-1"></a><span class="co">#&gt; [1] &quot;yourpkg/backbone@2026-09&quot;</span></span>
+<span id="cb16-14"><a href="#cb16-14" tabindex="-1"></a><span class="fu">format</span>(<span class="fu">resolve_resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">registry =</span> moved_on, <span class="at">policy =</span> <span class="st">&quot;pinned&quot;</span>))</span>
+<span id="cb16-15"><a href="#cb16-15" tabindex="-1"></a><span class="co">#&gt; [1] &quot;yourpkg/backbone@2026-06&quot;</span></span></code></pre></div>
 <p>The installed registry has moved to <code>2026-09</code>; the pin
 holds the analysis at <code>2026-06</code>.</p>
 <p>In practice the pin file is written rather than hand-built:</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="fu">getaca_pin</span>(<span class="fu">c</span>(<span class="st">&quot;yourpkg&quot;</span>, <span class="st">&quot;otherpkg&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="fu">getaca_pin</span>(<span class="fu">c</span>(<span class="st">&quot;yourpkg&quot;</span>, <span class="st">&quot;otherpkg&quot;</span>))</span></code></pre></div>
 <p>That writes <code>getaca.pins.rds</code> in the working directory by
 default, which puts it beside <code>renv.lock</code> in a project. Under
 <code>current</code>, <code>getaca_pin()</code> records the remote state
@@ -653,8 +665,8 @@ stale or edited pin cannot quietly serve different bytes.</p>
 <p>Pinning a package that ships no registry warns and skips it, so
 pinning a project’s whole dependency list does not fail on the ones that
 need nothing:</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="fu">getaca_pin</span>(<span class="st">&quot;stats&quot;</span>, <span class="at">path =</span> <span class="fu">file.path</span>(<span class="fu">tempdir</span>(), <span class="st">&quot;pins.rds&quot;</span>))</span>
-<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a><span class="co">#&gt; Warning: package &#39;stats&#39; ships no getaca registry; skipped</span></span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="fu">getaca_pin</span>(<span class="st">&quot;stats&quot;</span>, <span class="at">path =</span> <span class="fu">file.path</span>(<span class="fu">tempdir</span>(), <span class="st">&quot;pins.rds&quot;</span>))</span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a><span class="co">#&gt; Warning: package &#39;stats&#39; ships no getaca registry; skipped</span></span></code></pre></div>
 <div id="pins-and-renv" class="section level3">
 <h3>Pins and <code>renv</code></h3>
 <p>They answer adjacent questions. <code>renv</code> records which
@@ -672,18 +684,18 @@ the analysis runs offline.</p>
 <h2><code>offline</code></h2>
 <p>Never reaches for the network. Cached copies and bundled declarations
 only.</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a>err <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>(<span class="fu">getaca</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">registry =</span> reg, <span class="at">policy =</span> <span class="st">&quot;offline&quot;</span>),</span>
-<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a>                <span class="at">getaca_error =</span> <span class="cf">function</span>(e) e)</span>
-<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a><span class="fu">class</span>(err)[<span class="dv">1</span>]</span>
-<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a><span class="co">#&gt; [1] &quot;getaca_error_offline&quot;</span></span></code></pre></div>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">conditionMessage</span>(err))</span>
-<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a><span class="co">#&gt; yourpkg/backbone@2026-06 is not cached and cannot be downloaded (offline mode is in effect).</span></span>
-<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a><span class="co">#&gt; Action: on a connected machine run getaca_prefetch(&quot;backbone&quot;, package = &quot;yourpkg&quot;),</span></span>
-<span id="cb19-5"><a href="#cb19-5" tabindex="-1"></a><span class="co">#&gt; or point GETACA_CACHE at a cache that already holds it.</span></span>
-<span id="cb19-6"><a href="#cb19-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb19-7"><a href="#cb19-7" tabindex="-1"></a><span class="co">#&gt; Fix: this is expected during checks. Use getaca_skip_if_unavailable()</span></span>
-<span id="cb19-8"><a href="#cb19-8" tabindex="-1"></a><span class="co">#&gt; in tests and getaca_optional() in examples.</span></span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a>err <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>(<span class="fu">getaca</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">registry =</span> reg, <span class="at">policy =</span> <span class="st">&quot;offline&quot;</span>),</span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a>                <span class="at">getaca_error =</span> <span class="cf">function</span>(e) e)</span>
+<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a><span class="fu">class</span>(err)[<span class="dv">1</span>]</span>
+<span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a><span class="co">#&gt; [1] &quot;getaca_error_offline&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">conditionMessage</span>(err))</span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a><span class="co">#&gt; yourpkg/backbone@2026-06 is not cached and cannot be downloaded (offline mode is in effect).</span></span>
+<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a><span class="co">#&gt; Action: on a connected machine run getaca_prefetch(&quot;backbone&quot;, package = &quot;yourpkg&quot;),</span></span>
+<span id="cb20-5"><a href="#cb20-5" tabindex="-1"></a><span class="co">#&gt; or point GETACA_CACHE at a cache that already holds it.</span></span>
+<span id="cb20-6"><a href="#cb20-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb20-7"><a href="#cb20-7" tabindex="-1"></a><span class="co">#&gt; Fix: this is expected during checks. Use getaca_skip_if_unavailable()</span></span>
+<span id="cb20-8"><a href="#cb20-8" tabindex="-1"></a><span class="co">#&gt; in tests and getaca_optional() in examples.</span></span></code></pre></div>
 <p>This is the policy a check run gets, whatever is set elsewhere, and
 it is worth setting deliberately in two other situations: an air-gapped
 machine, where the message is more useful than a transfer timeout, and a
@@ -710,14 +722,14 @@ variables</p></li>
 <li><p><code>GETACA_OFFLINE</code> set to <code>1</code>,
 <code>true</code> or <code>yes</code></p></li>
 </ul>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="fu">getaca_policy</span>()</span>
-<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a><span class="co">#&gt; [1] &quot;offline&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="fu">getaca_policy</span>()</span>
+<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a><span class="co">#&gt; [1] &quot;offline&quot;</span></span></code></pre></div>
 <p>The check clamp is released by <code>NOT_CRAN=true</code>, which is
 how a package’s own CI runs tests against real resources while a CRAN
 machine never does.</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="fu">getaca_policy</span>(<span class="st">&quot;current&quot;</span>)                                     <span class="co"># this session</span></span>
-<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a><span class="fu">getaca</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>, <span class="at">policy =</span> <span class="st">&quot;bundled&quot;</span>)  <span class="co"># this call</span></span>
-<span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a><span class="fu">Sys.setenv</span>(<span class="at">GETACA_POLICY =</span> <span class="st">&quot;pinned&quot;</span>)                         <span class="co"># this process</span></span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="fu">getaca_policy</span>(<span class="st">&quot;current&quot;</span>)                                     <span class="co"># this session</span></span>
+<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a><span class="fu">getaca</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>, <span class="at">policy =</span> <span class="st">&quot;bundled&quot;</span>)  <span class="co"># this call</span></span>
+<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a><span class="fu">Sys.setenv</span>(<span class="at">GETACA_POLICY =</span> <span class="st">&quot;pinned&quot;</span>)                         <span class="co"># this process</span></span></code></pre></div>
 <p>Setting the policy per call is the form worth reaching for in package
 code. A function that must not vary its answer can pass
 <code>policy = &quot;bundled&quot;</code> explicitly and stop caring what the
@@ -750,11 +762,11 @@ direction, and the direction is the reason to pick it.</p>
 <h2>What is recorded</h2>
 <p>Whichever policy resolved a resource is kept in its cache entry,
 alongside the digest of the registry state that supplied the record:</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="fu">getaca_info</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)</span>
-<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a><span class="co">#&gt; &lt;getaca cache entry&gt; yourpkg/backbone@2026-06</span></span>
-<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a><span class="co">#&gt;   ...</span></span>
-<span id="cb22-4"><a href="#cb22-4" tabindex="-1"></a><span class="co">#&gt;   resolved by current registry sha256:8b31e0da54cf (published 2026-07-22)</span></span>
-<span id="cb22-5"><a href="#cb22-5" tabindex="-1"></a><span class="co">#&gt;   source url  https://host.invalid/backbone-2026-06.zip</span></span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="fu">getaca_info</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)</span>
+<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a><span class="co">#&gt; &lt;getaca cache entry&gt; yourpkg/backbone@2026-06</span></span>
+<span id="cb23-3"><a href="#cb23-3" tabindex="-1"></a><span class="co">#&gt;   ...</span></span>
+<span id="cb23-4"><a href="#cb23-4" tabindex="-1"></a><span class="co">#&gt;   resolved by current registry sha256:8b31e0da54cf (published 2026-07-22)</span></span>
+<span id="cb23-5"><a href="#cb23-5" tabindex="-1"></a><span class="co">#&gt;   source url  https://host.invalid/backbone-2026-06.zip</span></span></code></pre></div>
 <p><code>getaca_catalogue()</code> reports the same two fields as
 <code>source</code> and <code>registry_digest</code> columns across
 every cached resource, so “which of these came from a remote channel” is

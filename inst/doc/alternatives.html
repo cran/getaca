@@ -350,6 +350,11 @@ package someone met first.</p>
 <p>The question <code>getaca</code> is built around: a package needs a
 file it cannot ship, and every machine running that package should get
 the same bytes.</p>
+<div id="installation" class="section level2">
+<h2>Installation</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;pak&quot;</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>pak<span class="sc">::</span><span class="fu">pak</span>(<span class="st">&quot;gcol33/getaca&quot;</span>)</span></code></pre></div>
+</div>
 <div id="bundling-the-data-in-the-package" class="section level2">
 <h2>Bundling the data in the package</h2>
 <p>The first thing to rule in or out. A dataset in <code>data/</code>
@@ -541,14 +546,14 @@ the right file.</p>
 <p>They compose. A <code>targets</code> pipeline can have a target whose
 command is <code>getaca(&quot;backbone&quot;, package = &quot;yourpkg&quot;)</code>, which
 gives the pipeline a path, and the path a provenance record:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>  <span class="fu">tar_target</span>(backbone_path, getaca<span class="sc">::</span><span class="fu">getaca</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>),</span>
-<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>             <span class="at">format =</span> <span class="st">&quot;file&quot;</span>),</span>
-<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>  <span class="fu">tar_target</span>(backbone, <span class="fu">read_backbone</span>(backbone_path)),</span>
-<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>  <span class="fu">tar_target</span>(summary, <span class="fu">summarise_backbone</span>(backbone))</span>
-<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>  <span class="fu">tar_target</span>(backbone_path, getaca<span class="sc">::</span><span class="fu">getaca</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>),</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>             <span class="at">format =</span> <span class="st">&quot;file&quot;</span>),</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>  <span class="fu">tar_target</span>(backbone, <span class="fu">read_backbone</span>(backbone_path)),</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>  <span class="fu">tar_target</span>(summary, <span class="fu">summarise_backbone</span>(backbone))</span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>)</span></code></pre></div>
 <p><code>format = &quot;file&quot;</code> makes <code>targets</code> watch the
 returned path, so the pipeline invalidates downstream targets when the
 resolved version changes. That is the combination worth reaching for:
@@ -562,8 +567,8 @@ what to recompute.</p>
 resolved to. Neither subsumes the other: a package version does not
 determine a data version once the package is on the <code>current</code>
 policy, and a data version says nothing about the code that read it.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">snapshot</span>()</span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">getaca_pin</span>(<span class="fu">c</span>(<span class="st">&quot;yourpkg&quot;</span>, <span class="st">&quot;otherpkg&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">snapshot</span>()</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="fu">getaca_pin</span>(<span class="fu">c</span>(<span class="st">&quot;yourpkg&quot;</span>, <span class="st">&quot;otherpkg&quot;</span>))</span></code></pre></div>
 <p>Commit both files. Restoring is <code>renv::restore()</code> followed
 by <code>getaca_prefetch()</code> on a connected machine, after which
 the analysis runs offline. See <code>vignette(&quot;policies&quot;)</code> for
@@ -648,13 +653,13 @@ graph.</li>
 could grow into something else, and the dependency footprint that makes
 <code>getaca</code> inexpensive to depend on is the thing that would go
 first.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">packageDescription</span>(<span class="st">&quot;getaca&quot;</span>)<span class="sc">$</span>Imports</span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="co">#&gt; [1] &quot;curl (&gt;= 5.0.0), stats, tools, utils&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">packageDescription</span>(<span class="st">&quot;getaca&quot;</span>)<span class="sc">$</span>Imports</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="co">#&gt; [1] &quot;curl (&gt;= 5.0.0), stats, tools, utils&quot;</span></span></code></pre></div>
 </div>
 <div id="where-to-go-next" class="section level2">
 <h2>Where to go next</h2>
 <ul>
-<li><p><code>vignette(&quot;quickstart&quot;)</code> for the whole cycle in one
+<li><p><code>vignette(&quot;getaca&quot;)</code> for the whole cycle in one
 pass</p></li>
 <li><p><code>vignette(&quot;declaring&quot;)</code> for what a declaring package
 writes</p></li>

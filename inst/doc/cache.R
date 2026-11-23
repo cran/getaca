@@ -27,6 +27,10 @@ reg <- registry("yourpkg", list(
            sha256 = strrep("9f", 32), size = 797e6, license = "CC-BY-4.0")
 ))
 
+## ----eval = FALSE-------------------------------------------------------------
+# install.packages("pak")
+# pak::pak("gcol33/getaca")
+
 ## -----------------------------------------------------------------------------
 getaca_cache_dir()
 
@@ -72,7 +76,7 @@ getaca_catalogue(registry = reg)[, c("package", "name", "version",
 str(getaca_catalogue(), max.level = 1)
 
 ## ----eval = FALSE-------------------------------------------------------------
-# options(getaca.lock_stale_seconds = 600)
+# options(getaca.lock_wait_seconds = 600)
 
 ## ----eval = FALSE-------------------------------------------------------------
 # getaca_progress("bar")    # redraws one line, the default when interactive
@@ -103,6 +107,10 @@ getaca_clean(dry_run = TRUE)
 # getaca_clean(what = "temp")                    # just the abandoned transfers
 # getaca_clean(package = "yourpkg")              # one package
 # getaca_clean("backbone", package = "yourpkg")  # one resource name
+# 
+# # Everything cached for one resource, or for one version of it, healthy or not:
+# getaca_clean("backbone", package = "yourpkg", what = "cached")
+# getaca_clean("backbone", package = "yourpkg", version = "2026-03", what = "cached")
 
 ## ----eval = FALSE-------------------------------------------------------------
 # getaca_keep("backbone", package = "yourpkg")                  # pin it

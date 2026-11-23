@@ -12,6 +12,10 @@ reg <- registry("yourpkg", list(
            sha256 = strrep("9f", 32), license = "CC-BY-4.0")
 ))
 
+## ----eval = FALSE-------------------------------------------------------------
+# install.packages("pak")
+# pak::pak("gcol33/getaca")
+
 ## -----------------------------------------------------------------------------
 getaca_policy()
 
@@ -80,7 +84,8 @@ getaca_available("nothing-here", package = "getaca")
 ## ----eval = FALSE-------------------------------------------------------------
 # test_that("the shipped registry resolves the version we think it does", {
 #   reg <- registry_for("yourpkg")
-#   expect_equal(resolve_resource("backbone", registry = reg)$id$version, "2026-06")
+#   expect_equal(format(resolve_resource("backbone", registry = reg)),
+#                "yourpkg/backbone@2026-06")
 # })
 
 ## ----eval = FALSE-------------------------------------------------------------

@@ -25,6 +25,13 @@ The example is a plausible starting point rather than any particular package:
 a table of URLs, a cache directory, a `file.exists()` check, and an ad-hoc
 version string.
 
+## Installation
+
+```{r, eval = FALSE}
+install.packages("pak")
+pak::pak("gcol33/getaca")
+```
+
 ## What is being replaced
 
 ```{r, eval = FALSE}
@@ -338,10 +345,10 @@ rather than an internal one.
 
 ```{r, eval = FALSE}
 analyse <- function(x) {
-  info <- getaca::getaca_info("backbone", package = "yourpkg")
   out  <- do_the_work(x, getaca::getaca("backbone", package = "yourpkg"))
-  attr(out, "backbone_version") <- info$id$version
-  attr(out, "backbone_sha256")  <- info$observed_sha256
+  info <- as.data.frame(getaca::getaca_info("backbone", package = "yourpkg"))
+  attr(out, "backbone_version") <- info$version
+  attr(out, "backbone_sha256")  <- info$sha256
   out
 }
 ```

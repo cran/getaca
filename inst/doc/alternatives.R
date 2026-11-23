@@ -7,6 +7,10 @@ library(getaca)
 Sys.setenv(GETACA_OFFLINE = "true", NOT_CRAN = "true")
 
 ## ----eval = FALSE-------------------------------------------------------------
+# install.packages("pak")
+# pak::pak("gcol33/getaca")
+
+## ----eval = FALSE-------------------------------------------------------------
 # library(targets)
 # 
 # list(

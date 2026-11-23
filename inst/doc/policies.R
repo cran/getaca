@@ -6,6 +6,10 @@ library(getaca)
 .old_envvars <- Sys.getenv(c("GETACA_OFFLINE", "NOT_CRAN"), unset = NA)
 Sys.setenv(GETACA_OFFLINE = "true", NOT_CRAN = "true")
 
+## ----eval = FALSE-------------------------------------------------------------
+# install.packages("pak")
+# pak::pak("gcol33/getaca")
+
 ## -----------------------------------------------------------------------------
 rec <- resource("backbone", "2026-06",
                 urls = "https://host.invalid/backbone-2026-06.zip",
@@ -18,10 +22,7 @@ reg <- registry(
   resources = list(rec)
 )
 
-res <- resolve_resource("backbone", registry = reg, policy = "bundled")
-res$id
-res$source
-res$digest
+resolve_resource("backbone", registry = reg, policy = "bundled")
 
 ## -----------------------------------------------------------------------------
 remote_reg <- registry(
@@ -74,8 +75,8 @@ ahead <- registry(
   )
 )
 
-resolve_resource("backbone", registry = ahead)$id
-resolve_resource("backbone", registry = ahead, version = "2026-06")$id
+format(resolve_resource("backbone", registry = ahead))
+format(resolve_resource("backbone", registry = ahead, version = "2026-06"))
 
 ## -----------------------------------------------------------------------------
 secret <- file.path(tempdir(), "yourpkg-signing.key")
@@ -106,9 +107,17 @@ registry_verify(path)
 
 ## ----error = TRUE-------------------------------------------------------------
 try({
-moved <- signed
-moved$resources[[1]]$urls <- "https://elsewhere.invalid/backbone-2026-06.zip"
-saveRDS(moved, path, version = 3)
+moved <- registry(
+  package = "yourpkg",
+  remote = "https://host.invalid/yourpkg.rds",
+  keys = public,
+  resources = list(
+    resource("backbone", "2026-06",
+             urls = "https://elsewhere.invalid/backbone-2026-06.zip",
+             sha256 = strrep("9f", 32), license = "CC-BY-4.0")
+  )
+)
+registry_write(moved, path)
 registry_verify(path)
 })
 
@@ -129,8 +138,8 @@ moved_on <- registry(
   )
 )
 
-resolve_resource("backbone", registry = moved_on)$id
-resolve_resource("backbone", registry = moved_on, policy = "pinned")$id
+format(resolve_resource("backbone", registry = moved_on))
+format(resolve_resource("backbone", registry = moved_on, policy = "pinned"))
 
 ## ----eval = FALSE-------------------------------------------------------------
 # getaca_pin(c("yourpkg", "otherpkg"))

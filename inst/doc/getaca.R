@@ -24,6 +24,10 @@ local({
 .old_envvars <- Sys.getenv(c("GETACA_OFFLINE", "NOT_CRAN"), unset = NA)
 Sys.setenv(GETACA_OFFLINE = "true", NOT_CRAN = "true")
 
+## ----eval = FALSE-------------------------------------------------------------
+# install.packages("pak")
+# pak::pak("gcol33/getaca")
+
 ## -----------------------------------------------------------------------------
 backbone <- resource(
   name    = "backbone",
@@ -64,10 +68,10 @@ multi <- registry(
   )
 )
 
-resolve_resource("backbone", registry = multi)$id
+format(resolve_resource("backbone", registry = multi))
 
 ## -----------------------------------------------------------------------------
-resolve_resource("backbone", registry = multi, version = "2026-06")$id
+format(resolve_resource("backbone", registry = multi, version = "2026-06"))
 
 ## ----error = TRUE-------------------------------------------------------------
 try({

@@ -348,45 +348,50 @@ package’s own API intact so users notice nothing.</p>
 <p>The example is a plausible starting point rather than any particular
 package: a table of URLs, a cache directory, a
 <code>file.exists()</code> check, and an ad-hoc version string.</p>
+<div id="installation" class="section level2">
+<h2>Installation</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;pak&quot;</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>pak<span class="sc">::</span><span class="fu">pak</span>(<span class="st">&quot;gcol33/getaca&quot;</span>)</span></code></pre></div>
+</div>
 <div id="what-is-being-replaced" class="section level2">
 <h2>What is being replaced</h2>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># R/download.R, before</span></span>
-<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>BACKBONE_URLS <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>  <span class="at">backbone =</span> <span class="st">&quot;https://host.example/backbone.zip&quot;</span>,</span>
-<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>  <span class="at">grid     =</span> <span class="st">&quot;https://host.example/grid.zip&quot;</span></span>
-<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>)</span>
-<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>backbone_dir <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
-<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>  d <span class="ot">&lt;-</span> tools<span class="sc">::</span><span class="fu">R_user_dir</span>(<span class="st">&quot;yourpkg&quot;</span>, <span class="st">&quot;cache&quot;</span>)</span>
-<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>  <span class="fu">dir.create</span>(d, <span class="at">recursive =</span> <span class="cn">TRUE</span>, <span class="at">showWarnings =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>  d</span>
-<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>}</span>
-<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a></span>
-<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a>backbone_path <span class="ot">&lt;-</span> <span class="cf">function</span>(name) {</span>
-<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a>  <span class="fu">file.path</span>(<span class="fu">backbone_dir</span>(), <span class="fu">paste0</span>(name, <span class="st">&quot;.zip&quot;</span>))</span>
-<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>}</span>
-<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a></span>
-<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a>install_backbone <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">name =</span> <span class="st">&quot;backbone&quot;</span>, <span class="at">force =</span> <span class="cn">FALSE</span>) {</span>
-<span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a>  dest <span class="ot">&lt;-</span> <span class="fu">backbone_path</span>(name)</span>
-<span id="cb1-19"><a href="#cb1-19" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">file.exists</span>(dest) <span class="sc">&amp;&amp;</span> <span class="sc">!</span>force) <span class="fu">return</span>(<span class="fu">invisible</span>(dest))</span>
-<span id="cb1-20"><a href="#cb1-20" tabindex="-1"></a></span>
-<span id="cb1-21"><a href="#cb1-21" tabindex="-1"></a>  url <span class="ot">&lt;-</span> BACKBONE_URLS[[name]]</span>
-<span id="cb1-22"><a href="#cb1-22" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.null</span>(url)) <span class="fu">stop</span>(<span class="st">&quot;Unknown dataset: &quot;</span>, name)</span>
-<span id="cb1-23"><a href="#cb1-23" tabindex="-1"></a></span>
-<span id="cb1-24"><a href="#cb1-24" tabindex="-1"></a>  tmp <span class="ot">&lt;-</span> <span class="fu">tempfile</span>()</span>
-<span id="cb1-25"><a href="#cb1-25" tabindex="-1"></a>  ok <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>({</span>
-<span id="cb1-26"><a href="#cb1-26" tabindex="-1"></a>    utils<span class="sc">::</span><span class="fu">download.file</span>(url, tmp, <span class="at">mode =</span> <span class="st">&quot;wb&quot;</span>, <span class="at">quiet =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb1-27"><a href="#cb1-27" tabindex="-1"></a>    <span class="cn">TRUE</span></span>
-<span id="cb1-28"><a href="#cb1-28" tabindex="-1"></a>  }, <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">FALSE</span>)</span>
-<span id="cb1-29"><a href="#cb1-29" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span>ok) <span class="fu">stop</span>(<span class="st">&quot;Could not download &quot;</span>, name, <span class="st">&quot;. Check your connection.&quot;</span>)</span>
-<span id="cb1-30"><a href="#cb1-30" tabindex="-1"></a></span>
-<span id="cb1-31"><a href="#cb1-31" tabindex="-1"></a>  <span class="fu">file.rename</span>(tmp, dest)</span>
-<span id="cb1-32"><a href="#cb1-32" tabindex="-1"></a>  <span class="fu">invisible</span>(dest)</span>
-<span id="cb1-33"><a href="#cb1-33" tabindex="-1"></a>}</span>
-<span id="cb1-34"><a href="#cb1-34" tabindex="-1"></a></span>
-<span id="cb1-35"><a href="#cb1-35" tabindex="-1"></a>backbone_available <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">name =</span> <span class="st">&quot;backbone&quot;</span>) {</span>
-<span id="cb1-36"><a href="#cb1-36" tabindex="-1"></a>  <span class="fu">file.exists</span>(<span class="fu">backbone_path</span>(name))</span>
-<span id="cb1-37"><a href="#cb1-37" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># R/download.R, before</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>BACKBONE_URLS <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  <span class="at">backbone =</span> <span class="st">&quot;https://host.example/backbone.zip&quot;</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>  <span class="at">grid     =</span> <span class="st">&quot;https://host.example/grid.zip&quot;</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>)</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>backbone_dir <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>  d <span class="ot">&lt;-</span> tools<span class="sc">::</span><span class="fu">R_user_dir</span>(<span class="st">&quot;yourpkg&quot;</span>, <span class="st">&quot;cache&quot;</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>  <span class="fu">dir.create</span>(d, <span class="at">recursive =</span> <span class="cn">TRUE</span>, <span class="at">showWarnings =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>  d</span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>}</span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>backbone_path <span class="ot">&lt;-</span> <span class="cf">function</span>(name) {</span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>  <span class="fu">file.path</span>(<span class="fu">backbone_dir</span>(), <span class="fu">paste0</span>(name, <span class="st">&quot;.zip&quot;</span>))</span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a>}</span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a>install_backbone <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">name =</span> <span class="st">&quot;backbone&quot;</span>, <span class="at">force =</span> <span class="cn">FALSE</span>) {</span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a>  dest <span class="ot">&lt;-</span> <span class="fu">backbone_path</span>(name)</span>
+<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">file.exists</span>(dest) <span class="sc">&amp;&amp;</span> <span class="sc">!</span>force) <span class="fu">return</span>(<span class="fu">invisible</span>(dest))</span>
+<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a></span>
+<span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a>  url <span class="ot">&lt;-</span> BACKBONE_URLS[[name]]</span>
+<span id="cb2-22"><a href="#cb2-22" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.null</span>(url)) <span class="fu">stop</span>(<span class="st">&quot;Unknown dataset: &quot;</span>, name)</span>
+<span id="cb2-23"><a href="#cb2-23" tabindex="-1"></a></span>
+<span id="cb2-24"><a href="#cb2-24" tabindex="-1"></a>  tmp <span class="ot">&lt;-</span> <span class="fu">tempfile</span>()</span>
+<span id="cb2-25"><a href="#cb2-25" tabindex="-1"></a>  ok <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>({</span>
+<span id="cb2-26"><a href="#cb2-26" tabindex="-1"></a>    utils<span class="sc">::</span><span class="fu">download.file</span>(url, tmp, <span class="at">mode =</span> <span class="st">&quot;wb&quot;</span>, <span class="at">quiet =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-27"><a href="#cb2-27" tabindex="-1"></a>    <span class="cn">TRUE</span></span>
+<span id="cb2-28"><a href="#cb2-28" tabindex="-1"></a>  }, <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">FALSE</span>)</span>
+<span id="cb2-29"><a href="#cb2-29" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span>ok) <span class="fu">stop</span>(<span class="st">&quot;Could not download &quot;</span>, name, <span class="st">&quot;. Check your connection.&quot;</span>)</span>
+<span id="cb2-30"><a href="#cb2-30" tabindex="-1"></a></span>
+<span id="cb2-31"><a href="#cb2-31" tabindex="-1"></a>  <span class="fu">file.rename</span>(tmp, dest)</span>
+<span id="cb2-32"><a href="#cb2-32" tabindex="-1"></a>  <span class="fu">invisible</span>(dest)</span>
+<span id="cb2-33"><a href="#cb2-33" tabindex="-1"></a>}</span>
+<span id="cb2-34"><a href="#cb2-34" tabindex="-1"></a></span>
+<span id="cb2-35"><a href="#cb2-35" tabindex="-1"></a>backbone_available <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">name =</span> <span class="st">&quot;backbone&quot;</span>) {</span>
+<span id="cb2-36"><a href="#cb2-36" tabindex="-1"></a>  <span class="fu">file.exists</span>(<span class="fu">backbone_path</span>(name))</span>
+<span id="cb2-37"><a href="#cb2-37" tabindex="-1"></a>}</span></code></pre></div>
 <p>Read it for what it promises rather than what it does.
 <code>install_backbone()</code> promises a usable file at a path. It
 delivers a path to whatever arrived, which is a weaker thing: a proxy’s
@@ -421,13 +426,13 @@ field.</p>
 <p>A checksum has to come from the bytes, so
 <code>registry_draft()</code> retrieves each location once and hashes it
 locally. The old table is the argument, near enough unchanged:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># data-raw/registry.R</span></span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>reg <span class="ot">&lt;-</span> <span class="fu">registry_draft</span>(</span>
-<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  <span class="fu">c</span>(<span class="at">backbone =</span> <span class="st">&quot;https://host.example/backbone-2026-06.zip&quot;</span>,</span>
-<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>    <span class="at">grid     =</span> <span class="st">&quot;https://host.example/grid-2026-06.zip&quot;</span>),</span>
-<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>  <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>,</span>
-<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>  <span class="at">version =</span> <span class="st">&quot;2026-06&quot;</span></span>
-<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># data-raw/registry.R</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>reg <span class="ot">&lt;-</span> <span class="fu">registry_draft</span>(</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="fu">c</span>(<span class="at">backbone =</span> <span class="st">&quot;https://host.example/backbone-2026-06.zip&quot;</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>    <span class="at">grid     =</span> <span class="st">&quot;https://host.example/grid-2026-06.zip&quot;</span>),</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>  <span class="at">version =</span> <span class="st">&quot;2026-06&quot;</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>)</span></code></pre></div>
 <p>What comes back is a registry holding a record per entry, each
 carrying the size and the SHA-256 of the file as served. That is not
 always the file you built: a host that recompresses on upload, or serves
@@ -437,77 +442,77 @@ your build.</p>
 <p>Where the data are deposited rather than served from a plain URL, the
 identifier is the location, and the archive supplies the licence, the
 version and a DOI along with the files:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">registry_draft</span>(<span class="st">&quot;10.5281/zenodo.1234567&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">registry_draft</span>(<span class="st">&quot;10.5281/zenodo.1234567&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)</span></code></pre></div>
 <p>Drafting a large record costs no disk: the file is hashed as it
 arrives and never written down. Pass <code>keep = TRUE</code> to write
 it to the cache instead, so your first real call finds it already
 there.</p>
 <p>Hashing the copy you built is a different claim, and
 <code>local =</code> makes it:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">registry_draft</span>(<span class="fu">c</span>(<span class="at">backbone =</span> <span class="st">&quot;https://zenodo.org/records/1234567/files/backbone.zip&quot;</span>),</span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>               <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>, <span class="at">version =</span> <span class="st">&quot;2026-06&quot;</span>,</span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>               <span class="at">local   =</span> <span class="fu">c</span>(<span class="at">backbone =</span> <span class="st">&quot;~/build/backbone-2026-06.zip&quot;</span>),</span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>               <span class="at">sha256  =</span> <span class="fu">c</span>(<span class="at">backbone =</span> <span class="st">&quot;9f9f...&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">registry_draft</span>(<span class="fu">c</span>(<span class="at">backbone =</span> <span class="st">&quot;https://zenodo.org/records/1234567/files/backbone.zip&quot;</span>),</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>               <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>, <span class="at">version =</span> <span class="st">&quot;2026-06&quot;</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>               <span class="at">local   =</span> <span class="fu">c</span>(<span class="at">backbone =</span> <span class="st">&quot;~/build/backbone-2026-06.zip&quot;</span>),</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>               <span class="at">sha256  =</span> <span class="fu">c</span>(<span class="at">backbone =</span> <span class="st">&quot;9f9f...&quot;</span>))</span></code></pre></div>
 <p>With both, the local copy is hashed and held to the checksum, which
 is how a deposit is confirmed to be the file that was uploaded.</p>
 <p>A draft is a starting point, and two fields it cannot know are worth
 adding by hand: a second location, and a line of description for anyone
 reading the catalogue.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>backbone <span class="ot">&lt;-</span> <span class="fu">resource</span>(</span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  <span class="at">name    =</span> <span class="st">&quot;backbone&quot;</span>,</span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="at">version =</span> <span class="st">&quot;2026-06&quot;</span>,</span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="at">urls    =</span> <span class="fu">c</span>(<span class="st">&quot;https://zenodo.invalid/records/1234567/files/backbone-2026-06.zip&quot;</span>,</span>
-<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>              <span class="st">&quot;https://releases.invalid/backbone/2026.06/backbone.zip&quot;</span>),</span>
-<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>  <span class="at">sha256  =</span> <span class="fu">strrep</span>(<span class="st">&quot;9f&quot;</span>, <span class="dv">32</span>),</span>
-<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>  <span class="at">size    =</span> <span class="fl">797e6</span>,</span>
-<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>  <span class="at">license =</span> <span class="st">&quot;CC-BY-4.0&quot;</span>,</span>
-<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>  <span class="at">description =</span> <span class="st">&quot;Reference backbone, June 2026&quot;</span></span>
-<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>)</span>
-<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a><span class="fu">format</span>(backbone)</span>
-<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a><span class="co">#&gt; [1] &quot;backbone@2026-06  9f9f9f9f9f9f  [CC-BY-4.0]&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>backbone <span class="ot">&lt;-</span> <span class="fu">resource</span>(</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  <span class="at">name    =</span> <span class="st">&quot;backbone&quot;</span>,</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="at">version =</span> <span class="st">&quot;2026-06&quot;</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  <span class="at">urls    =</span> <span class="fu">c</span>(<span class="st">&quot;https://zenodo.invalid/records/1234567/files/backbone-2026-06.zip&quot;</span>,</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>              <span class="st">&quot;https://releases.invalid/backbone/2026.06/backbone.zip&quot;</span>),</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>  <span class="at">sha256  =</span> <span class="fu">strrep</span>(<span class="st">&quot;9f&quot;</span>, <span class="dv">32</span>),</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>  <span class="at">size    =</span> <span class="fl">797e6</span>,</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>  <span class="at">license =</span> <span class="st">&quot;CC-BY-4.0&quot;</span>,</span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>  <span class="at">description =</span> <span class="st">&quot;Reference backbone, June 2026&quot;</span></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>)</span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a><span class="fu">format</span>(backbone)</span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a><span class="co">#&gt; [1] &quot;backbone@2026-06  9f9f9f9f9f9f  [CC-BY-4.0]&quot;</span></span></code></pre></div>
 <p>The version label is the decision worth pausing on. Whatever the old
 code called “the current one” now needs a name that will still be right
 in two years. Upstream’s own release identifier is the default answer,
 and a label that records both identities is better when you are shipping
 something you built from upstream:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">format</span>(<span class="fu">resource</span>(</span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  <span class="at">name    =</span> <span class="st">&quot;backbone&quot;</span>,</span>
-<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="at">version =</span> <span class="st">&quot;source-2026-06_build-3&quot;</span>,</span>
-<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  <span class="at">urls    =</span> <span class="st">&quot;https://host.invalid/backbone-db-3.zip&quot;</span>,</span>
-<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>  <span class="at">sha256  =</span> <span class="fu">strrep</span>(<span class="st">&quot;ab&quot;</span>, <span class="dv">32</span>),</span>
-<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>  <span class="at">license =</span> <span class="st">&quot;CC-BY-4.0&quot;</span>,</span>
-<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>  <span class="at">upstream =</span> <span class="fu">list</span>(<span class="at">source_release =</span> <span class="st">&quot;2026-06&quot;</span>, <span class="at">build =</span> <span class="st">&quot;3&quot;</span>)</span>
-<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>))</span>
-<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="co">#&gt; [1] &quot;backbone@source-2026-06_build-3  abababababab  [CC-BY-4.0]&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">format</span>(<span class="fu">resource</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  <span class="at">name    =</span> <span class="st">&quot;backbone&quot;</span>,</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="at">version =</span> <span class="st">&quot;source-2026-06_build-3&quot;</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  <span class="at">urls    =</span> <span class="st">&quot;https://host.invalid/backbone-db-3.zip&quot;</span>,</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>  <span class="at">sha256  =</span> <span class="fu">strrep</span>(<span class="st">&quot;ab&quot;</span>, <span class="dv">32</span>),</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>  <span class="at">license =</span> <span class="st">&quot;CC-BY-4.0&quot;</span>,</span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>  <span class="at">upstream =</span> <span class="fu">list</span>(<span class="at">source_release =</span> <span class="st">&quot;2026-06&quot;</span>, <span class="at">build =</span> <span class="st">&quot;3&quot;</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>))</span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a><span class="co">#&gt; [1] &quot;backbone@source-2026-06_build-3  abababababab  [CC-BY-4.0]&quot;</span></span></code></pre></div>
 </div>
 <div id="step-2-assemble-and-ship-the-registry" class="section level2">
 <h2>Step 2: assemble and ship the registry</h2>
 <p>Every entry in the old table becomes a record, and the records become
 one registry scoped to your package:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>grid <span class="ot">&lt;-</span> <span class="fu">resource</span>(</span>
-<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  <span class="at">name    =</span> <span class="st">&quot;grid&quot;</span>,</span>
-<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="at">version =</span> <span class="st">&quot;2026-06&quot;</span>,</span>
-<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  <span class="at">urls    =</span> <span class="st">&quot;https://zenodo.invalid/records/1234567/files/grid-2026-06.zip&quot;</span>,</span>
-<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>  <span class="at">sha256  =</span> <span class="fu">strrep</span>(<span class="st">&quot;ab&quot;</span>, <span class="dv">32</span>),</span>
-<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>  <span class="at">size    =</span> <span class="fl">41e6</span>,</span>
-<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>  <span class="at">license =</span> <span class="st">&quot;CC-BY-4.0&quot;</span>,</span>
-<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>  <span class="at">description =</span> <span class="st">&quot;Reference grid, June 2026&quot;</span></span>
-<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>)</span>
-<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a></span>
-<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a>reg <span class="ot">&lt;-</span> <span class="fu">registry</span>(<span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>, <span class="at">resources =</span> <span class="fu">list</span>(backbone, grid))</span>
-<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a>reg</span>
-<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a><span class="co">#&gt; &lt;getaca registry&gt; yourpkg  (policy &quot;bundled&quot;)</span></span>
-<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a><span class="co">#&gt;   digest: sha256:deabc8953e49</span></span>
-<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a><span class="co">#&gt;   - backbone@2026-06  9f9f9f9f9f9f  [CC-BY-4.0]</span></span>
-<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a><span class="co">#&gt;   - grid@2026-06  abababababab  [CC-BY-4.0]</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>grid <span class="ot">&lt;-</span> <span class="fu">resource</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  <span class="at">name    =</span> <span class="st">&quot;grid&quot;</span>,</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="at">version =</span> <span class="st">&quot;2026-06&quot;</span>,</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="at">urls    =</span> <span class="st">&quot;https://zenodo.invalid/records/1234567/files/grid-2026-06.zip&quot;</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>  <span class="at">sha256  =</span> <span class="fu">strrep</span>(<span class="st">&quot;ab&quot;</span>, <span class="dv">32</span>),</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>  <span class="at">size    =</span> <span class="fl">41e6</span>,</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>  <span class="at">license =</span> <span class="st">&quot;CC-BY-4.0&quot;</span>,</span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>  <span class="at">description =</span> <span class="st">&quot;Reference grid, June 2026&quot;</span></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>)</span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a>reg <span class="ot">&lt;-</span> <span class="fu">registry</span>(<span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>, <span class="at">resources =</span> <span class="fu">list</span>(backbone, grid))</span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a>reg</span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a><span class="co">#&gt; &lt;getaca registry&gt; yourpkg  (policy &quot;bundled&quot;)</span></span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a><span class="co">#&gt;   digest: sha256:deabc8953e49</span></span>
+<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a><span class="co">#&gt;   - backbone@2026-06  9f9f9f9f9f9f  [CC-BY-4.0]</span></span>
+<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a><span class="co">#&gt;   - grid@2026-06  abababababab  [CC-BY-4.0]</span></span></code></pre></div>
 <p>Generate it rather than hand-maintaining it, from a script that stays
 out of the built package:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># data-raw/registry.R</span></span>
-<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;data-raw/records.R&quot;</span>)   <span class="co"># returns a list of resource()s</span></span>
-<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="fu">registry_write</span>(</span>
-<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="fu">registry</span>(<span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>, <span class="at">resources =</span> records),</span>
-<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>  <span class="st">&quot;inst/getaca/registry.rds&quot;</span></span>
-<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="co"># data-raw/registry.R</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;data-raw/records.R&quot;</span>)   <span class="co"># returns a list of resource()s</span></span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="fu">registry_write</span>(</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>  <span class="fu">registry</span>(<span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>, <span class="at">resources =</span> records),</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>  <span class="st">&quot;inst/getaca/registry.rds&quot;</span></span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>)</span></code></pre></div>
 <pre><code># .Rbuildignore
 ^data-raw$</code></pre>
 <p>Nothing else is needed to make the package discoverable.
@@ -530,18 +535,18 @@ Description: ... The backbone is downloaded on first use and cached under
 <p>The package’s own API stays. Users keep calling
 <code>install_backbone()</code>; what changes is the two hundred lines
 behind it.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="co"># R/download.R, after</span></span>
-<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>install_backbone <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">name =</span> <span class="st">&quot;backbone&quot;</span>, <span class="at">force =</span> <span class="cn">FALSE</span>) {</span>
-<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>  <span class="fu">invisible</span>(getaca<span class="sc">::</span><span class="fu">getaca</span>(name, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>, <span class="at">verify =</span> force))</span>
-<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>}</span>
-<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a></span>
-<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>backbone_path <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">name =</span> <span class="st">&quot;backbone&quot;</span>) {</span>
-<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>  getaca<span class="sc">::</span><span class="fu">getaca</span>(name, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)</span>
-<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>}</span>
-<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a></span>
-<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a>backbone_available <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">name =</span> <span class="st">&quot;backbone&quot;</span>) {</span>
-<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a>  getaca<span class="sc">::</span><span class="fu">getaca_available</span>(name, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)</span>
-<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="co"># R/download.R, after</span></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>install_backbone <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">name =</span> <span class="st">&quot;backbone&quot;</span>, <span class="at">force =</span> <span class="cn">FALSE</span>) {</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>  <span class="fu">invisible</span>(getaca<span class="sc">::</span><span class="fu">getaca</span>(name, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>, <span class="at">verify =</span> force))</span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>}</span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>backbone_path <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">name =</span> <span class="st">&quot;backbone&quot;</span>) {</span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a>  getaca<span class="sc">::</span><span class="fu">getaca</span>(name, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)</span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a>}</span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a>backbone_available <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">name =</span> <span class="st">&quot;backbone&quot;</span>) {</span>
+<span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a>  getaca<span class="sc">::</span><span class="fu">getaca_available</span>(name, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)</span>
+<span id="cb12-12"><a href="#cb12-12" tabindex="-1"></a>}</span></code></pre></div>
 <p><code>force</code> changes meaning, and for the better. It used to
 mean “download it again”. It now means “re-verify what you have”, which
 handles the case the old flag was usually reached for: a user who
@@ -603,26 +608,26 @@ old <code>stop(&quot;Unknown dataset: &quot;, name)</code> was reaching for.</p>
 <p>Every place the old code checked <code>file.exists()</code> before
 doing something expensive becomes one of the three helpers.</p>
 <p>In tests:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="co"># before</span></span>
-<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;the backbone parses&quot;</span>, {</span>
-<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>  <span class="fu">skip_if</span>(<span class="sc">!</span><span class="fu">backbone_available</span>(<span class="st">&quot;backbone&quot;</span>), <span class="st">&quot;backbone not installed&quot;</span>)</span>
-<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>  <span class="fu">expect_s3_class</span>(<span class="fu">read_backbone</span>(<span class="fu">backbone_path</span>(<span class="st">&quot;backbone&quot;</span>)), <span class="st">&quot;backbone&quot;</span>)</span>
-<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>})</span>
-<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a></span>
-<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a><span class="co"># after</span></span>
-<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;the backbone parses&quot;</span>, {</span>
-<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a>  <span class="fu">getaca_skip_if_unavailable</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)</span>
-<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a>  <span class="fu">expect_s3_class</span>(<span class="fu">read_backbone</span>(<span class="fu">getaca</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)),</span>
-<span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a>                  <span class="st">&quot;backbone&quot;</span>)</span>
-<span id="cb12-12"><a href="#cb12-12" tabindex="-1"></a>})</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="co"># before</span></span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;the backbone parses&quot;</span>, {</span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>  <span class="fu">skip_if</span>(<span class="sc">!</span><span class="fu">backbone_available</span>(<span class="st">&quot;backbone&quot;</span>), <span class="st">&quot;backbone not installed&quot;</span>)</span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a>  <span class="fu">expect_s3_class</span>(<span class="fu">read_backbone</span>(<span class="fu">backbone_path</span>(<span class="st">&quot;backbone&quot;</span>)), <span class="st">&quot;backbone&quot;</span>)</span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a>})</span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a><span class="co"># after</span></span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;the backbone parses&quot;</span>, {</span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a>  <span class="fu">getaca_skip_if_unavailable</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)</span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a>  <span class="fu">expect_s3_class</span>(<span class="fu">read_backbone</span>(<span class="fu">getaca</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)),</span>
+<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a>                  <span class="st">&quot;backbone&quot;</span>)</span>
+<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a>})</span></code></pre></div>
 <p>The skip reason is the difference. The old one says the file is not
 installed; the new one names the resource, the declaring package, and
 the call that would fetch it, which is what someone reading a CI log
 from another project needs.</p>
 <p>In examples:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="co">#&#39; @examples</span></span>
-<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="co">#&#39; path &lt;- getaca_optional(&quot;backbone&quot;, package = &quot;yourpkg&quot;)</span></span>
-<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="co">#&#39; if (!is.null(path)) summarise_backbone(path)</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="co">#&#39; @examples</span></span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a><span class="co">#&#39; path &lt;- getaca_optional(&quot;backbone&quot;, package = &quot;yourpkg&quot;)</span></span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a><span class="co">#&#39; if (!is.null(path)) summarise_backbone(path)</span></span></code></pre></div>
 <p>See <code>vignette(&quot;checks&quot;)</code> for the vignette cases and the CI
 workflow.</p>
 </div>
@@ -630,32 +635,32 @@ workflow.</p>
 <h2>Step 5: retire the version guesswork</h2>
 <p>The old code had no version, so it had no way to answer “which
 release is this”. After the migration, provenance is a call:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="fu">getaca_info</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)</span>
-<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a><span class="co">#&gt; &lt;getaca cache entry&gt; yourpkg/backbone@2026-06</span></span>
-<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a><span class="co">#&gt;   ...</span></span>
-<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a><span class="co">#&gt;   built from  source_release: 2026-06</span></span>
-<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a><span class="co">#&gt;   resolved by bundled registry sha256:1c4d7a90f2be (published 2026-07-20)</span></span>
-<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a><span class="co">#&gt;   source url  https://zenodo.invalid/records/1234567/files/backbone-2026-06.zip</span></span>
-<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a><span class="co">#&gt;   fetched     2026-07-26 11:02:13</span></span>
-<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a><span class="co">#&gt;   verified    2026-07-26 11:09:44 (full re-hash)</span></span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="fu">getaca_info</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="co">#&gt; &lt;getaca cache entry&gt; yourpkg/backbone@2026-06</span></span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a><span class="co">#&gt;   ...</span></span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a><span class="co">#&gt;   built from  source_release: 2026-06</span></span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a><span class="co">#&gt;   resolved by bundled registry sha256:1c4d7a90f2be (published 2026-07-20)</span></span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a><span class="co">#&gt;   source url  https://zenodo.invalid/records/1234567/files/backbone-2026-06.zip</span></span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a><span class="co">#&gt;   fetched     2026-07-26 11:02:13</span></span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a><span class="co">#&gt;   verified    2026-07-26 11:09:44 (full re-hash)</span></span></code></pre></div>
 <p>Across the whole table the same question has a data frame for an
 answer, which is the report to ask a user for instead of a directory
 listing:</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="fu">getaca_catalogue</span>(<span class="at">registry =</span> reg)[, <span class="fu">c</span>(<span class="st">&quot;name&quot;</span>, <span class="st">&quot;version&quot;</span>, <span class="st">&quot;declared&quot;</span>, <span class="st">&quot;cached&quot;</span>)]</span>
-<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="co">#&gt;       name version declared cached</span></span>
-<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a><span class="co">#&gt; 1 backbone 2026-06     TRUE  FALSE</span></span>
-<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a><span class="co">#&gt; 2     grid 2026-06     TRUE  FALSE</span></span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="fu">getaca_catalogue</span>(<span class="at">registry =</span> reg)[, <span class="fu">c</span>(<span class="st">&quot;name&quot;</span>, <span class="st">&quot;version&quot;</span>, <span class="st">&quot;declared&quot;</span>, <span class="st">&quot;cached&quot;</span>)]</span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="co">#&gt;       name version declared cached</span></span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a><span class="co">#&gt; 1 backbone 2026-06     TRUE  FALSE</span></span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a><span class="co">#&gt; 2     grid 2026-06     TRUE  FALSE</span></span></code></pre></div>
 <p>That is worth surfacing in your own output rather than leaving to
 users who know to look. A result object that records the resolved
 version, and a citation helper that reads it, turn the migration into a
 visible improvement rather than an internal one.</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>analyse <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
-<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>  info <span class="ot">&lt;-</span> getaca<span class="sc">::</span><span class="fu">getaca_info</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)</span>
-<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a>  out  <span class="ot">&lt;-</span> <span class="fu">do_the_work</span>(x, getaca<span class="sc">::</span><span class="fu">getaca</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>))</span>
-<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a>  <span class="fu">attr</span>(out, <span class="st">&quot;backbone_version&quot;</span>) <span class="ot">&lt;-</span> info<span class="sc">$</span>id<span class="sc">$</span>version</span>
-<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>  <span class="fu">attr</span>(out, <span class="st">&quot;backbone_sha256&quot;</span>)  <span class="ot">&lt;-</span> info<span class="sc">$</span>observed_sha256</span>
-<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a>  out</span>
-<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>analyse <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>  out  <span class="ot">&lt;-</span> <span class="fu">do_the_work</span>(x, getaca<span class="sc">::</span><span class="fu">getaca</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>))</span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a>  info <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(getaca<span class="sc">::</span><span class="fu">getaca_info</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>))</span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a>  <span class="fu">attr</span>(out, <span class="st">&quot;backbone_version&quot;</span>) <span class="ot">&lt;-</span> info<span class="sc">$</span>version</span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a>  <span class="fu">attr</span>(out, <span class="st">&quot;backbone_sha256&quot;</span>)  <span class="ot">&lt;-</span> info<span class="sc">$</span>sha256</span>
+<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a>  out</span>
+<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 <div id="handling-users-who-already-have-the-old-cache" class="section level2">
 <h2>Handling users who already have the old cache</h2>
@@ -674,22 +679,22 @@ it. For a cache measured in megabytes this is the whole job.</p>
 the old cache was large, since leaving gigabytes of superseded bytes on
 disk costs the user something for nothing. A flag in a package
 environment keeps it to one message per session:</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>.legacy_checked <span class="ot">&lt;-</span> <span class="fu">new.env</span>(<span class="at">parent =</span> <span class="fu">emptyenv</span>())</span>
-<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a></span>
-<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a>retire_legacy_cache <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
-<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">isTRUE</span>(.legacy_checked<span class="sc">$</span>done)) <span class="fu">return</span>(<span class="fu">invisible</span>(<span class="cn">NULL</span>))</span>
-<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a>  .legacy_checked<span class="sc">$</span>done <span class="ot">&lt;-</span> <span class="cn">TRUE</span></span>
-<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a></span>
-<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a>  old <span class="ot">&lt;-</span> tools<span class="sc">::</span><span class="fu">R_user_dir</span>(<span class="st">&quot;yourpkg&quot;</span>, <span class="st">&quot;cache&quot;</span>)</span>
-<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a>  files <span class="ot">&lt;-</span> <span class="fu">list.files</span>(old, <span class="at">pattern =</span> <span class="st">&quot;[.]zip$&quot;</span>, <span class="at">full.names =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb17-9"><a href="#cb17-9" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">length</span>(files)) <span class="fu">return</span>(<span class="fu">invisible</span>(<span class="cn">NULL</span>))</span>
-<span id="cb17-10"><a href="#cb17-10" tabindex="-1"></a></span>
-<span id="cb17-11"><a href="#cb17-11" tabindex="-1"></a>  <span class="fu">message</span>(<span class="st">&quot;yourpkg now stores its data through getaca, with a recorded &quot;</span>,</span>
-<span id="cb17-12"><a href="#cb17-12" tabindex="-1"></a>          <span class="st">&quot;version and checksum.</span><span class="sc">\n</span><span class="st">&quot;</span>,</span>
-<span id="cb17-13"><a href="#cb17-13" tabindex="-1"></a>          <span class="st">&quot;The previous downloads at &quot;</span>, old, <span class="st">&quot; are no longer used.</span><span class="sc">\n</span><span class="st">&quot;</span>,</span>
-<span id="cb17-14"><a href="#cb17-14" tabindex="-1"></a>          <span class="st">&quot;Remove them with: unlink(</span><span class="sc">\&quot;</span><span class="st">&quot;</span>, old, <span class="st">&quot;</span><span class="sc">\&quot;</span><span class="st">, recursive = TRUE)&quot;</span>)</span>
-<span id="cb17-15"><a href="#cb17-15" tabindex="-1"></a>  <span class="fu">invisible</span>(<span class="cn">NULL</span>)</span>
-<span id="cb17-16"><a href="#cb17-16" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a>.legacy_checked <span class="ot">&lt;-</span> <span class="fu">new.env</span>(<span class="at">parent =</span> <span class="fu">emptyenv</span>())</span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a>retire_legacy_cache <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">isTRUE</span>(.legacy_checked<span class="sc">$</span>done)) <span class="fu">return</span>(<span class="fu">invisible</span>(<span class="cn">NULL</span>))</span>
+<span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a>  .legacy_checked<span class="sc">$</span>done <span class="ot">&lt;-</span> <span class="cn">TRUE</span></span>
+<span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a>  old <span class="ot">&lt;-</span> tools<span class="sc">::</span><span class="fu">R_user_dir</span>(<span class="st">&quot;yourpkg&quot;</span>, <span class="st">&quot;cache&quot;</span>)</span>
+<span id="cb18-8"><a href="#cb18-8" tabindex="-1"></a>  files <span class="ot">&lt;-</span> <span class="fu">list.files</span>(old, <span class="at">pattern =</span> <span class="st">&quot;[.]zip$&quot;</span>, <span class="at">full.names =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb18-9"><a href="#cb18-9" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">length</span>(files)) <span class="fu">return</span>(<span class="fu">invisible</span>(<span class="cn">NULL</span>))</span>
+<span id="cb18-10"><a href="#cb18-10" tabindex="-1"></a></span>
+<span id="cb18-11"><a href="#cb18-11" tabindex="-1"></a>  <span class="fu">message</span>(<span class="st">&quot;yourpkg now stores its data through getaca, with a recorded &quot;</span>,</span>
+<span id="cb18-12"><a href="#cb18-12" tabindex="-1"></a>          <span class="st">&quot;version and checksum.</span><span class="sc">\n</span><span class="st">&quot;</span>,</span>
+<span id="cb18-13"><a href="#cb18-13" tabindex="-1"></a>          <span class="st">&quot;The previous downloads at &quot;</span>, old, <span class="st">&quot; are no longer used.</span><span class="sc">\n</span><span class="st">&quot;</span>,</span>
+<span id="cb18-14"><a href="#cb18-14" tabindex="-1"></a>          <span class="st">&quot;Remove them with: unlink(</span><span class="sc">\&quot;</span><span class="st">&quot;</span>, old, <span class="st">&quot;</span><span class="sc">\&quot;</span><span class="st">, recursive = TRUE)&quot;</span>)</span>
+<span id="cb18-15"><a href="#cb18-15" tabindex="-1"></a>  <span class="fu">invisible</span>(<span class="cn">NULL</span>)</span>
+<span id="cb18-16"><a href="#cb18-16" tabindex="-1"></a>}</span></code></pre></div>
 <p>It tells rather than deletes, and that is the part worth keeping.
 Deleting a user’s files on package upgrade is a decision worth making
 explicitly, in a function they call, rather than as a side effect of

@@ -6,6 +6,10 @@ library(getaca)
 .old_envvars <- Sys.getenv(c("GETACA_OFFLINE", "NOT_CRAN"), unset = NA)
 Sys.setenv(GETACA_OFFLINE = "true", NOT_CRAN = "true")
 
+## ----eval = FALSE-------------------------------------------------------------
+# install.packages("pak")
+# pak::pak("gcol33/getaca")
+
 ## -----------------------------------------------------------------------------
 rec <- resource(
   name        = "backbone",
@@ -84,7 +88,7 @@ registry_write(reg, path)
 identical(registry_digest(registry_read(path)), registry_digest(reg))
 
 ## -----------------------------------------------------------------------------
-registry_read(path)$created
+registry_read(path)
 
 ## -----------------------------------------------------------------------------
 reg2 <- registry(
@@ -215,10 +219,10 @@ archive <- resource(
 archive
 
 ## -----------------------------------------------------------------------------
-unpack("gzip")$id
+unpack("gzip")
 
 ## -----------------------------------------------------------------------------
-unpack(members = "tables")$id
+unpack(members = "tables")
 
 ## -----------------------------------------------------------------------------
 index <- processor("index-v1", function(input, output_dir) {
@@ -226,7 +230,7 @@ index <- processor("index-v1", function(input, output_dir) {
   write.table(read.csv(input), out, sep = "\t", row.names = FALSE)
   out
 })
-index$id
+index
 
 ## ----eval = FALSE-------------------------------------------------------------
 # reg <- as_registry("data-raw/resources.yml", package = "yourpkg")
@@ -281,7 +285,8 @@ index$id
 # test_that("the shipped registry is valid and names a head", {
 #   reg <- registry_for("yourpkg")
 #   expect_s3_class(reg, "getaca_registry")
-#   expect_equal(resolve_resource("backbone", registry = reg)$id$version, "2026-06")
+#   expect_equal(format(resolve_resource("backbone", registry = reg)),
+#                "yourpkg/backbone@2026-06")
 # })
 # 
 # test_that("the backbone parses when it is available", {

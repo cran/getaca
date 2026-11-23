@@ -13,6 +13,10 @@ reg <- registry("yourpkg", list(
            sha256 = strrep("9f", 32), size = 797e6, license = "CC-BY-4.0")
 ))
 
+## ----eval = FALSE-------------------------------------------------------------
+# install.packages("pak")
+# pak::pak("gcol33/getaca")
+
 ## -----------------------------------------------------------------------------
 err <- tryCatch(getaca("backbone", registry = reg), getaca_error = function(e) e)
 class(err)
@@ -144,7 +148,8 @@ inherits(err, "getaca_error_unavailable")
 # #>   declared SHA-256: 9f9f9f...
 # #>   observed SHA-256: 71b0c2...
 # #>
-# #> Action: getaca_clean("backbone", package = "yourpkg"), then retry.
+# #> Action: getaca_clean("backbone", package = "yourpkg", what = "cached"),
+# #> then retry.
 # #>
 # #> Fix: see the actions listed above.
 
@@ -153,7 +158,7 @@ inherits(err, "getaca_error_unavailable")
 #   getaca("backbone", package = "yourpkg"),
 #   getaca_error_cache_corrupt = function(e) {
 #     warning("The cached backbone was damaged; refetching.", call. = FALSE)
-#     getaca_clean("backbone", package = "yourpkg")
+#     getaca_clean("backbone", package = "yourpkg", what = "cached")
 #     getaca("backbone", package = "yourpkg")
 #   }
 # )
@@ -170,7 +175,8 @@ inherits(err, "getaca_error_unavailable")
 # #> one.
 # #>
 # #> Action: if the new declaration is the correct one, drop the old copy
-# #> with getaca_clean("backbone", package = "yourpkg") and retry.
+# #> with getaca_clean("backbone", package = "yourpkg", what = "cached")
+# #> and retry.
 # #>
 # #> Fix: the declaring package needs a correction. Report it to its maintainer.
 
@@ -240,7 +246,8 @@ resolve_resource("backbone", package = "stats")
 #     getaca_error_cache_corrupt = function(e) {
 #       stop("The cached ", name, " backbone is damaged.\n",
 #            "Repair it with:\n",
-#            "  getaca::getaca_clean(\"", name, "\", package = \"yourpkg\")",
+#            "  getaca::getaca_clean(\"", name, "\", package = \"yourpkg\", ",
+#            "what = \"cached\")",
 #            call. = FALSE)
 #     }
 #   )

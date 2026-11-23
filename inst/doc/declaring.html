@@ -350,6 +350,11 @@ serialised object at <code>inst/getaca/registry.rds</code>. There is no
 <code>Depends</code>, no <code>.onLoad()</code> hook, no registration
 call, and no runtime coupling beyond calling <code>getaca()</code> when
 a resource is actually needed.</p>
+<div id="installation" class="section level2">
+<h2>Installation</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;pak&quot;</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>pak<span class="sc">::</span><span class="fu">pak</span>(<span class="st">&quot;gcol33/getaca&quot;</span>)</span></code></pre></div>
+</div>
 <div id="records-and-channels" class="section level2">
 <h2>Records and channels</h2>
 <p>Two things that must not be conflated.</p>
@@ -405,25 +410,25 @@ detail.</p>
 </div>
 <div id="anatomy-of-a-record" class="section level2">
 <h2>Anatomy of a record</h2>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>rec <span class="ot">&lt;-</span> <span class="fu">resource</span>(</span>
-<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>  <span class="at">name        =</span> <span class="st">&quot;backbone&quot;</span>,</span>
-<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>  <span class="at">version     =</span> <span class="st">&quot;2026-06&quot;</span>,</span>
-<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>  <span class="at">urls        =</span> <span class="fu">c</span>(<span class="st">&quot;https://zenodo.invalid/records/1234567/files/backbone-2026-06.zip&quot;</span>,</span>
-<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>                  <span class="st">&quot;https://mirror.invalid/backbone-2026-06.zip&quot;</span>),</span>
-<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>  <span class="at">sha256      =</span> <span class="fu">strrep</span>(<span class="st">&quot;9f&quot;</span>, <span class="dv">32</span>),</span>
-<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>  <span class="at">size        =</span> <span class="fl">797e6</span>,</span>
-<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>  <span class="at">license     =</span> <span class="st">&quot;CC-BY-4.0&quot;</span>,</span>
-<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>  <span class="at">description =</span> <span class="st">&quot;Reference backbone, June 2026 release&quot;</span></span>
-<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>)</span>
-<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>rec</span>
-<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a><span class="co">#&gt; &lt;getaca resource record&gt;</span></span>
-<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a><span class="co">#&gt;   name      backbone</span></span>
-<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a><span class="co">#&gt;   version   2026-06</span></span>
-<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a><span class="co">#&gt;   sha256    9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f</span></span>
-<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a><span class="co">#&gt;   size      7.97e+08</span></span>
-<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a><span class="co">#&gt;   license   CC-BY-4.0</span></span>
-<span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a><span class="co">#&gt;   urls      https://zenodo.invalid/records/1234567/files/backbone-2026-06.zip</span></span>
-<span id="cb1-19"><a href="#cb1-19" tabindex="-1"></a><span class="co">#&gt;              https://mirror.invalid/backbone-2026-06.zip</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>rec <span class="ot">&lt;-</span> <span class="fu">resource</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>  <span class="at">name        =</span> <span class="st">&quot;backbone&quot;</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  <span class="at">version     =</span> <span class="st">&quot;2026-06&quot;</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>  <span class="at">urls        =</span> <span class="fu">c</span>(<span class="st">&quot;https://zenodo.invalid/records/1234567/files/backbone-2026-06.zip&quot;</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>                  <span class="st">&quot;https://mirror.invalid/backbone-2026-06.zip&quot;</span>),</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>  <span class="at">sha256      =</span> <span class="fu">strrep</span>(<span class="st">&quot;9f&quot;</span>, <span class="dv">32</span>),</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>  <span class="at">size        =</span> <span class="fl">797e6</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>  <span class="at">license     =</span> <span class="st">&quot;CC-BY-4.0&quot;</span>,</span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>  <span class="at">description =</span> <span class="st">&quot;Reference backbone, June 2026 release&quot;</span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>)</span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>rec</span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a><span class="co">#&gt; &lt;getaca resource record&gt;</span></span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a><span class="co">#&gt;   name      backbone</span></span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a><span class="co">#&gt;   version   2026-06</span></span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a><span class="co">#&gt;   sha256    9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f</span></span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a><span class="co">#&gt;   size      7.97e+08</span></span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a><span class="co">#&gt;   license   CC-BY-4.0</span></span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a><span class="co">#&gt;   urls      https://zenodo.invalid/records/1234567/files/backbone-2026-06.zip</span></span>
+<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a><span class="co">#&gt;              https://mirror.invalid/backbone-2026-06.zip</span></span></code></pre></div>
 <p><strong><code>name</code></strong> becomes a directory name, so it is
 restricted to <code>[A-Za-z0-9._-]</code>. It is scoped by your package,
 so a short name is fine and <code>&quot;backbone&quot;</code> will never collide
@@ -458,22 +463,22 @@ until the URL ends in <code>download?id=7</code>, and which a record
 composed from parts has to state for itself.</p>
 <p>Malformed records are refused where they are written, with the
 problem named:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="st">&quot;2026-06&quot;</span>,</span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>         <span class="at">urls =</span> <span class="st">&quot;http://insecure.invalid/backbone.zip&quot;</span>,</span>
-<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>         <span class="at">sha256 =</span> <span class="fu">strrep</span>(<span class="st">&quot;9f&quot;</span>, <span class="dv">32</span>))</span>
-<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="co">#&gt; Error:</span></span>
-<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="co">#&gt; ! Invalid getaca registry.</span></span>
-<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="co">#&gt;   - resource &#39;backbone&#39;: all URLs must use https</span></span>
-<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="co">#&gt; Fix: the declaring package needs a correction. Report it to its maintainer.</span></span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="st">&quot;2026-06&quot;</span>,</span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>         <span class="at">urls =</span> <span class="st">&quot;https://ok.invalid/backbone.zip&quot;</span>,</span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>         <span class="at">sha256 =</span> <span class="st">&quot;not-a-digest&quot;</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>         <span class="at">urls =</span> <span class="st">&quot;http://insecure.invalid/backbone.zip&quot;</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>         <span class="at">sha256 =</span> <span class="fu">strrep</span>(<span class="st">&quot;9f&quot;</span>, <span class="dv">32</span>))</span>
 <span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&gt; Error:</span></span>
 <span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co">#&gt; ! Invalid getaca registry.</span></span>
-<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co">#&gt;   - resource &#39;backbone&#39;: `sha256` must be 64 lowercase hex characters</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co">#&gt;   - resource &#39;backbone&#39;: all URLs must use https</span></span>
 <span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co">#&gt; </span></span>
 <span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co">#&gt; Fix: the declaring package needs a correction. Report it to its maintainer.</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="st">&quot;2026-06&quot;</span>,</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>         <span class="at">urls =</span> <span class="st">&quot;https://ok.invalid/backbone.zip&quot;</span>,</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>         <span class="at">sha256 =</span> <span class="st">&quot;not-a-digest&quot;</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co">#&gt; Error:</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co">#&gt; ! Invalid getaca registry.</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co">#&gt;   - resource &#39;backbone&#39;: `sha256` must be 64 lowercase hex characters</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="co">#&gt; Fix: the declaring package needs a correction. Report it to its maintainer.</span></span></code></pre></div>
 </div>
 <div id="drafting-from-where-the-data-is" class="section level2">
 <h2>Drafting from where the data is</h2>
@@ -481,17 +486,17 @@ problem named:</p>
 which has to come from the bytes. <code>registry_draft()</code> takes
 the locations, retrieves each file once, hashes it locally and returns a
 registry:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>reg <span class="ot">&lt;-</span> <span class="fu">registry_draft</span>(</span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  <span class="fu">c</span>(<span class="at">backbone =</span> <span class="st">&quot;https://zenodo.org/records/1234567/files/backbone-2026-06.zip&quot;</span>),</span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>,</span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>  <span class="at">version =</span> <span class="st">&quot;2026-06&quot;</span></span>
-<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>reg <span class="ot">&lt;-</span> <span class="fu">registry_draft</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  <span class="fu">c</span>(<span class="at">backbone =</span> <span class="st">&quot;https://zenodo.org/records/1234567/files/backbone-2026-06.zip&quot;</span>),</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="at">version =</span> <span class="st">&quot;2026-06&quot;</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>)</span></code></pre></div>
 <p>A location is a plain URL, or an identifier for an archive holding
 several files. Which one it is, and which archive, is read off the
 string:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">registry_draft</span>(<span class="st">&quot;10.5281/zenodo.4924875&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)</span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="fu">registry_draft</span>(<span class="st">&quot;10.6084/m9.figshare.14763051.v1&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)</span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="fu">registry_draft</span>(<span class="st">&quot;10.11588/data/TKCFEF&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">registry_draft</span>(<span class="st">&quot;10.5281/zenodo.4924875&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="fu">registry_draft</span>(<span class="st">&quot;10.6084/m9.figshare.14763051.v1&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="fu">registry_draft</span>(<span class="st">&quot;10.11588/data/TKCFEF&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)</span></code></pre></div>
 <p>Zenodo and figshare register their own DOI prefixes, so those are
 recognised from the string with no lookup. A Dataverse instance is
 self-hosted under its own prefix, so a bare DOI is resolved through
@@ -511,13 +516,13 @@ which is rarely the name you want a user to type, and
 the <code>registry_draft()</code> call into <code>data-raw/</code> and
 edit around it. Give a name in the call where a location is one
 file:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>reg <span class="ot">&lt;-</span> <span class="fu">registry_draft</span>(</span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">backbone =</span> <span class="fu">c</span>(<span class="st">&quot;https://zenodo.org/records/1234567/files/backbone-2026-06.zip&quot;</span>,</span>
-<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>               <span class="st">&quot;https://mirror.invalid/backbone-2026-06.zip&quot;</span>)),</span>
-<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>,</span>
-<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>  <span class="at">version =</span> <span class="st">&quot;2026-06&quot;</span></span>
-<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>)</span>
-<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="fu">registry_write</span>(reg, <span class="st">&quot;inst/getaca/registry.rds&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>reg <span class="ot">&lt;-</span> <span class="fu">registry_draft</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">backbone =</span> <span class="fu">c</span>(<span class="st">&quot;https://zenodo.org/records/1234567/files/backbone-2026-06.zip&quot;</span>,</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>               <span class="st">&quot;https://mirror.invalid/backbone-2026-06.zip&quot;</span>)),</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>,</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>  <span class="at">version =</span> <span class="st">&quot;2026-06&quot;</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>)</span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="fu">registry_write</span>(reg, <span class="st">&quot;inst/getaca/registry.rds&quot;</span>)</span></code></pre></div>
 <p>A list element is the mirrors of one resource. The first is retrieved
 and hashed; the rest are recorded and walked at fetch time like any
 other mirror list.</p>
@@ -529,11 +534,11 @@ already there.</p>
 <p>Where you have the file already, <code>local =</code> hashes the copy
 on your machine and transfers nothing. The record still names the
 location, since that is where users fetch from:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">registry_draft</span>(</span>
-<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  <span class="fu">c</span>(<span class="at">backbone =</span> <span class="st">&quot;https://zenodo.org/records/1234567/files/backbone-2026-06.zip&quot;</span>),</span>
-<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>, <span class="at">version =</span> <span class="st">&quot;2026-06&quot;</span>,</span>
-<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  <span class="at">local   =</span> <span class="fu">c</span>(<span class="at">backbone =</span> <span class="st">&quot;~/build/backbone-2026-06.zip&quot;</span>)</span>
-<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">registry_draft</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  <span class="fu">c</span>(<span class="at">backbone =</span> <span class="st">&quot;https://zenodo.org/records/1234567/files/backbone-2026-06.zip&quot;</span>),</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>, <span class="at">version =</span> <span class="st">&quot;2026-06&quot;</span>,</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="at">local   =</span> <span class="fu">c</span>(<span class="at">backbone =</span> <span class="st">&quot;~/build/backbone-2026-06.zip&quot;</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>)</span></code></pre></div>
 <p>That records your build rather than the download, which are the same
 bytes only if the host served back what it was given.
 <code>sha256 =</code> alongside it holds one to the other, and the draft
@@ -542,46 +547,46 @@ checksum you already hold and retrieves nothing at all.</p>
 </div>
 <div id="assembling-the-registry" class="section level2">
 <h2>Assembling the registry</h2>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>reg <span class="ot">&lt;-</span> <span class="fu">registry</span>(</span>
-<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  <span class="at">package   =</span> <span class="st">&quot;yourpkg&quot;</span>,</span>
-<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="at">resources =</span> <span class="fu">list</span>(rec)</span>
-<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>)</span>
-<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>reg</span>
-<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="co">#&gt; &lt;getaca registry&gt; yourpkg  (policy &quot;bundled&quot;)</span></span>
-<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="co">#&gt;   digest: sha256:2306bcc9fb14</span></span>
-<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="co">#&gt;   - backbone@2026-06  9f9f9f9f9f9f  [CC-BY-4.0]</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>reg <span class="ot">&lt;-</span> <span class="fu">registry</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>  <span class="at">package   =</span> <span class="st">&quot;yourpkg&quot;</span>,</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>  <span class="at">resources =</span> <span class="fu">list</span>(rec)</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>)</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>reg</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a><span class="co">#&gt; &lt;getaca registry&gt; yourpkg  (policy &quot;bundled&quot;)</span></span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a><span class="co">#&gt;   digest: sha256:2306bcc9fb14</span></span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a><span class="co">#&gt;   - backbone@2026-06  9f9f9f9f9f9f  [CC-BY-4.0]</span></span></code></pre></div>
 <p>The digest on the second line identifies this registry state. It is
 derived from the declaration itself, so there is no number to keep in
 step: change a checksum, add a mirror or move a channel head and the
 digest follows. It is recorded in the provenance of everything resolved
 through this registry, so a bug report can name the exact declaration
 that chose the bytes.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">registry_digest</span>(reg)</span>
-<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="co">#&gt; [1] &quot;sha256:2306bcc9fb140caf3b95ccd11d7c09dbd724d65403b67d81739e6567c2e1d2aa&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">registry_digest</span>(reg)</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="co">#&gt; [1] &quot;sha256:2306bcc9fb140caf3b95ccd11d7c09dbd724d65403b67d81739e6567c2e1d2aa&quot;</span></span></code></pre></div>
 <p><code>registry_manifest()</code> shows the text that digest is taken
 over, which is what makes two registries diffable when they
 disagree:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">registry_manifest</span>(reg)</span>
-<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="co">#&gt; getaca-manifest 1</span></span>
-<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a><span class="co">#&gt; package yourpkg</span></span>
-<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="co">#&gt; resource backbone 2026-06</span></span>
-<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a><span class="co">#&gt;   sha256 9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f</span></span>
-<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="co">#&gt;   size 797000000</span></span>
-<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a><span class="co">#&gt;   license CC-BY-4.0</span></span>
-<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a><span class="co">#&gt;   url https://zenodo.invalid/records/1234567/files/backbone-2026-06.zip</span></span>
-<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a><span class="co">#&gt;   url https://mirror.invalid/backbone-2026-06.zip</span></span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">registry_manifest</span>(reg)</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="co">#&gt; getaca-manifest 1</span></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="co">#&gt; package yourpkg</span></span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a><span class="co">#&gt; resource backbone 2026-06</span></span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a><span class="co">#&gt;   sha256 9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f</span></span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a><span class="co">#&gt;   size 797000000</span></span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a><span class="co">#&gt;   license CC-BY-4.0</span></span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a><span class="co">#&gt;   url https://zenodo.invalid/records/1234567/files/backbone-2026-06.zip</span></span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a><span class="co">#&gt;   url https://mirror.invalid/backbone-2026-06.zip</span></span></code></pre></div>
 <p>Write it into the source tree from a <code>data-raw/</code> script,
 so the registry is generated rather than hand-maintained:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="co"># data-raw/registry.R</span></span>
-<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="fu">registry_write</span>(reg, <span class="st">&quot;inst/getaca/registry.rds&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="co"># data-raw/registry.R</span></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a><span class="fu">registry_write</span>(reg, <span class="st">&quot;inst/getaca/registry.rds&quot;</span>)</span></code></pre></div>
 <p>Add <code>^data-raw$</code> to <code>.Rbuildignore</code> and the
 script stays out of the built package while the object it produces
 ships.</p>
 <p>Reading it back is symmetric, and validates:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>path <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">tempdir</span>(), <span class="st">&quot;registry.rds&quot;</span>)</span>
-<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a><span class="fu">registry_write</span>(reg, path)</span>
-<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a><span class="fu">identical</span>(<span class="fu">registry_digest</span>(<span class="fu">registry_read</span>(path)), <span class="fu">registry_digest</span>(reg))</span>
-<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>path <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">tempdir</span>(), <span class="st">&quot;registry.rds&quot;</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="fu">registry_write</span>(reg, path)</span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="fu">identical</span>(<span class="fu">registry_digest</span>(<span class="fu">registry_read</span>(path)), <span class="fu">registry_digest</span>(reg))</span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
 <p>Writing stamps <code>created</code>, because publishing a state is
 what dates it. That date is what orders two states in time, which a
 digest cannot do: a digest says whether two registries are the same, and
@@ -589,56 +594,59 @@ digest cannot do: a digest says whether two registries are the same, and
 so writing an unchanged registry out again leaves its identity alone.
 Pass a fixed <code>created</code> when a build has to be
 byte-reproducible.</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">registry_read</span>(path)<span class="sc">$</span>created</span>
-<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2026-08-22 02:53:31 CEST&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="fu">registry_read</span>(path)</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a><span class="co">#&gt; &lt;getaca registry&gt; yourpkg  (policy &quot;bundled&quot;)</span></span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a><span class="co">#&gt;   digest: sha256:2306bcc9fb14</span></span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a><span class="co">#&gt;   created: 2026-11-23 18:38:56</span></span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a><span class="co">#&gt;   - backbone@2026-06  9f9f9f9f9f9f  [CC-BY-4.0]</span></span></code></pre></div>
 </div>
 <div id="naming-the-channel-head" class="section level2">
 <h2>Naming the channel head</h2>
 <p>A registry that offers one version per name has nothing to decide.
 One that offers several has to say which one a bare request returns:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>reg2 <span class="ot">&lt;-</span> <span class="fu">registry</span>(</span>
-<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>  <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>,</span>
-<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>  <span class="at">current =</span> <span class="fu">c</span>(<span class="at">backbone =</span> <span class="st">&quot;2026-09&quot;</span>),</span>
-<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>  <span class="at">resources =</span> <span class="fu">list</span>(</span>
-<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>    <span class="fu">resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="st">&quot;2026-06&quot;</span>,</span>
-<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>             <span class="at">urls =</span> <span class="st">&quot;https://host.invalid/backbone-2026-06.zip&quot;</span>,</span>
-<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a>             <span class="at">sha256 =</span> <span class="fu">strrep</span>(<span class="st">&quot;9f&quot;</span>, <span class="dv">32</span>), <span class="at">license =</span> <span class="st">&quot;CC-BY-4.0&quot;</span>),</span>
-<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a>    <span class="fu">resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="st">&quot;2026-09&quot;</span>,</span>
-<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a>             <span class="at">urls =</span> <span class="st">&quot;https://host.invalid/backbone-2026-09.zip&quot;</span>,</span>
-<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a>             <span class="at">sha256 =</span> <span class="fu">strrep</span>(<span class="st">&quot;ab&quot;</span>, <span class="dv">32</span>), <span class="at">license =</span> <span class="st">&quot;CC-BY-4.0&quot;</span>)</span>
-<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a>  )</span>
-<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a>)</span>
-<span id="cb14-13"><a href="#cb14-13" tabindex="-1"></a>reg2</span>
-<span id="cb14-14"><a href="#cb14-14" tabindex="-1"></a><span class="co">#&gt; &lt;getaca registry&gt; yourpkg  (policy &quot;bundled&quot;)</span></span>
-<span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a><span class="co">#&gt;   digest: sha256:b1a5245a079d</span></span>
-<span id="cb14-16"><a href="#cb14-16" tabindex="-1"></a><span class="co">#&gt;   - backbone@2026-06  9f9f9f9f9f9f  [CC-BY-4.0]</span></span>
-<span id="cb14-17"><a href="#cb14-17" tabindex="-1"></a><span class="co">#&gt;   - backbone@2026-09  abababababab  [CC-BY-4.0]  (current)</span></span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>reg2 <span class="ot">&lt;-</span> <span class="fu">registry</span>(</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>  <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>,</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>  <span class="at">current =</span> <span class="fu">c</span>(<span class="at">backbone =</span> <span class="st">&quot;2026-09&quot;</span>),</span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>  <span class="at">resources =</span> <span class="fu">list</span>(</span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a>    <span class="fu">resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="st">&quot;2026-06&quot;</span>,</span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a>             <span class="at">urls =</span> <span class="st">&quot;https://host.invalid/backbone-2026-06.zip&quot;</span>,</span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a>             <span class="at">sha256 =</span> <span class="fu">strrep</span>(<span class="st">&quot;9f&quot;</span>, <span class="dv">32</span>), <span class="at">license =</span> <span class="st">&quot;CC-BY-4.0&quot;</span>),</span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a>    <span class="fu">resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="st">&quot;2026-09&quot;</span>,</span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a>             <span class="at">urls =</span> <span class="st">&quot;https://host.invalid/backbone-2026-09.zip&quot;</span>,</span>
+<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a>             <span class="at">sha256 =</span> <span class="fu">strrep</span>(<span class="st">&quot;ab&quot;</span>, <span class="dv">32</span>), <span class="at">license =</span> <span class="st">&quot;CC-BY-4.0&quot;</span>)</span>
+<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a>  )</span>
+<span id="cb15-12"><a href="#cb15-12" tabindex="-1"></a>)</span>
+<span id="cb15-13"><a href="#cb15-13" tabindex="-1"></a>reg2</span>
+<span id="cb15-14"><a href="#cb15-14" tabindex="-1"></a><span class="co">#&gt; &lt;getaca registry&gt; yourpkg  (policy &quot;bundled&quot;)</span></span>
+<span id="cb15-15"><a href="#cb15-15" tabindex="-1"></a><span class="co">#&gt;   digest: sha256:b1a5245a079d</span></span>
+<span id="cb15-16"><a href="#cb15-16" tabindex="-1"></a><span class="co">#&gt;   - backbone@2026-06  9f9f9f9f9f9f  [CC-BY-4.0]</span></span>
+<span id="cb15-17"><a href="#cb15-17" tabindex="-1"></a><span class="co">#&gt;   - backbone@2026-09  abababababab  [CC-BY-4.0]  (current)</span></span></code></pre></div>
 <p>The head is marked when the registry prints, and appears as a column
 in the catalogue:</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="fu">getaca_catalogue</span>(<span class="at">registry =</span> reg2)[, <span class="fu">c</span>(<span class="st">&quot;name&quot;</span>, <span class="st">&quot;version&quot;</span>, <span class="st">&quot;current&quot;</span>, <span class="st">&quot;declared&quot;</span>)]</span>
-<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="co">#&gt;       name version current declared</span></span>
-<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a><span class="co">#&gt; 1 backbone 2026-06   FALSE     TRUE</span></span>
-<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a><span class="co">#&gt; 2 backbone 2026-09    TRUE     TRUE</span></span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="fu">getaca_catalogue</span>(<span class="at">registry =</span> reg2)[, <span class="fu">c</span>(<span class="st">&quot;name&quot;</span>, <span class="st">&quot;version&quot;</span>, <span class="st">&quot;current&quot;</span>, <span class="st">&quot;declared&quot;</span>)]</span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="co">#&gt;       name version current declared</span></span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a><span class="co">#&gt; 1 backbone 2026-06   FALSE     TRUE</span></span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a><span class="co">#&gt; 2 backbone 2026-09    TRUE     TRUE</span></span></code></pre></div>
 <p>Leaving it out is an error rather than a default, because the failure
 it prevents is silent. A registry appending <code>2026-03</code> after
 <code>2026-09</code> under a declaration-order rule moves every user
 backwards without any of them noticing:</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="fu">registry</span>(</span>
-<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>  <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>,</span>
-<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a>  <span class="at">resources =</span> <span class="fu">list</span>(</span>
-<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a>    <span class="fu">resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="st">&quot;2026-09&quot;</span>,</span>
-<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>             <span class="at">urls =</span> <span class="st">&quot;https://host.invalid/a&quot;</span>,</span>
-<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a>             <span class="at">sha256 =</span> <span class="fu">strrep</span>(<span class="st">&quot;ab&quot;</span>, <span class="dv">32</span>)),</span>
-<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a>    <span class="fu">resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="st">&quot;2026-03&quot;</span>,</span>
-<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a>             <span class="at">urls =</span> <span class="st">&quot;https://host.invalid/b&quot;</span>,</span>
-<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a>             <span class="at">sha256 =</span> <span class="fu">strrep</span>(<span class="st">&quot;cd&quot;</span>, <span class="dv">32</span>))</span>
-<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a>  )</span>
-<span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a>)</span>
-<span id="cb16-12"><a href="#cb16-12" tabindex="-1"></a><span class="co">#&gt; Error:</span></span>
-<span id="cb16-13"><a href="#cb16-13" tabindex="-1"></a><span class="co">#&gt; ! Invalid getaca registry for package &#39;yourpkg&#39;.</span></span>
-<span id="cb16-14"><a href="#cb16-14" tabindex="-1"></a><span class="co">#&gt;   - resource &#39;backbone&#39; declares 2 versions (2026-09, 2026-03) but the registry names no current one; add current = c(&quot;backbone&quot; = &quot;2026-03&quot;)</span></span>
-<span id="cb16-15"><a href="#cb16-15" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb16-16"><a href="#cb16-16" tabindex="-1"></a><span class="co">#&gt; Fix: the declaring package needs a correction. Report it to its maintainer.</span></span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="fu">registry</span>(</span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>  <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>,</span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a>  <span class="at">resources =</span> <span class="fu">list</span>(</span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a>    <span class="fu">resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="st">&quot;2026-09&quot;</span>,</span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a>             <span class="at">urls =</span> <span class="st">&quot;https://host.invalid/a&quot;</span>,</span>
+<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a>             <span class="at">sha256 =</span> <span class="fu">strrep</span>(<span class="st">&quot;ab&quot;</span>, <span class="dv">32</span>)),</span>
+<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a>    <span class="fu">resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="st">&quot;2026-03&quot;</span>,</span>
+<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a>             <span class="at">urls =</span> <span class="st">&quot;https://host.invalid/b&quot;</span>,</span>
+<span id="cb17-9"><a href="#cb17-9" tabindex="-1"></a>             <span class="at">sha256 =</span> <span class="fu">strrep</span>(<span class="st">&quot;cd&quot;</span>, <span class="dv">32</span>))</span>
+<span id="cb17-10"><a href="#cb17-10" tabindex="-1"></a>  )</span>
+<span id="cb17-11"><a href="#cb17-11" tabindex="-1"></a>)</span>
+<span id="cb17-12"><a href="#cb17-12" tabindex="-1"></a><span class="co">#&gt; Error:</span></span>
+<span id="cb17-13"><a href="#cb17-13" tabindex="-1"></a><span class="co">#&gt; ! Invalid getaca registry for package &#39;yourpkg&#39;.</span></span>
+<span id="cb17-14"><a href="#cb17-14" tabindex="-1"></a><span class="co">#&gt;   - resource &#39;backbone&#39; declares 2 versions (2026-09, 2026-03) but the registry names no current one; add current = c(&quot;backbone&quot; = &quot;2026-03&quot;)</span></span>
+<span id="cb17-15"><a href="#cb17-15" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb17-16"><a href="#cb17-16" tabindex="-1"></a><span class="co">#&gt; Fix: the declaring package needs a correction. Report it to its maintainer.</span></span></code></pre></div>
 <p>The head names a version, so moving it is one edit and the old record
 stays resolvable by <code>getaca(..., version = &quot;2026-06&quot;)</code> for as
 long as you keep declaring it. Dropping a record from the registry does
@@ -650,17 +658,17 @@ window.</p>
 <h2>Choosing <code>current</code></h2>
 <p>Set it once, in the registry, if your data genuinely release on their
 own schedule:</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>remote_reg <span class="ot">&lt;-</span> <span class="fu">registry</span>(</span>
-<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>  <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>,</span>
-<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a>  <span class="at">policy  =</span> <span class="st">&quot;current&quot;</span>,</span>
-<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a>  <span class="at">remote  =</span> <span class="st">&quot;https://yourpkg.invalid/getaca-registry.rds&quot;</span>,</span>
-<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a>  <span class="at">resources =</span> <span class="fu">list</span>(</span>
-<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a>    <span class="fu">resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="st">&quot;2026-06&quot;</span>,</span>
-<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a>             <span class="at">urls   =</span> <span class="st">&quot;https://primary.invalid/backbone-2026-06.zip&quot;</span>,</span>
-<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a>             <span class="at">sha256 =</span> <span class="fu">strrep</span>(<span class="st">&quot;9f&quot;</span>, <span class="dv">32</span>),</span>
-<span id="cb17-9"><a href="#cb17-9" tabindex="-1"></a>             <span class="at">license =</span> <span class="st">&quot;CC-BY-4.0&quot;</span>)</span>
-<span id="cb17-10"><a href="#cb17-10" tabindex="-1"></a>  )</span>
-<span id="cb17-11"><a href="#cb17-11" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a>remote_reg <span class="ot">&lt;-</span> <span class="fu">registry</span>(</span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a>  <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>,</span>
+<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a>  <span class="at">policy  =</span> <span class="st">&quot;current&quot;</span>,</span>
+<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a>  <span class="at">remote  =</span> <span class="st">&quot;https://yourpkg.invalid/getaca-registry.rds&quot;</span>,</span>
+<span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a>  <span class="at">resources =</span> <span class="fu">list</span>(</span>
+<span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a>    <span class="fu">resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="st">&quot;2026-06&quot;</span>,</span>
+<span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a>             <span class="at">urls   =</span> <span class="st">&quot;https://primary.invalid/backbone-2026-06.zip&quot;</span>,</span>
+<span id="cb18-8"><a href="#cb18-8" tabindex="-1"></a>             <span class="at">sha256 =</span> <span class="fu">strrep</span>(<span class="st">&quot;9f&quot;</span>, <span class="dv">32</span>),</span>
+<span id="cb18-9"><a href="#cb18-9" tabindex="-1"></a>             <span class="at">license =</span> <span class="st">&quot;CC-BY-4.0&quot;</span>)</span>
+<span id="cb18-10"><a href="#cb18-10" tabindex="-1"></a>  )</span>
+<span id="cb18-11"><a href="#cb18-11" tabindex="-1"></a>)</span></code></pre></div>
 <p>The remote file is a static artefact on GitHub Pages, r-universe or
 institutional hosting. An unreachable one falls back to the bundled
 registry with a message, which is what CRAN requires when an Internet
@@ -678,8 +686,8 @@ silently redefine published bytes would undo the guarantee the whole
 design exists to provide.</p>
 <p>Publishing a remote registry is the same call with a different
 destination:</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="co"># In a release script, after adding the new record</span></span>
-<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a><span class="fu">registry_write</span>(reg2, <span class="st">&quot;docs/getaca-registry.rds&quot;</span>)   <span class="co"># served by GitHub Pages</span></span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="co"># In a release script, after adding the new record</span></span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a><span class="fu">registry_write</span>(reg2, <span class="st">&quot;docs/getaca-registry.rds&quot;</span>)   <span class="co"># served by GitHub Pages</span></span></code></pre></div>
 <p>Users on <code>bundled</code> are unaffected until they reinstall;
 users on <code>current</code> pick it up on their next session, or
 immediately after <code>getaca_refresh()</code>.</p>
@@ -689,27 +697,27 @@ immediately after <code>getaca_refresh()</code>.</p>
 <p>Publishing a prepared database rather than the raw upstream release
 is often the better deal for users, who then skip the expensive
 preprocessing. Record both identities so provenance keeps them:</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="fu">resource</span>(</span>
-<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a>  <span class="at">name    =</span> <span class="st">&quot;backbone-db&quot;</span>,</span>
-<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a>  <span class="at">version =</span> <span class="st">&quot;source-2026-06_build-3&quot;</span>,</span>
-<span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a>  <span class="at">urls    =</span> <span class="st">&quot;https://example.invalid/backbone-db-3.duckdb&quot;</span>,</span>
-<span id="cb19-5"><a href="#cb19-5" tabindex="-1"></a>  <span class="at">sha256  =</span> <span class="fu">strrep</span>(<span class="st">&quot;ab&quot;</span>, <span class="dv">32</span>),</span>
-<span id="cb19-6"><a href="#cb19-6" tabindex="-1"></a>  <span class="at">license =</span> <span class="st">&quot;CC-BY-4.0&quot;</span>,</span>
-<span id="cb19-7"><a href="#cb19-7" tabindex="-1"></a>  <span class="at">upstream =</span> <span class="fu">list</span>(</span>
-<span id="cb19-8"><a href="#cb19-8" tabindex="-1"></a>    <span class="at">source_release    =</span> <span class="st">&quot;2026-06&quot;</span>,</span>
-<span id="cb19-9"><a href="#cb19-9" tabindex="-1"></a>    <span class="at">build =</span> <span class="st">&quot;3&quot;</span></span>
-<span id="cb19-10"><a href="#cb19-10" tabindex="-1"></a>  )</span>
-<span id="cb19-11"><a href="#cb19-11" tabindex="-1"></a>)</span>
-<span id="cb19-12"><a href="#cb19-12" tabindex="-1"></a><span class="co">#&gt; &lt;getaca resource record&gt;</span></span>
-<span id="cb19-13"><a href="#cb19-13" tabindex="-1"></a><span class="co">#&gt;   name      backbone-db</span></span>
-<span id="cb19-14"><a href="#cb19-14" tabindex="-1"></a><span class="co">#&gt;   version   source-2026-06_build-3</span></span>
-<span id="cb19-15"><a href="#cb19-15" tabindex="-1"></a><span class="co">#&gt;   sha256    abababababababababababababababababababababababababababababababab</span></span>
-<span id="cb19-16"><a href="#cb19-16" tabindex="-1"></a><span class="co">#&gt;   size      unknown</span></span>
-<span id="cb19-17"><a href="#cb19-17" tabindex="-1"></a><span class="co">#&gt;   license   CC-BY-4.0</span></span>
-<span id="cb19-18"><a href="#cb19-18" tabindex="-1"></a><span class="co">#&gt;   urls      https://example.invalid/backbone-db-3.duckdb</span></span>
-<span id="cb19-19"><a href="#cb19-19" tabindex="-1"></a><span class="co">#&gt;   built from</span></span>
-<span id="cb19-20"><a href="#cb19-20" tabindex="-1"></a><span class="co">#&gt;     source_release: 2026-06</span></span>
-<span id="cb19-21"><a href="#cb19-21" tabindex="-1"></a><span class="co">#&gt;     build: 3</span></span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="fu">resource</span>(</span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a>  <span class="at">name    =</span> <span class="st">&quot;backbone-db&quot;</span>,</span>
+<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a>  <span class="at">version =</span> <span class="st">&quot;source-2026-06_build-3&quot;</span>,</span>
+<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a>  <span class="at">urls    =</span> <span class="st">&quot;https://example.invalid/backbone-db-3.duckdb&quot;</span>,</span>
+<span id="cb20-5"><a href="#cb20-5" tabindex="-1"></a>  <span class="at">sha256  =</span> <span class="fu">strrep</span>(<span class="st">&quot;ab&quot;</span>, <span class="dv">32</span>),</span>
+<span id="cb20-6"><a href="#cb20-6" tabindex="-1"></a>  <span class="at">license =</span> <span class="st">&quot;CC-BY-4.0&quot;</span>,</span>
+<span id="cb20-7"><a href="#cb20-7" tabindex="-1"></a>  <span class="at">upstream =</span> <span class="fu">list</span>(</span>
+<span id="cb20-8"><a href="#cb20-8" tabindex="-1"></a>    <span class="at">source_release    =</span> <span class="st">&quot;2026-06&quot;</span>,</span>
+<span id="cb20-9"><a href="#cb20-9" tabindex="-1"></a>    <span class="at">build =</span> <span class="st">&quot;3&quot;</span></span>
+<span id="cb20-10"><a href="#cb20-10" tabindex="-1"></a>  )</span>
+<span id="cb20-11"><a href="#cb20-11" tabindex="-1"></a>)</span>
+<span id="cb20-12"><a href="#cb20-12" tabindex="-1"></a><span class="co">#&gt; &lt;getaca resource record&gt;</span></span>
+<span id="cb20-13"><a href="#cb20-13" tabindex="-1"></a><span class="co">#&gt;   name      backbone-db</span></span>
+<span id="cb20-14"><a href="#cb20-14" tabindex="-1"></a><span class="co">#&gt;   version   source-2026-06_build-3</span></span>
+<span id="cb20-15"><a href="#cb20-15" tabindex="-1"></a><span class="co">#&gt;   sha256    abababababababababababababababababababababababababababababababab</span></span>
+<span id="cb20-16"><a href="#cb20-16" tabindex="-1"></a><span class="co">#&gt;   size      unknown</span></span>
+<span id="cb20-17"><a href="#cb20-17" tabindex="-1"></a><span class="co">#&gt;   license   CC-BY-4.0</span></span>
+<span id="cb20-18"><a href="#cb20-18" tabindex="-1"></a><span class="co">#&gt;   urls      https://example.invalid/backbone-db-3.duckdb</span></span>
+<span id="cb20-19"><a href="#cb20-19" tabindex="-1"></a><span class="co">#&gt;   built from</span></span>
+<span id="cb20-20"><a href="#cb20-20" tabindex="-1"></a><span class="co">#&gt;     source_release: 2026-06</span></span>
+<span id="cb20-21"><a href="#cb20-21" tabindex="-1"></a><span class="co">#&gt;     build: 3</span></span></code></pre></div>
 <p><code>upstream</code> is a free-form named list. Every entry is
 printed by <code>getaca_info()</code> and kept in the cache index, so a
 user asking “which upstream release is this, and which build turned it
@@ -731,34 +739,34 @@ against it, because each delta is a hundredth of the size of the thing
 it updates.</p>
 <p>Declare the pieces with <code>part()</code> and the artefact they
 compose with <code>sha256</code>, as usual:</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a>series <span class="ot">&lt;-</span> <span class="fu">resource</span>(</span>
-<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a>  <span class="at">name    =</span> <span class="st">&quot;backbone&quot;</span>,</span>
-<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a>  <span class="at">version =</span> <span class="st">&quot;2026-09&quot;</span>,</span>
-<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a>  <span class="at">sha256  =</span> <span class="fu">strrep</span>(<span class="st">&quot;b1&quot;</span>, <span class="dv">32</span>),</span>
-<span id="cb20-5"><a href="#cb20-5" tabindex="-1"></a>  <span class="at">size    =</span> <span class="fl">812e6</span>,</span>
-<span id="cb20-6"><a href="#cb20-6" tabindex="-1"></a>  <span class="at">file    =</span> <span class="st">&quot;backbone.parquet&quot;</span>,</span>
-<span id="cb20-7"><a href="#cb20-7" tabindex="-1"></a>  <span class="at">license =</span> <span class="st">&quot;CC-BY-4.0&quot;</span>,</span>
-<span id="cb20-8"><a href="#cb20-8" tabindex="-1"></a>  <span class="at">parts   =</span> <span class="fu">list</span>(</span>
-<span id="cb20-9"><a href="#cb20-9" tabindex="-1"></a>    <span class="fu">part</span>(<span class="st">&quot;https://zenodo.invalid/records/456/files/backbone-base.bin&quot;</span>,</span>
-<span id="cb20-10"><a href="#cb20-10" tabindex="-1"></a>         <span class="at">sha256 =</span> <span class="fu">strrep</span>(<span class="st">&quot;91&quot;</span>, <span class="dv">32</span>), <span class="at">size =</span> <span class="fl">797e6</span>),</span>
-<span id="cb20-11"><a href="#cb20-11" tabindex="-1"></a>    <span class="fu">part</span>(<span class="st">&quot;https://zenodo.invalid/records/456/files/backbone-2026-06.bin&quot;</span>,</span>
-<span id="cb20-12"><a href="#cb20-12" tabindex="-1"></a>         <span class="at">sha256 =</span> <span class="fu">strrep</span>(<span class="st">&quot;4e&quot;</span>, <span class="dv">32</span>), <span class="at">size =</span> <span class="fl">9.1e6</span>),</span>
-<span id="cb20-13"><a href="#cb20-13" tabindex="-1"></a>    <span class="fu">part</span>(<span class="st">&quot;https://zenodo.invalid/records/456/files/backbone-2026-09.bin&quot;</span>,</span>
-<span id="cb20-14"><a href="#cb20-14" tabindex="-1"></a>         <span class="at">sha256 =</span> <span class="fu">strrep</span>(<span class="st">&quot;77&quot;</span>, <span class="dv">32</span>), <span class="at">size =</span> <span class="fl">5.4e6</span>)</span>
-<span id="cb20-15"><a href="#cb20-15" tabindex="-1"></a>  )</span>
-<span id="cb20-16"><a href="#cb20-16" tabindex="-1"></a>)</span>
-<span id="cb20-17"><a href="#cb20-17" tabindex="-1"></a>series</span>
-<span id="cb20-18"><a href="#cb20-18" tabindex="-1"></a><span class="co">#&gt; &lt;getaca resource record&gt;</span></span>
-<span id="cb20-19"><a href="#cb20-19" tabindex="-1"></a><span class="co">#&gt;   name      backbone</span></span>
-<span id="cb20-20"><a href="#cb20-20" tabindex="-1"></a><span class="co">#&gt;   version   2026-09</span></span>
-<span id="cb20-21"><a href="#cb20-21" tabindex="-1"></a><span class="co">#&gt;   sha256    b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1</span></span>
-<span id="cb20-22"><a href="#cb20-22" tabindex="-1"></a><span class="co">#&gt;   size      8.12e+08</span></span>
-<span id="cb20-23"><a href="#cb20-23" tabindex="-1"></a><span class="co">#&gt;   license   CC-BY-4.0</span></span>
-<span id="cb20-24"><a href="#cb20-24" tabindex="-1"></a><span class="co">#&gt;   file      backbone.parquet</span></span>
-<span id="cb20-25"><a href="#cb20-25" tabindex="-1"></a><span class="co">#&gt;   composed  3 parts via &#39;concat&#39;</span></span>
-<span id="cb20-26"><a href="#cb20-26" tabindex="-1"></a><span class="co">#&gt;     919191919191  7.97e+08  https://zenodo.invalid/records/456/files/backbone-base.bin</span></span>
-<span id="cb20-27"><a href="#cb20-27" tabindex="-1"></a><span class="co">#&gt;     4e4e4e4e4e4e  9,100,000  https://zenodo.invalid/records/456/files/backbone-2026-06.bin</span></span>
-<span id="cb20-28"><a href="#cb20-28" tabindex="-1"></a><span class="co">#&gt;     777777777777  5,400,000  https://zenodo.invalid/records/456/files/backbone-2026-09.bin</span></span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a>series <span class="ot">&lt;-</span> <span class="fu">resource</span>(</span>
+<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a>  <span class="at">name    =</span> <span class="st">&quot;backbone&quot;</span>,</span>
+<span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a>  <span class="at">version =</span> <span class="st">&quot;2026-09&quot;</span>,</span>
+<span id="cb21-4"><a href="#cb21-4" tabindex="-1"></a>  <span class="at">sha256  =</span> <span class="fu">strrep</span>(<span class="st">&quot;b1&quot;</span>, <span class="dv">32</span>),</span>
+<span id="cb21-5"><a href="#cb21-5" tabindex="-1"></a>  <span class="at">size    =</span> <span class="fl">812e6</span>,</span>
+<span id="cb21-6"><a href="#cb21-6" tabindex="-1"></a>  <span class="at">file    =</span> <span class="st">&quot;backbone.parquet&quot;</span>,</span>
+<span id="cb21-7"><a href="#cb21-7" tabindex="-1"></a>  <span class="at">license =</span> <span class="st">&quot;CC-BY-4.0&quot;</span>,</span>
+<span id="cb21-8"><a href="#cb21-8" tabindex="-1"></a>  <span class="at">parts   =</span> <span class="fu">list</span>(</span>
+<span id="cb21-9"><a href="#cb21-9" tabindex="-1"></a>    <span class="fu">part</span>(<span class="st">&quot;https://zenodo.invalid/records/456/files/backbone-base.bin&quot;</span>,</span>
+<span id="cb21-10"><a href="#cb21-10" tabindex="-1"></a>         <span class="at">sha256 =</span> <span class="fu">strrep</span>(<span class="st">&quot;91&quot;</span>, <span class="dv">32</span>), <span class="at">size =</span> <span class="fl">797e6</span>),</span>
+<span id="cb21-11"><a href="#cb21-11" tabindex="-1"></a>    <span class="fu">part</span>(<span class="st">&quot;https://zenodo.invalid/records/456/files/backbone-2026-06.bin&quot;</span>,</span>
+<span id="cb21-12"><a href="#cb21-12" tabindex="-1"></a>         <span class="at">sha256 =</span> <span class="fu">strrep</span>(<span class="st">&quot;4e&quot;</span>, <span class="dv">32</span>), <span class="at">size =</span> <span class="fl">9.1e6</span>),</span>
+<span id="cb21-13"><a href="#cb21-13" tabindex="-1"></a>    <span class="fu">part</span>(<span class="st">&quot;https://zenodo.invalid/records/456/files/backbone-2026-09.bin&quot;</span>,</span>
+<span id="cb21-14"><a href="#cb21-14" tabindex="-1"></a>         <span class="at">sha256 =</span> <span class="fu">strrep</span>(<span class="st">&quot;77&quot;</span>, <span class="dv">32</span>), <span class="at">size =</span> <span class="fl">5.4e6</span>)</span>
+<span id="cb21-15"><a href="#cb21-15" tabindex="-1"></a>  )</span>
+<span id="cb21-16"><a href="#cb21-16" tabindex="-1"></a>)</span>
+<span id="cb21-17"><a href="#cb21-17" tabindex="-1"></a>series</span>
+<span id="cb21-18"><a href="#cb21-18" tabindex="-1"></a><span class="co">#&gt; &lt;getaca resource record&gt;</span></span>
+<span id="cb21-19"><a href="#cb21-19" tabindex="-1"></a><span class="co">#&gt;   name      backbone</span></span>
+<span id="cb21-20"><a href="#cb21-20" tabindex="-1"></a><span class="co">#&gt;   version   2026-09</span></span>
+<span id="cb21-21"><a href="#cb21-21" tabindex="-1"></a><span class="co">#&gt;   sha256    b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1</span></span>
+<span id="cb21-22"><a href="#cb21-22" tabindex="-1"></a><span class="co">#&gt;   size      8.12e+08</span></span>
+<span id="cb21-23"><a href="#cb21-23" tabindex="-1"></a><span class="co">#&gt;   license   CC-BY-4.0</span></span>
+<span id="cb21-24"><a href="#cb21-24" tabindex="-1"></a><span class="co">#&gt;   file      backbone.parquet</span></span>
+<span id="cb21-25"><a href="#cb21-25" tabindex="-1"></a><span class="co">#&gt;   composed  3 parts via &#39;concat&#39;</span></span>
+<span id="cb21-26"><a href="#cb21-26" tabindex="-1"></a><span class="co">#&gt;     919191919191  7.97e+08  https://zenodo.invalid/records/456/files/backbone-base.bin</span></span>
+<span id="cb21-27"><a href="#cb21-27" tabindex="-1"></a><span class="co">#&gt;     4e4e4e4e4e4e  9,100,000  https://zenodo.invalid/records/456/files/backbone-2026-06.bin</span></span>
+<span id="cb21-28"><a href="#cb21-28" tabindex="-1"></a><span class="co">#&gt;     777777777777  5,400,000  https://zenodo.invalid/records/456/files/backbone-2026-09.bin</span></span></code></pre></div>
 <p>A record names locations for the whole file or the parts it is
 composed from, so <code>urls</code> and <code>parts</code> are
 alternatives and declaring both is refused. Each part is fetched through
@@ -781,28 +789,28 @@ re-splitting a file at different boundaries, adding a mirror for one
 piece, or moving the series to a new host are all changes of route. Your
 users are held to the artefact either way, and a series that does not
 produce it is reported against the declaration:</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="fu">getaca</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)</span>
-<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a><span class="co">#&gt; Error: The parts declared for yourpkg/backbone@2026-09 do not produce the declared bytes.</span></span>
-<span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a><span class="co">#&gt;   3 parts, each matching its own checksum, combined by &#39;concat&#39;</span></span>
-<span id="cb21-4"><a href="#cb21-4" tabindex="-1"></a><span class="co">#&gt;   declared SHA-256: b1b1b1...</span></span>
-<span id="cb21-5"><a href="#cb21-5" tabindex="-1"></a><span class="co">#&gt;   composed SHA-256: 2c40f9...</span></span>
-<span id="cb21-6"><a href="#cb21-6" tabindex="-1"></a><span class="co">#&gt;</span></span>
-<span id="cb21-7"><a href="#cb21-7" tabindex="-1"></a><span class="co">#&gt; Every part arrived intact, so this is not a transfer problem.</span></span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="fu">getaca</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)</span>
+<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a><span class="co">#&gt; Error: The parts declared for yourpkg/backbone@2026-09 do not produce the declared bytes.</span></span>
+<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a><span class="co">#&gt;   3 parts, each matching its own checksum, combined by &#39;concat&#39;</span></span>
+<span id="cb22-4"><a href="#cb22-4" tabindex="-1"></a><span class="co">#&gt;   declared SHA-256: b1b1b1...</span></span>
+<span id="cb22-5"><a href="#cb22-5" tabindex="-1"></a><span class="co">#&gt;   composed SHA-256: 2c40f9...</span></span>
+<span id="cb22-6"><a href="#cb22-6" tabindex="-1"></a><span class="co">#&gt;</span></span>
+<span id="cb22-7"><a href="#cb22-7" tabindex="-1"></a><span class="co">#&gt; Every part arrived intact, so this is not a transfer problem.</span></span></code></pre></div>
 <div id="combining-by-something-other-than-concatenation" class="section level3">
 <h3>Combining by something other than concatenation</h3>
 <p>Parts are concatenated in declaration order, which is what a file
 split for an upload limit needs. A delta format needs
 <code>combiner()</code>, since applying a patch is knowledge about a
 file format and <code>getaca</code> has none:</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a>apply_deltas <span class="ot">&lt;-</span> <span class="fu">combiner</span>(<span class="st">&quot;bsdiff&quot;</span>, <span class="cf">function</span>(parts, output) {</span>
-<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a>  current <span class="ot">&lt;-</span> parts[<span class="dv">1</span>]</span>
-<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a>  <span class="cf">for</span> (delta <span class="cf">in</span> parts[<span class="sc">-</span><span class="dv">1</span>]) {</span>
-<span id="cb22-4"><a href="#cb22-4" tabindex="-1"></a>    current <span class="ot">&lt;-</span> <span class="fu">bspatch</span>(current, delta, <span class="fu">tempfile</span>())</span>
-<span id="cb22-5"><a href="#cb22-5" tabindex="-1"></a>  }</span>
-<span id="cb22-6"><a href="#cb22-6" tabindex="-1"></a>  <span class="fu">file.copy</span>(current, output)</span>
-<span id="cb22-7"><a href="#cb22-7" tabindex="-1"></a>})</span>
-<span id="cb22-8"><a href="#cb22-8" tabindex="-1"></a>apply_deltas</span>
-<span id="cb22-9"><a href="#cb22-9" tabindex="-1"></a><span class="co">#&gt; &lt;getaca combiner&gt; bsdiff</span></span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a>apply_deltas <span class="ot">&lt;-</span> <span class="fu">combiner</span>(<span class="st">&quot;bsdiff&quot;</span>, <span class="cf">function</span>(parts, output) {</span>
+<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a>  current <span class="ot">&lt;-</span> parts[<span class="dv">1</span>]</span>
+<span id="cb23-3"><a href="#cb23-3" tabindex="-1"></a>  <span class="cf">for</span> (delta <span class="cf">in</span> parts[<span class="sc">-</span><span class="dv">1</span>]) {</span>
+<span id="cb23-4"><a href="#cb23-4" tabindex="-1"></a>    current <span class="ot">&lt;-</span> <span class="fu">bspatch</span>(current, delta, <span class="fu">tempfile</span>())</span>
+<span id="cb23-5"><a href="#cb23-5" tabindex="-1"></a>  }</span>
+<span id="cb23-6"><a href="#cb23-6" tabindex="-1"></a>  <span class="fu">file.copy</span>(current, output)</span>
+<span id="cb23-7"><a href="#cb23-7" tabindex="-1"></a>})</span>
+<span id="cb23-8"><a href="#cb23-8" tabindex="-1"></a>apply_deltas</span>
+<span id="cb23-9"><a href="#cb23-9" tabindex="-1"></a><span class="co">#&gt; &lt;getaca combiner&gt; bsdiff</span></span></code></pre></div>
 <p>The function receives the verified part paths in declaration order
 and the file to write. Attach it with
 <code>combiner = apply_deltas</code>. Like a processor, it carries an
@@ -831,20 +839,20 @@ for most formats it is the cheaper of the two by a wide margin.</p>
 <p>When the chain gets long enough that reapplying it stops being cheap,
 publish the composed artefact of each version alongside its deltas and
 anchor the next version on it:</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="fu">resource</span>(</span>
-<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a>  <span class="at">name    =</span> <span class="st">&quot;backbone&quot;</span>,</span>
-<span id="cb23-3"><a href="#cb23-3" tabindex="-1"></a>  <span class="at">version =</span> <span class="st">&quot;2026-12&quot;</span>,</span>
-<span id="cb23-4"><a href="#cb23-4" tabindex="-1"></a>  <span class="at">sha256  =</span> <span class="fu">strrep</span>(<span class="st">&quot;c2&quot;</span>, <span class="dv">32</span>),</span>
-<span id="cb23-5"><a href="#cb23-5" tabindex="-1"></a>  <span class="at">file    =</span> <span class="st">&quot;backbone.parquet&quot;</span>,</span>
-<span id="cb23-6"><a href="#cb23-6" tabindex="-1"></a>  <span class="at">parts   =</span> <span class="fu">list</span>(</span>
-<span id="cb23-7"><a href="#cb23-7" tabindex="-1"></a>    <span class="co"># The artefact of 2026-09, at its published checksum.</span></span>
-<span id="cb23-8"><a href="#cb23-8" tabindex="-1"></a>    <span class="fu">part</span>(<span class="st">&quot;https://zenodo.invalid/records/456/files/backbone-2026-09.parquet&quot;</span>,</span>
-<span id="cb23-9"><a href="#cb23-9" tabindex="-1"></a>         <span class="at">sha256 =</span> <span class="fu">strrep</span>(<span class="st">&quot;b1&quot;</span>, <span class="dv">32</span>)),</span>
-<span id="cb23-10"><a href="#cb23-10" tabindex="-1"></a>    <span class="fu">part</span>(<span class="st">&quot;https://zenodo.invalid/records/789/files/backbone-2026-12.bin&quot;</span>,</span>
-<span id="cb23-11"><a href="#cb23-11" tabindex="-1"></a>         <span class="at">sha256 =</span> <span class="fu">strrep</span>(<span class="st">&quot;d3&quot;</span>, <span class="dv">32</span>))</span>
-<span id="cb23-12"><a href="#cb23-12" tabindex="-1"></a>  ),</span>
-<span id="cb23-13"><a href="#cb23-13" tabindex="-1"></a>  <span class="at">combiner =</span> apply_deltas</span>
-<span id="cb23-14"><a href="#cb23-14" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="fu">resource</span>(</span>
+<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a>  <span class="at">name    =</span> <span class="st">&quot;backbone&quot;</span>,</span>
+<span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a>  <span class="at">version =</span> <span class="st">&quot;2026-12&quot;</span>,</span>
+<span id="cb24-4"><a href="#cb24-4" tabindex="-1"></a>  <span class="at">sha256  =</span> <span class="fu">strrep</span>(<span class="st">&quot;c2&quot;</span>, <span class="dv">32</span>),</span>
+<span id="cb24-5"><a href="#cb24-5" tabindex="-1"></a>  <span class="at">file    =</span> <span class="st">&quot;backbone.parquet&quot;</span>,</span>
+<span id="cb24-6"><a href="#cb24-6" tabindex="-1"></a>  <span class="at">parts   =</span> <span class="fu">list</span>(</span>
+<span id="cb24-7"><a href="#cb24-7" tabindex="-1"></a>    <span class="co"># The artefact of 2026-09, at its published checksum.</span></span>
+<span id="cb24-8"><a href="#cb24-8" tabindex="-1"></a>    <span class="fu">part</span>(<span class="st">&quot;https://zenodo.invalid/records/456/files/backbone-2026-09.parquet&quot;</span>,</span>
+<span id="cb24-9"><a href="#cb24-9" tabindex="-1"></a>         <span class="at">sha256 =</span> <span class="fu">strrep</span>(<span class="st">&quot;b1&quot;</span>, <span class="dv">32</span>)),</span>
+<span id="cb24-10"><a href="#cb24-10" tabindex="-1"></a>    <span class="fu">part</span>(<span class="st">&quot;https://zenodo.invalid/records/789/files/backbone-2026-12.bin&quot;</span>,</span>
+<span id="cb24-11"><a href="#cb24-11" tabindex="-1"></a>         <span class="at">sha256 =</span> <span class="fu">strrep</span>(<span class="st">&quot;d3&quot;</span>, <span class="dv">32</span>))</span>
+<span id="cb24-12"><a href="#cb24-12" tabindex="-1"></a>  ),</span>
+<span id="cb24-13"><a href="#cb24-13" tabindex="-1"></a>  <span class="at">combiner =</span> apply_deltas</span>
+<span id="cb24-14"><a href="#cb24-14" tabindex="-1"></a>)</span></code></pre></div>
 <p>Nothing new is needed for this, and it costs nothing extra to the
 users it does not help. A machine holding <code>2026-09</code> already
 has those bytes under that digest, finds them in the store, and applies
@@ -861,23 +869,23 @@ rather than being confused with the archive it came from.</p>
 <p>Most declarations of an archive want the same transformation, so it
 is shipped. <code>unpack()</code> reads the format from the cached
 file’s name:</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a>archive <span class="ot">&lt;-</span> <span class="fu">resource</span>(</span>
-<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a>  <span class="at">name      =</span> <span class="st">&quot;backbone&quot;</span>,</span>
-<span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a>  <span class="at">version   =</span> <span class="st">&quot;2026-06&quot;</span>,</span>
-<span id="cb24-4"><a href="#cb24-4" tabindex="-1"></a>  <span class="at">urls      =</span> <span class="st">&quot;https://host.invalid/backbone-2026-06.zip&quot;</span>,</span>
-<span id="cb24-5"><a href="#cb24-5" tabindex="-1"></a>  <span class="at">sha256    =</span> <span class="fu">strrep</span>(<span class="st">&quot;9f&quot;</span>, <span class="dv">32</span>),</span>
-<span id="cb24-6"><a href="#cb24-6" tabindex="-1"></a>  <span class="at">license   =</span> <span class="st">&quot;CC-BY-4.0&quot;</span>,</span>
-<span id="cb24-7"><a href="#cb24-7" tabindex="-1"></a>  <span class="at">processor =</span> <span class="fu">unpack</span>()</span>
-<span id="cb24-8"><a href="#cb24-8" tabindex="-1"></a>)</span>
-<span id="cb24-9"><a href="#cb24-9" tabindex="-1"></a>archive</span>
-<span id="cb24-10"><a href="#cb24-10" tabindex="-1"></a><span class="co">#&gt; &lt;getaca resource record&gt;</span></span>
-<span id="cb24-11"><a href="#cb24-11" tabindex="-1"></a><span class="co">#&gt;   name      backbone</span></span>
-<span id="cb24-12"><a href="#cb24-12" tabindex="-1"></a><span class="co">#&gt;   version   2026-06</span></span>
-<span id="cb24-13"><a href="#cb24-13" tabindex="-1"></a><span class="co">#&gt;   sha256    9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f</span></span>
-<span id="cb24-14"><a href="#cb24-14" tabindex="-1"></a><span class="co">#&gt;   size      unknown</span></span>
-<span id="cb24-15"><a href="#cb24-15" tabindex="-1"></a><span class="co">#&gt;   license   CC-BY-4.0</span></span>
-<span id="cb24-16"><a href="#cb24-16" tabindex="-1"></a><span class="co">#&gt;   urls      https://host.invalid/backbone-2026-06.zip</span></span>
-<span id="cb24-17"><a href="#cb24-17" tabindex="-1"></a><span class="co">#&gt;   processor unpack</span></span></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a>archive <span class="ot">&lt;-</span> <span class="fu">resource</span>(</span>
+<span id="cb25-2"><a href="#cb25-2" tabindex="-1"></a>  <span class="at">name      =</span> <span class="st">&quot;backbone&quot;</span>,</span>
+<span id="cb25-3"><a href="#cb25-3" tabindex="-1"></a>  <span class="at">version   =</span> <span class="st">&quot;2026-06&quot;</span>,</span>
+<span id="cb25-4"><a href="#cb25-4" tabindex="-1"></a>  <span class="at">urls      =</span> <span class="st">&quot;https://host.invalid/backbone-2026-06.zip&quot;</span>,</span>
+<span id="cb25-5"><a href="#cb25-5" tabindex="-1"></a>  <span class="at">sha256    =</span> <span class="fu">strrep</span>(<span class="st">&quot;9f&quot;</span>, <span class="dv">32</span>),</span>
+<span id="cb25-6"><a href="#cb25-6" tabindex="-1"></a>  <span class="at">license   =</span> <span class="st">&quot;CC-BY-4.0&quot;</span>,</span>
+<span id="cb25-7"><a href="#cb25-7" tabindex="-1"></a>  <span class="at">processor =</span> <span class="fu">unpack</span>()</span>
+<span id="cb25-8"><a href="#cb25-8" tabindex="-1"></a>)</span>
+<span id="cb25-9"><a href="#cb25-9" tabindex="-1"></a>archive</span>
+<span id="cb25-10"><a href="#cb25-10" tabindex="-1"></a><span class="co">#&gt; &lt;getaca resource record&gt;</span></span>
+<span id="cb25-11"><a href="#cb25-11" tabindex="-1"></a><span class="co">#&gt;   name      backbone</span></span>
+<span id="cb25-12"><a href="#cb25-12" tabindex="-1"></a><span class="co">#&gt;   version   2026-06</span></span>
+<span id="cb25-13"><a href="#cb25-13" tabindex="-1"></a><span class="co">#&gt;   sha256    9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f</span></span>
+<span id="cb25-14"><a href="#cb25-14" tabindex="-1"></a><span class="co">#&gt;   size      unknown</span></span>
+<span id="cb25-15"><a href="#cb25-15" tabindex="-1"></a><span class="co">#&gt;   license   CC-BY-4.0</span></span>
+<span id="cb25-16"><a href="#cb25-16" tabindex="-1"></a><span class="co">#&gt;   urls      https://host.invalid/backbone-2026-06.zip</span></span>
+<span id="cb25-17"><a href="#cb25-17" tabindex="-1"></a><span class="co">#&gt;   processor unpack</span></span></code></pre></div>
 <p>It covers <code>.zip</code>, the tarballs under any compression
 (<code>.tar</code>, <code>.tar.gz</code>, <code>.tgz</code>,
 <code>.tar.bz2</code>, <code>.tbz2</code>, <code>.tar.xz</code>,
@@ -885,13 +893,13 @@ file’s name:</p>
 <code>.bz2</code>, <code>.xz</code>), which is decompressed under its
 own name with the extension dropped. Name the format for a file whose
 name does not carry one:</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a><span class="fu">unpack</span>(<span class="st">&quot;gzip&quot;</span>)<span class="sc">$</span>id</span>
-<span id="cb25-2"><a href="#cb25-2" tabindex="-1"></a><span class="co">#&gt; [1] &quot;unpack-gzip&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="fu">unpack</span>(<span class="st">&quot;gzip&quot;</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a><span class="co">#&gt; &lt;getaca processor&gt; unpack-gzip</span></span></code></pre></div>
 <p>A large archive holding one subtree you need takes
 <code>members</code>, which names a file, or a directory and everything
 under it:</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="fu">unpack</span>(<span class="at">members =</span> <span class="st">&quot;tables&quot;</span>)<span class="sc">$</span>id</span>
-<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a><span class="co">#&gt; [1] &quot;unpack-d98a034f&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a><span class="fu">unpack</span>(<span class="at">members =</span> <span class="st">&quot;tables&quot;</span>)</span>
+<span id="cb27-2"><a href="#cb27-2" tabindex="-1"></a><span class="co">#&gt; &lt;getaca processor&gt; unpack-d98a034f</span></span></code></pre></div>
 <p>The id encodes the settings for a reason. It is what the cache slot
 and the registry manifest are keyed on, so two records asking for
 different subsets of one archive must not resolve to one slot. A name
@@ -901,13 +909,13 @@ of it: an empty slot would pass every later check.</p>
 <div id="writing-your-own" class="section level3">
 <h3>Writing your own</h3>
 <p>Anything else is a function of two arguments:</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a>index <span class="ot">&lt;-</span> <span class="fu">processor</span>(<span class="st">&quot;index-v1&quot;</span>, <span class="cf">function</span>(input, output_dir) {</span>
-<span id="cb27-2"><a href="#cb27-2" tabindex="-1"></a>  out <span class="ot">&lt;-</span> <span class="fu">file.path</span>(output_dir, <span class="st">&quot;backbone.tsv&quot;</span>)</span>
-<span id="cb27-3"><a href="#cb27-3" tabindex="-1"></a>  <span class="fu">write.table</span>(<span class="fu">read.csv</span>(input), out, <span class="at">sep =</span> <span class="st">&quot;</span><span class="sc">\t</span><span class="st">&quot;</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb27-4"><a href="#cb27-4" tabindex="-1"></a>  out</span>
-<span id="cb27-5"><a href="#cb27-5" tabindex="-1"></a>})</span>
-<span id="cb27-6"><a href="#cb27-6" tabindex="-1"></a>index<span class="sc">$</span>id</span>
-<span id="cb27-7"><a href="#cb27-7" tabindex="-1"></a><span class="co">#&gt; [1] &quot;index-v1&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a>index <span class="ot">&lt;-</span> <span class="fu">processor</span>(<span class="st">&quot;index-v1&quot;</span>, <span class="cf">function</span>(input, output_dir) {</span>
+<span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a>  out <span class="ot">&lt;-</span> <span class="fu">file.path</span>(output_dir, <span class="st">&quot;backbone.tsv&quot;</span>)</span>
+<span id="cb28-3"><a href="#cb28-3" tabindex="-1"></a>  <span class="fu">write.table</span>(<span class="fu">read.csv</span>(input), out, <span class="at">sep =</span> <span class="st">&quot;</span><span class="sc">\t</span><span class="st">&quot;</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb28-4"><a href="#cb28-4" tabindex="-1"></a>  out</span>
+<span id="cb28-5"><a href="#cb28-5" tabindex="-1"></a>})</span>
+<span id="cb28-6"><a href="#cb28-6" tabindex="-1"></a>index</span>
+<span id="cb28-7"><a href="#cb28-7" tabindex="-1"></a><span class="co">#&gt; &lt;getaca processor&gt; index-v1</span></span></code></pre></div>
 <p>The function receives the verified input path and a staging
 directory, and returns a path inside that directory. <code>getaca</code>
 renames the staging directory into place once the function returns, so a
@@ -932,24 +940,24 @@ trade.</p>
 <p>The stored form is an R object, so no parser is ever a hard
 dependency. YAML and JSON are accepted at authoring time and gated at
 call time:</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a>reg <span class="ot">&lt;-</span> <span class="fu">as_registry</span>(<span class="st">&quot;data-raw/resources.yml&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)</span>
-<span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a><span class="fu">registry_write</span>(reg, <span class="st">&quot;inst/getaca/registry.rds&quot;</span>)</span></code></pre></div>
-<div class="sourceCode" id="cb29"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a><span class="fu">backbone</span><span class="kw">:</span></span>
-<span id="cb29-2"><a href="#cb29-2" tabindex="-1"></a><span class="at">  </span><span class="fu">version</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;2026-06&quot;</span></span>
-<span id="cb29-3"><a href="#cb29-3" tabindex="-1"></a><span class="at">  </span><span class="fu">urls</span><span class="kw">:</span></span>
-<span id="cb29-4"><a href="#cb29-4" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> https://primary.invalid/backbone-2026-06.zip</span></span>
-<span id="cb29-5"><a href="#cb29-5" tabindex="-1"></a></span>
-<span id="cb29-6"><a href="#cb29-6" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> https://mirror.invalid/backbone-2026-06.zip</span></span>
-<span id="cb29-7"><a href="#cb29-7" tabindex="-1"></a><span class="at">  </span><span class="fu">sha256</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;9f9f...&quot;</span></span>
-<span id="cb29-8"><a href="#cb29-8" tabindex="-1"></a><span class="at">  </span><span class="fu">size</span><span class="kw">:</span><span class="at"> </span><span class="dv">797000000</span></span>
-<span id="cb29-9"><a href="#cb29-9" tabindex="-1"></a><span class="at">  </span><span class="fu">license</span><span class="kw">:</span><span class="at"> CC-BY-4.0</span></span>
-<span id="cb29-10"><a href="#cb29-10" tabindex="-1"></a><span class="at">  </span><span class="fu">description</span><span class="kw">:</span><span class="at"> Reference backbone, June 2026</span></span>
-<span id="cb29-11"><a href="#cb29-11" tabindex="-1"></a></span>
-<span id="cb29-12"><a href="#cb29-12" tabindex="-1"></a><span class="fu">grid</span><span class="kw">:</span></span>
-<span id="cb29-13"><a href="#cb29-13" tabindex="-1"></a><span class="at">  </span><span class="fu">version</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;2026-06&quot;</span></span>
-<span id="cb29-14"><a href="#cb29-14" tabindex="-1"></a><span class="at">  </span><span class="fu">url</span><span class="kw">:</span><span class="at"> https://primary.invalid/grid-2026-06.zip</span></span>
-<span id="cb29-15"><a href="#cb29-15" tabindex="-1"></a><span class="at">  </span><span class="fu">sha256</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;ab12...&quot;</span></span>
-<span id="cb29-16"><a href="#cb29-16" tabindex="-1"></a><span class="at">  </span><span class="fu">license</span><span class="kw">:</span><span class="at"> CC-BY-4.0</span></span></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a>reg <span class="ot">&lt;-</span> <span class="fu">as_registry</span>(<span class="st">&quot;data-raw/resources.yml&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)</span>
+<span id="cb29-2"><a href="#cb29-2" tabindex="-1"></a><span class="fu">registry_write</span>(reg, <span class="st">&quot;inst/getaca/registry.rds&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a><span class="fu">backbone</span><span class="kw">:</span></span>
+<span id="cb30-2"><a href="#cb30-2" tabindex="-1"></a><span class="at">  </span><span class="fu">version</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;2026-06&quot;</span></span>
+<span id="cb30-3"><a href="#cb30-3" tabindex="-1"></a><span class="at">  </span><span class="fu">urls</span><span class="kw">:</span></span>
+<span id="cb30-4"><a href="#cb30-4" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> https://primary.invalid/backbone-2026-06.zip</span></span>
+<span id="cb30-5"><a href="#cb30-5" tabindex="-1"></a></span>
+<span id="cb30-6"><a href="#cb30-6" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> https://mirror.invalid/backbone-2026-06.zip</span></span>
+<span id="cb30-7"><a href="#cb30-7" tabindex="-1"></a><span class="at">  </span><span class="fu">sha256</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;9f9f...&quot;</span></span>
+<span id="cb30-8"><a href="#cb30-8" tabindex="-1"></a><span class="at">  </span><span class="fu">size</span><span class="kw">:</span><span class="at"> </span><span class="dv">797000000</span></span>
+<span id="cb30-9"><a href="#cb30-9" tabindex="-1"></a><span class="at">  </span><span class="fu">license</span><span class="kw">:</span><span class="at"> CC-BY-4.0</span></span>
+<span id="cb30-10"><a href="#cb30-10" tabindex="-1"></a><span class="at">  </span><span class="fu">description</span><span class="kw">:</span><span class="at"> Reference backbone, June 2026</span></span>
+<span id="cb30-11"><a href="#cb30-11" tabindex="-1"></a></span>
+<span id="cb30-12"><a href="#cb30-12" tabindex="-1"></a><span class="fu">grid</span><span class="kw">:</span></span>
+<span id="cb30-13"><a href="#cb30-13" tabindex="-1"></a><span class="at">  </span><span class="fu">version</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;2026-06&quot;</span></span>
+<span id="cb30-14"><a href="#cb30-14" tabindex="-1"></a><span class="at">  </span><span class="fu">url</span><span class="kw">:</span><span class="at"> https://primary.invalid/grid-2026-06.zip</span></span>
+<span id="cb30-15"><a href="#cb30-15" tabindex="-1"></a><span class="at">  </span><span class="fu">sha256</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;ab12...&quot;</span></span>
+<span id="cb30-16"><a href="#cb30-16" tabindex="-1"></a><span class="at">  </span><span class="fu">license</span><span class="kw">:</span><span class="at"> CC-BY-4.0</span></span></code></pre></div>
 <p>Either <code>urls</code> or <code>url</code> is accepted, and either
 <code>license</code> or <code>licence</code>, since a YAML file is input
 rather than API. The model has one spelling for each.</p>
@@ -958,9 +966,9 @@ version per name. A registry that offers several versions of a name is
 built in R, where the list is a list and <code>current</code> sits
 beside it. Arguments passed to <code>as_registry()</code> reach
 <code>registry()</code>:</p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a><span class="fu">as_registry</span>(<span class="st">&quot;data-raw/resources.yml&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>,</span>
-<span id="cb30-2"><a href="#cb30-2" tabindex="-1"></a>            <span class="at">policy =</span> <span class="st">&quot;current&quot;</span>,</span>
-<span id="cb30-3"><a href="#cb30-3" tabindex="-1"></a>            <span class="at">remote =</span> <span class="st">&quot;https://yourpkg.invalid/getaca-registry.rds&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a><span class="fu">as_registry</span>(<span class="st">&quot;data-raw/resources.yml&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>,</span>
+<span id="cb31-2"><a href="#cb31-2" tabindex="-1"></a>            <span class="at">policy =</span> <span class="st">&quot;current&quot;</span>,</span>
+<span id="cb31-3"><a href="#cb31-3" tabindex="-1"></a>            <span class="at">remote =</span> <span class="st">&quot;https://yourpkg.invalid/getaca-registry.rds&quot;</span>)</span></code></pre></div>
 <p>JSON works the same way through <code>jsonlite</code>. Both are
 <code>Suggests</code>, and asking for one you have not installed
 produces an install instruction rather than a missing-object error.</p>
@@ -970,18 +978,18 @@ produces an install instruction rather than a missing-object error.</p>
 <p>Every failure is classed, and carries an <code>actor</code> field
 naming who can act. Catch the ones your users will meet and say
 something domain-specific:</p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a>install_backbone <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">name =</span> <span class="st">&quot;backbone&quot;</span>) {</span>
-<span id="cb31-2"><a href="#cb31-2" tabindex="-1"></a>  path <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>(</span>
-<span id="cb31-3"><a href="#cb31-3" tabindex="-1"></a>    <span class="fu">getaca</span>(name, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>),</span>
-<span id="cb31-4"><a href="#cb31-4" tabindex="-1"></a>    <span class="at">getaca_error_unavailable =</span> <span class="cf">function</span>(e) {</span>
-<span id="cb31-5"><a href="#cb31-5" tabindex="-1"></a>      <span class="fu">stop</span>(<span class="st">&quot;The backbone is not installed and cannot be downloaded &quot;</span>,</span>
-<span id="cb31-6"><a href="#cb31-6" tabindex="-1"></a>           <span class="st">&quot;because no network connection is available.</span><span class="sc">\n</span><span class="st">&quot;</span>,</span>
-<span id="cb31-7"><a href="#cb31-7" tabindex="-1"></a>           <span class="st">&quot;Connect to the internet and run:</span><span class="sc">\n</span><span class="st">&quot;</span>,</span>
-<span id="cb31-8"><a href="#cb31-8" tabindex="-1"></a>           <span class="st">&quot;  yourpkg::install_backbone(</span><span class="sc">\&quot;</span><span class="st">backbone</span><span class="sc">\&quot;</span><span class="st">)&quot;</span>, <span class="at">call. =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb31-9"><a href="#cb31-9" tabindex="-1"></a>    }</span>
-<span id="cb31-10"><a href="#cb31-10" tabindex="-1"></a>  )</span>
-<span id="cb31-11"><a href="#cb31-11" tabindex="-1"></a>  <span class="fu">open_backbone</span>(path)</span>
-<span id="cb31-12"><a href="#cb31-12" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" tabindex="-1"></a>install_backbone <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">name =</span> <span class="st">&quot;backbone&quot;</span>) {</span>
+<span id="cb32-2"><a href="#cb32-2" tabindex="-1"></a>  path <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>(</span>
+<span id="cb32-3"><a href="#cb32-3" tabindex="-1"></a>    <span class="fu">getaca</span>(name, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>),</span>
+<span id="cb32-4"><a href="#cb32-4" tabindex="-1"></a>    <span class="at">getaca_error_unavailable =</span> <span class="cf">function</span>(e) {</span>
+<span id="cb32-5"><a href="#cb32-5" tabindex="-1"></a>      <span class="fu">stop</span>(<span class="st">&quot;The backbone is not installed and cannot be downloaded &quot;</span>,</span>
+<span id="cb32-6"><a href="#cb32-6" tabindex="-1"></a>           <span class="st">&quot;because no network connection is available.</span><span class="sc">\n</span><span class="st">&quot;</span>,</span>
+<span id="cb32-7"><a href="#cb32-7" tabindex="-1"></a>           <span class="st">&quot;Connect to the internet and run:</span><span class="sc">\n</span><span class="st">&quot;</span>,</span>
+<span id="cb32-8"><a href="#cb32-8" tabindex="-1"></a>           <span class="st">&quot;  yourpkg::install_backbone(</span><span class="sc">\&quot;</span><span class="st">backbone</span><span class="sc">\&quot;</span><span class="st">)&quot;</span>, <span class="at">call. =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb32-9"><a href="#cb32-9" tabindex="-1"></a>    }</span>
+<span id="cb32-10"><a href="#cb32-10" tabindex="-1"></a>  )</span>
+<span id="cb32-11"><a href="#cb32-11" tabindex="-1"></a>  <span class="fu">open_backbone</span>(path)</span>
+<span id="cb32-12"><a href="#cb32-12" tabindex="-1"></a>}</span></code></pre></div>
 <p><code>getaca_error_offline</code> is a subclass of
 <code>getaca_error_unavailable</code>, so the handler above catches
 both, and a narrower handler can separate them.</p>
@@ -1012,12 +1020,12 @@ ship. A Zenodo file URL is derivable from the record anyway:
 which is a <code>urls</code> entry like any other. Record the identifier
 itself in <code>doi =</code>, where it is cited from rather than fetched
 from:</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" tabindex="-1"></a><span class="fu">resource</span>(</span>
-<span id="cb32-2"><a href="#cb32-2" tabindex="-1"></a>  <span class="st">&quot;backbone&quot;</span>, <span class="st">&quot;2026-06&quot;</span>,</span>
-<span id="cb32-3"><a href="#cb32-3" tabindex="-1"></a>  <span class="at">urls =</span> <span class="st">&quot;https://zenodo.org/records/1234567/files/backbone-2026-06.zip&quot;</span>,</span>
-<span id="cb32-4"><a href="#cb32-4" tabindex="-1"></a>  <span class="at">doi =</span> <span class="st">&quot;10.5281/zenodo.1234567&quot;</span>,</span>
-<span id="cb32-5"><a href="#cb32-5" tabindex="-1"></a>  <span class="at">sha256 =</span> <span class="st">&quot;...&quot;</span>, <span class="at">license =</span> <span class="st">&quot;CC-BY-4.0&quot;</span></span>
-<span id="cb32-6"><a href="#cb32-6" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a><span class="fu">resource</span>(</span>
+<span id="cb33-2"><a href="#cb33-2" tabindex="-1"></a>  <span class="st">&quot;backbone&quot;</span>, <span class="st">&quot;2026-06&quot;</span>,</span>
+<span id="cb33-3"><a href="#cb33-3" tabindex="-1"></a>  <span class="at">urls =</span> <span class="st">&quot;https://zenodo.org/records/1234567/files/backbone-2026-06.zip&quot;</span>,</span>
+<span id="cb33-4"><a href="#cb33-4" tabindex="-1"></a>  <span class="at">doi =</span> <span class="st">&quot;10.5281/zenodo.1234567&quot;</span>,</span>
+<span id="cb33-5"><a href="#cb33-5" tabindex="-1"></a>  <span class="at">sha256 =</span> <span class="st">&quot;...&quot;</span>, <span class="at">license =</span> <span class="st">&quot;CC-BY-4.0&quot;</span></span>
+<span id="cb33-6"><a href="#cb33-6" tabindex="-1"></a>)</span></code></pre></div>
 <p>The DOI travels into provenance and appears in
 <code>getaca_info()</code> and <code>getaca_catalogue()</code>, so an
 analysis can report the identifier for the exact bytes it read.</p>
@@ -1029,19 +1037,19 @@ declaration says which credential a host requires; it never carries one.
 <code>bearer()</code> and <code>basic()</code> name environment
 variables, and <code>auth_host()</code> binds a scheme to the host it
 applies to:</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a><span class="fu">registry</span>(</span>
-<span id="cb33-2"><a href="#cb33-2" tabindex="-1"></a>  <span class="at">package =</span> <span class="st">&quot;canopy&quot;</span>,</span>
-<span id="cb33-3"><a href="#cb33-3" tabindex="-1"></a>  <span class="at">auth =</span> <span class="fu">list</span>(</span>
-<span id="cb33-4"><a href="#cb33-4" tabindex="-1"></a>    <span class="fu">auth_host</span>(<span class="st">&quot;data.ornldaac.earthdata.nasa.gov&quot;</span>,</span>
-<span id="cb33-5"><a href="#cb33-5" tabindex="-1"></a>              <span class="fu">bearer</span>(<span class="st">&quot;EARTHDATA_TOKEN&quot;</span>),</span>
-<span id="cb33-6"><a href="#cb33-6" tabindex="-1"></a>              <span class="at">register =</span> <span class="st">&quot;https://urs.earthdata.nasa.gov/users/new&quot;</span>)</span>
-<span id="cb33-7"><a href="#cb33-7" tabindex="-1"></a>  ),</span>
-<span id="cb33-8"><a href="#cb33-8" tabindex="-1"></a>  <span class="at">resources =</span> <span class="fu">list</span>(</span>
-<span id="cb33-9"><a href="#cb33-9" tabindex="-1"></a>    <span class="fu">resource</span>(<span class="st">&quot;gedi-l4a&quot;</span>, <span class="st">&quot;2026-06&quot;</span>,</span>
-<span id="cb33-10"><a href="#cb33-10" tabindex="-1"></a>             <span class="at">urls =</span> <span class="st">&quot;https://data.ornldaac.earthdata.nasa.gov/gedi/l4a-2026-06.h5&quot;</span>,</span>
-<span id="cb33-11"><a href="#cb33-11" tabindex="-1"></a>             <span class="at">sha256 =</span> <span class="st">&quot;...&quot;</span>, <span class="at">license =</span> <span class="st">&quot;CC-BY-4.0&quot;</span>)</span>
-<span id="cb33-12"><a href="#cb33-12" tabindex="-1"></a>  )</span>
-<span id="cb33-13"><a href="#cb33-13" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" tabindex="-1"></a><span class="fu">registry</span>(</span>
+<span id="cb34-2"><a href="#cb34-2" tabindex="-1"></a>  <span class="at">package =</span> <span class="st">&quot;canopy&quot;</span>,</span>
+<span id="cb34-3"><a href="#cb34-3" tabindex="-1"></a>  <span class="at">auth =</span> <span class="fu">list</span>(</span>
+<span id="cb34-4"><a href="#cb34-4" tabindex="-1"></a>    <span class="fu">auth_host</span>(<span class="st">&quot;data.ornldaac.earthdata.nasa.gov&quot;</span>,</span>
+<span id="cb34-5"><a href="#cb34-5" tabindex="-1"></a>              <span class="fu">bearer</span>(<span class="st">&quot;EARTHDATA_TOKEN&quot;</span>),</span>
+<span id="cb34-6"><a href="#cb34-6" tabindex="-1"></a>              <span class="at">register =</span> <span class="st">&quot;https://urs.earthdata.nasa.gov/users/new&quot;</span>)</span>
+<span id="cb34-7"><a href="#cb34-7" tabindex="-1"></a>  ),</span>
+<span id="cb34-8"><a href="#cb34-8" tabindex="-1"></a>  <span class="at">resources =</span> <span class="fu">list</span>(</span>
+<span id="cb34-9"><a href="#cb34-9" tabindex="-1"></a>    <span class="fu">resource</span>(<span class="st">&quot;gedi-l4a&quot;</span>, <span class="st">&quot;2026-06&quot;</span>,</span>
+<span id="cb34-10"><a href="#cb34-10" tabindex="-1"></a>             <span class="at">urls =</span> <span class="st">&quot;https://data.ornldaac.earthdata.nasa.gov/gedi/l4a-2026-06.h5&quot;</span>,</span>
+<span id="cb34-11"><a href="#cb34-11" tabindex="-1"></a>             <span class="at">sha256 =</span> <span class="st">&quot;...&quot;</span>, <span class="at">license =</span> <span class="st">&quot;CC-BY-4.0&quot;</span>)</span>
+<span id="cb34-12"><a href="#cb34-12" tabindex="-1"></a>  )</span>
+<span id="cb34-13"><a href="#cb34-13" tabindex="-1"></a>)</span></code></pre></div>
 <p>The credential is read from the environment at the moment of the
 request. It is never stored, never written to the cache, never recorded
 in provenance and never printed. It travels as an
@@ -1062,7 +1070,7 @@ to would be able to nominate its own.</p>
 <p>Say plainly in your documentation which variable a user sets and
 where they register. <code>getaca_credentials()</code> reports both, and
 whether the variable is set, without touching the network:</p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" tabindex="-1"></a><span class="fu">getaca_credentials</span>(<span class="at">package =</span> <span class="st">&quot;canopy&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" tabindex="-1"></a><span class="fu">getaca_credentials</span>(<span class="at">package =</span> <span class="st">&quot;canopy&quot;</span>)</span></code></pre></div>
 <p>The reproducibility promise narrows for these resources, from every
 machine getting the same bytes to every machine holding the credential
 getting the same bytes. Weigh that against a public mirror before
@@ -1072,16 +1080,17 @@ declaring one.</p>
 <h2>Testing your declaration</h2>
 <p>The registry is an ordinary object, so the parts worth testing are
 testable without a network:</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;the shipped registry is valid and names a head&quot;</span>, {</span>
-<span id="cb35-2"><a href="#cb35-2" tabindex="-1"></a>  reg <span class="ot">&lt;-</span> <span class="fu">registry_for</span>(<span class="st">&quot;yourpkg&quot;</span>)</span>
-<span id="cb35-3"><a href="#cb35-3" tabindex="-1"></a>  <span class="fu">expect_s3_class</span>(reg, <span class="st">&quot;getaca_registry&quot;</span>)</span>
-<span id="cb35-4"><a href="#cb35-4" tabindex="-1"></a>  <span class="fu">expect_equal</span>(<span class="fu">resolve_resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">registry =</span> reg)<span class="sc">$</span>id<span class="sc">$</span>version, <span class="st">&quot;2026-06&quot;</span>)</span>
-<span id="cb35-5"><a href="#cb35-5" tabindex="-1"></a>})</span>
-<span id="cb35-6"><a href="#cb35-6" tabindex="-1"></a></span>
-<span id="cb35-7"><a href="#cb35-7" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;the backbone parses when it is available&quot;</span>, {</span>
-<span id="cb35-8"><a href="#cb35-8" tabindex="-1"></a>  <span class="fu">getaca_skip_if_unavailable</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)</span>
-<span id="cb35-9"><a href="#cb35-9" tabindex="-1"></a>  <span class="fu">expect_s3_class</span>(<span class="fu">read_backbone</span>(<span class="fu">getaca</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)), <span class="st">&quot;backbone&quot;</span>)</span>
-<span id="cb35-10"><a href="#cb35-10" tabindex="-1"></a>})</span></code></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;the shipped registry is valid and names a head&quot;</span>, {</span>
+<span id="cb36-2"><a href="#cb36-2" tabindex="-1"></a>  reg <span class="ot">&lt;-</span> <span class="fu">registry_for</span>(<span class="st">&quot;yourpkg&quot;</span>)</span>
+<span id="cb36-3"><a href="#cb36-3" tabindex="-1"></a>  <span class="fu">expect_s3_class</span>(reg, <span class="st">&quot;getaca_registry&quot;</span>)</span>
+<span id="cb36-4"><a href="#cb36-4" tabindex="-1"></a>  <span class="fu">expect_equal</span>(<span class="fu">format</span>(<span class="fu">resolve_resource</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">registry =</span> reg)),</span>
+<span id="cb36-5"><a href="#cb36-5" tabindex="-1"></a>               <span class="st">&quot;yourpkg/backbone@2026-06&quot;</span>)</span>
+<span id="cb36-6"><a href="#cb36-6" tabindex="-1"></a>})</span>
+<span id="cb36-7"><a href="#cb36-7" tabindex="-1"></a></span>
+<span id="cb36-8"><a href="#cb36-8" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;the backbone parses when it is available&quot;</span>, {</span>
+<span id="cb36-9"><a href="#cb36-9" tabindex="-1"></a>  <span class="fu">getaca_skip_if_unavailable</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)</span>
+<span id="cb36-10"><a href="#cb36-10" tabindex="-1"></a>  <span class="fu">expect_s3_class</span>(<span class="fu">read_backbone</span>(<span class="fu">getaca</span>(<span class="st">&quot;backbone&quot;</span>, <span class="at">package =</span> <span class="st">&quot;yourpkg&quot;</span>)), <span class="st">&quot;backbone&quot;</span>)</span>
+<span id="cb36-11"><a href="#cb36-11" tabindex="-1"></a>})</span></code></pre></div>
 <p>The first runs everywhere, including on CRAN, because it never leaves
 the installed package. The second skips cleanly when the resource is
 absent and names how to prefetch it.</p>
